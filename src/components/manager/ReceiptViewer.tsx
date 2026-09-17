@@ -23,10 +23,10 @@ export const ReceiptViewer: React.FC<Props> = ({ imageUrl, vendorName, ocrText }
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setShowOcrText(!showOcrText)}
-            className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors ${
+            className={`px-2.5 py-1 rounded-lg text-xs font-extrabold transition-colors border ${
               showOcrText
-                ? "bg-emerald-500 text-slate-950 font-bold"
-                : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                ? "bg-brand-orange text-slate-950 border-brand-orange shadow-sm"
+                : "bg-slate-700 text-slate-300 hover:bg-slate-600 border-slate-600"
             }`}
           >
             {showOcrText ? "Show Image" : "Inspect Raw OCR"}
@@ -62,7 +62,7 @@ export const ReceiptViewer: React.FC<Props> = ({ imageUrl, vendorName, ocrText }
       {/* Viewer Body */}
       <div className="relative flex-1 bg-slate-950 min-h-[360px] p-4 flex items-center justify-center overflow-auto">
         {showOcrText ? (
-          <div className="w-full h-full p-4 bg-slate-900 rounded-2xl border border-slate-800 font-mono text-xs text-emerald-400 whitespace-pre-wrap select-text leading-relaxed overflow-y-auto">
+          <div className="w-full h-full p-4 bg-slate-900 rounded-2xl border border-slate-800 font-mono text-xs text-slate-200 whitespace-pre-wrap select-text leading-relaxed overflow-y-auto">
             {ocrText || "Raw OCR Text extracted:\n\n[INDIAN OIL CORP LTD - RECEIPT VALIDATED]"}
           </div>
         ) : (

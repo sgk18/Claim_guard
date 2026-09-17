@@ -25,14 +25,14 @@ export const HistoryDrawer: React.FC<Props> = ({ claims, isOpen, onClose, onSele
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex justify-end animate-fade-in">
       <div className="w-full max-w-md bg-white h-full flex flex-col shadow-2xl">
         {/* Drawer Header */}
-        <div className="p-4 bg-emerald-800 text-white flex items-center justify-between">
+        <div className="p-4 bg-slate-900 text-white flex items-center justify-between border-b-2 border-slate-800">
           <div className="flex items-center gap-2">
-            <button onClick={onClose} className="p-1 rounded-full hover:bg-emerald-700 transition-colors">
+            <button onClick={onClose} className="p-1 rounded-xl hover:bg-slate-800 text-slate-300 transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h3 className="font-bold text-base">My Submitted Claims</h3>
+            <h3 className="font-bold text-base text-white">My Submitted Claims</h3>
           </div>
-          <span className="text-xs bg-emerald-900/60 px-2 py-0.5 rounded-full font-medium">
+          <span className="text-xs bg-slate-800 text-brand-peach border border-slate-700 px-2 py-0.5 rounded-full font-medium">
             {claims.length} total
           </span>
         </div>
@@ -45,7 +45,7 @@ export const HistoryDrawer: React.FC<Props> = ({ claims, isOpen, onClose, onSele
               onClick={() => setFilter(f)}
               className={`px-3 py-1 rounded-full font-semibold transition-colors whitespace-nowrap ${
                 filter === f
-                  ? "bg-emerald-700 text-white shadow-sm"
+                  ? "bg-brand-orange text-white shadow-tactile"
                   : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
               }`}
             >

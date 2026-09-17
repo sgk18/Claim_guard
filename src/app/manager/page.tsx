@@ -47,15 +47,15 @@ export default function ManagerDashboardPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
       {/* Manager Navigation Bar */}
-      <header className="border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+      <header className="border-b-2 border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-teal-500/20 group-hover:scale-105 transition-transform">
-              <ShieldCheck className="w-5 h-5 text-slate-950" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-orange to-brand-peach flex items-center justify-center shadow-tactile group-hover:scale-105 transition-transform">
+              <ShieldCheck className="w-5 h-5 text-slate-950 stroke-[2.5]" />
             </div>
             <div>
-              <span className="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-teal-300 to-emerald-400">
-                ClaimGuard
+              <span className="font-extrabold text-lg tracking-tight text-white">
+                Claim<span className="text-brand-orange">Guard</span>
               </span>
               <span className="block text-[10px] text-slate-400 font-medium">Finance & Ops Portal</span>
             </div>
@@ -68,7 +68,7 @@ export default function ManagerDashboardPage() {
             href="/employee"
             className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition-colors"
           >
-            <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
+            <Smartphone className="w-3.5 h-3.5 text-brand-orange" />
             Test Employee WebView
           </Link>
 
@@ -78,19 +78,19 @@ export default function ManagerDashboardPage() {
             disabled={isLoading}
             className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-teal-400" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin text-brand-orange" : ""}`} />
           </button>
 
           <div className="h-6 w-px bg-slate-800 mx-1"></div>
 
           {/* Current Manager User context */}
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-teal-800 border-2 border-teal-500 flex items-center justify-center text-xs font-bold text-white shadow-sm">
+            <div className="w-8 h-8 rounded-full bg-slate-800 border-2 border-brand-orange flex items-center justify-center text-xs font-bold text-brand-peach shadow-tactile">
               PS
             </div>
             <div className="hidden md:block text-left">
               <div className="font-bold text-xs text-white">Priya Sharma</div>
-              <div className="text-[10px] text-teal-400 font-medium">Finance Controller</div>
+              <div className="text-[10px] text-brand-peach font-medium">Finance Controller</div>
             </div>
           </div>
         </div>
@@ -99,9 +99,9 @@ export default function ManagerDashboardPage() {
       {/* Main Content Dashboard */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         {/* Banner Alert for India Operations */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-slate-800/90 to-slate-850/90 border border-slate-700/80 gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-slate-850 border-2 border-slate-700/80 gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-brand-orange/15 text-brand-orange border border-brand-orange/30 flex items-center justify-center">
               <Building className="w-5 h-5" />
             </div>
             <div>
@@ -112,7 +112,7 @@ export default function ManagerDashboardPage() {
             </div>
           </div>
 
-          <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-950/80 border border-emerald-800 px-3 py-1 rounded-full shrink-0">
+          <span className="text-[11px] font-semibold text-brand-peach bg-slate-800 border border-slate-700 px-3 py-1 rounded-full shrink-0">
             System Status: Active &bull; 0 Blockers
           </span>
         </div>

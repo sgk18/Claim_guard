@@ -11,9 +11,9 @@ export const AuditTimeline: React.FC<Props> = ({ logs }) => {
     switch (actorType) {
       case "MANAGER":
         return {
-          icon: <User className="w-3.5 h-3.5 text-emerald-400" />,
+          icon: <User className="w-3.5 h-3.5 text-brand-orange" />,
           label: "Manager Decision",
-          color: "bg-emerald-950 text-emerald-300 border-emerald-800",
+          color: "bg-orange-950/70 text-brand-peach border-brand-orange/40",
         };
       case "SYSTEM_FRAUD_ENGINE":
         return {
@@ -38,9 +38,9 @@ export const AuditTimeline: React.FC<Props> = ({ logs }) => {
   };
 
   return (
-    <div className="bg-slate-900 rounded-3xl p-5 border border-slate-800 shadow-lg text-white">
+    <div className="bg-slate-900 rounded-3xl p-5 border-2 border-slate-800 shadow-[2px_2px_0px_0px_#0F172A] text-white">
       <div className="flex items-center gap-2 pb-3 mb-4 border-b border-slate-800">
-        <Clock className="w-4 h-4 text-emerald-400" />
+        <Clock className="w-4 h-4 text-brand-orange" />
         <h3 className="font-bold text-xs uppercase tracking-wider text-slate-300">
           Immutable Audit Trail ({logs.length} events)
         </h3>
@@ -59,7 +59,7 @@ export const AuditTimeline: React.FC<Props> = ({ logs }) => {
           return (
             <div key={log.id} className="relative text-xs">
               {/* Timeline marker */}
-              <div className="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-slate-900" />
+              <div className="absolute -left-6 top-1 w-2.5 h-2.5 rounded-full bg-brand-orange ring-4 ring-slate-900" />
 
               <div className="bg-slate-800/60 rounded-2xl p-3 border border-slate-700/60">
                 <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">

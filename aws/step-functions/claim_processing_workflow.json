@@ -1,0 +1,78 @@
+{
+  "Comment": "ClaimGuard AWS Step Functions Receipt Processing & Fraud Verification Workflow",
+  "StartAt": "TriggerTextractOCR",
+  "States": {
+    "TriggerTextractOCR": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "claimguard-ocr-extract",
+        "Payload": {
+          "bucket.$": "$.detail.bucket.name",
+          "key.$": "$.detail.object.key",
+          "claimId.$": "$.detail.claimId"
+        }
+      },
+      "ResultPath": "$.ocrResult",
+      "Next": "EvaluateDeterministicFraudRules"
+    },
+    "EvaluateDeterministicFraudRules": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "claimguard-fraud-evaluator",
+        "Payload": {
+          "extractedFields.$": "$.ocrResult.Payload.extracted",
+          "claimId.$": "$.detail.claimId",
+          "employeeId.$": "$.detail.employeeId"
+        }
+      },
+      "ResultPath": "$.fraudResult",
+      "Next": "CalculateRiskScore"
+    },
+    "CalculateRiskScore": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "claimguard-risk-engine",
+        "Payload": {
+          "signals.$": "$.fraudResult.Payload.signals"
+        }
+      },
+      "ResultPath": "$.riskResult",
+      "Next": "GenerateBedrockExplanation"
+    },
+    "GenerateBedrockExplanation": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::bedrock:invokeModel",
+      "Parameters": {
+        "ModelId": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "Body": {
+          "anthropic_version": "bedrock-2023-05-31",
+          "max_tokens": 1000,
+          "messages": [
+            {
+              "role": "user",
+              "content": "Synthesize human-readable risk narrative for finance manager..."
+            }
+          ]
+        }
+      },
+      "ResultPath": "$.aiExplanation",
+      "Next": "PersistToSupabase"
+    },
+    "PersistToSupabase": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "claimguard-db-sync",
+        "Payload": {
+          "claimId.$": "$.detail.claimId",
+          "riskResult.$": "$.riskResult.Payload",
+          "explanation.$": "$.aiExplanation.Body"
+        }
+      },
+      "End": true
+    }
+  }
+}

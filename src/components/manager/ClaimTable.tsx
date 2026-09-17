@@ -73,10 +73,10 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
             className="bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
           >
             <option value="ALL">Risk: All Tiers</option>
-            <option value="CRITICAL">🔴 Critical Risk (80-100)</option>
-            <option value="HIGH">🟠 High Risk (60-79)</option>
-            <option value="MEDIUM">🟡 Medium Risk (30-59)</option>
-            <option value="LOW">🟢 Low Risk (0-29)</option>
+            <option value="CRITICAL">Critical Risk (80-100)</option>
+            <option value="HIGH">High Risk (60-79)</option>
+            <option value="MEDIUM">Medium Risk (30-59)</option>
+            <option value="LOW">Low Risk (0-29)</option>
           </select>
 
           {/* Status Filter */}
@@ -181,7 +181,7 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
                         />
                         {claim.riskAssessment.rulesTriggered?.length > 0 && (
                           <span className="text-[10px] text-rose-600 font-medium truncate max-w-[160px]">
-                            ⚠ {claim.riskAssessment.rulesTriggered.join(", ")}
+                            Flag: {claim.riskAssessment.rulesTriggered.join(", ")}
                           </span>
                         )}
                       </div>

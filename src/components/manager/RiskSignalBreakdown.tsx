@@ -38,7 +38,7 @@ export const RiskSignalBreakdown: React.FC<Props> = ({ riskAssessment }) => {
   };
 
   return (
-    <div className="bg-slate-900 rounded-3xl p-5 border border-slate-800 shadow-lg text-white space-y-4">
+    <div className="bg-slate-900 rounded-3xl p-5 border-2 border-slate-800 shadow-[2px_2px_0px_0px_#0F172A] text-white space-y-4">
       {/* Top Header: Score & Tier */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-800">
         <div>
@@ -71,7 +71,7 @@ export const RiskSignalBreakdown: React.FC<Props> = ({ riskAssessment }) => {
 
       {/* AI Risk Narrative */}
       <div className="bg-slate-800/80 rounded-2xl p-3.5 border border-slate-700/60 text-xs">
-        <div className="flex items-center gap-1.5 font-bold text-emerald-400 mb-1">
+        <div className="flex items-center gap-1.5 font-extrabold text-brand-orange mb-1">
           <CheckCircle2 className="w-3.5 h-3.5" />
           <span>Explainable AI Synthesis</span>
         </div>

@@ -82,19 +82,19 @@ export const ExtractedCard: React.FC<Props> = ({
         )}
 
         {/* Action Buttons */}
-        <div className="mt-4 pt-2 border-t border-slate-100 flex gap-2">
+        <div className="mt-4 pt-2.5 border-t border-slate-200 flex gap-2">
           <button
             onClick={onConfirm}
             disabled={isSubmitting}
-            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors disabled:opacity-50"
+            className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-tactile transition-all disabled:opacity-50"
           >
-            <Check className="w-3.5 h-3.5" />
+            <Check className="w-3.5 h-3.5 stroke-[2.5]" />
             {isSubmitting ? "Submitting..." : "Everything is correct"}
           </button>
           <button
             onClick={onEdit}
             disabled={isSubmitting}
-            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1 transition-colors"
+            className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1 border border-slate-300 transition-colors"
           >
             <Edit3 className="w-3.5 h-3.5" />
             Edit

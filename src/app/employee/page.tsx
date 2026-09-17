@@ -57,7 +57,7 @@ export default function EmployeeWebViewPage() {
             {
               id: "msg_welcome_1",
               sender: "bot",
-              text: `Hi ${empData.data.name.split(" ")[0]} 👋\n\nI'm ClaimGuard, your real-time expense assistant.\n\nReady to submit your expense receipt? Tap the upload box below to capture or pick your bill.`,
+              text: `Hello ${empData.data.name.split(" ")[0]}.\n\nI am ClaimGuard, your real-time expense verification assistant.\n\nReady to submit your expense receipt? Select or drop your bill below to begin verification.`,
               timestamp: time,
             },
           ]);
@@ -136,7 +136,7 @@ export default function EmployeeWebViewPage() {
         {
           id: `msg_bot_err_${Date.now()}`,
           sender: "bot",
-          text: `⚠️ Couldn't process receipt: ${err.message}. Please try re-uploading a clearer photo.`,
+          text: `Processing notice: ${err.message}. Please upload a clearer photo.`,
           timestamp: errTime,
         },
       ]);
@@ -199,7 +199,7 @@ export default function EmployeeWebViewPage() {
         {
           id: `msg_bot_done_${Date.now()}`,
           sender: "bot",
-          text: `✅ Your claim has been submitted!\n\nClaim ID: ${newClaim.id}\nVendor: ${newClaim.vendorName}\nAmount: ₹${newClaim.amount.toLocaleString()}\nStatus: ${newClaim.status === "REVIEW_REQUIRED" ? "UNDER REVIEW (Compliance Check)" : "PENDING APPROVAL"}\n\nYour manager will review the claim shortly. You can track status in your history anytime.`,
+          text: `Claim Submitted Successfully.\n\nClaim ID: ${newClaim.id}\nVendor: ${newClaim.vendorName}\nAmount: INR ${newClaim.amount.toLocaleString()}\nStatus: ${newClaim.status === "REVIEW_REQUIRED" ? "UNDER REVIEW (Compliance Check)" : "PENDING APPROVAL"}\n\nYour manager will review the claim. You can track status in your history anytime.`,
           timestamp: time,
         },
       ]);
@@ -209,7 +209,7 @@ export default function EmployeeWebViewPage() {
         {
           id: `msg_bot_sub_err_${Date.now()}`,
           sender: "bot",
-          text: `⚠️ Submission error: ${err.message}`,
+          text: `Submission error: ${err.message}`,
           timestamp: time,
         },
       ]);
@@ -242,26 +242,26 @@ export default function EmployeeWebViewPage() {
           deviceFrame ? "sm:border-[8px] sm:border-slate-800" : "sm:border border-slate-700"
         }`}
       >
-        {/* WhatsApp-Style Header */}
-        <header className="bg-emerald-800 text-white px-4 py-3 flex items-center justify-between shadow-sm select-none z-10">
+        {/* Header */}
+        <header className="bg-slate-900 text-white px-4 py-3 flex items-center justify-between shadow-md border-b-2 border-slate-800 select-none z-10">
           <div className="flex items-center gap-3">
-            <Link href="/" className="sm:hidden p-1 -ml-1 text-emerald-100 hover:text-white">
+            <Link href="/" className="sm:hidden p-1 -ml-1 text-slate-300 hover:text-white">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-emerald-700 border-2 border-emerald-500/80 flex items-center justify-center font-bold text-white shadow-inner">
-                <ShieldCheck className="w-6 h-6 text-emerald-300" />
+              <div className="w-10 h-10 rounded-xl bg-slate-800 border-2 border-brand-orange/60 flex items-center justify-center font-bold text-white shadow-tactile">
+                <ShieldCheck className="w-6 h-6 text-brand-orange" />
               </div>
-              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-400 border-2 border-emerald-800"></span>
+              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-brand-orange border-2 border-slate-900"></span>
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h1 className="font-bold text-sm leading-tight">ClaimGuard</h1>
-                <span className="text-[10px] bg-emerald-700/80 px-1.5 py-0.2 rounded font-medium text-emerald-200">
-                  Bot
+                <h1 className="font-bold text-sm leading-tight text-white">Claim<span className="text-brand-orange">Guard</span></h1>
+                <span className="text-[10px] bg-slate-800 text-brand-peach px-1.5 py-0.5 rounded border border-slate-700 font-semibold">
+                  Assistant
                 </span>
               </div>
-              <p className="text-[11px] text-emerald-200/90 leading-tight">Online &bull; Instant Verification</p>
+              <p className="text-[11px] text-slate-400 leading-tight">Online &bull; Instant Verification</p>
             </div>
           </div>
 
@@ -270,11 +270,11 @@ export default function EmployeeWebViewPage() {
             <button
               onClick={() => setIsHistoryOpen(true)}
               title="Claim History"
-              className="relative p-2 rounded-full hover:bg-emerald-700/70 transition-colors"
+              className="relative p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-colors"
             >
-              <History className="w-5 h-5" />
+              <History className="w-4 h-4" />
               {employeeClaims.length > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-amber-400 text-slate-950 font-bold text-[9px] flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-orange text-slate-950 font-bold text-[9px] flex items-center justify-center">
                   {employeeClaims.length}
                 </span>
               )}
@@ -284,23 +284,22 @@ export default function EmployeeWebViewPage() {
 
         {/* Employee Context Ribbon */}
         {employee && (
-          <div className="bg-emerald-900/90 text-emerald-100 px-4 py-1.5 text-[11px] flex items-center justify-between border-b border-emerald-950">
+          <div className="bg-slate-850 text-slate-300 px-4 py-1.5 text-[11px] flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-1.5 truncate">
-              <User className="w-3.5 h-3.5 text-emerald-400" />
+              <User className="w-3.5 h-3.5 text-brand-orange" />
               <span className="font-semibold text-white">{employee.name}</span>
-              <span className="text-emerald-300/80 truncate">({employee.department})</span>
+              <span className="text-slate-400 truncate">({employee.department})</span>
             </div>
-            <span className="text-[10px] bg-emerald-800 px-1.5 py-0.5 rounded text-emerald-200 shrink-0">
-              Avg: ₹{employee.historicalClaimAvg.toLocaleString()}
+            <span className="text-[10px] bg-slate-800 text-brand-peach border border-slate-700 px-1.5 py-0.5 rounded font-mono shrink-0">
+              Avg: INR {employee.historicalClaimAvg.toLocaleString()}
             </span>
           </div>
         )}
 
         {/* Chat Conversation Area (WhatsApp background pattern) */}
         <div className="flex-1 overflow-y-auto p-3 chat-bg-pattern flex flex-col justify-start">
-          {/* Security & Verification Banner */}
-          <div className="my-2 mx-auto max-w-[85%] bg-amber-50/90 border border-amber-200/80 rounded-xl p-2 text-center text-[11px] text-amber-900 shadow-sm">
-            🔒 Claims are processed using automated OCR and fraud checks. Approvals are decided by your company finance manager.
+          <div className="my-2 mx-auto max-w-[85%] bg-amber-50/90 border border-amber-200/80 rounded-xl p-2 text-center text-[11px] text-amber-900 shadow-sm font-medium">
+            System Notice: Claims are processed using automated OCR and fraud rules. Approvals are decided by authorized company managers.
           </div>
 
           {/* Message Stream */}
@@ -310,8 +309,8 @@ export default function EmployeeWebViewPage() {
 
           {/* Loading typing indicator during OCR extraction */}
           {isUploading && (
-            <div className="flex items-center gap-2 bg-white rounded-2xl px-3.5 py-2 w-fit shadow-sm border border-slate-200 my-1 animate-pulse-glow">
-              <RefreshCw className="w-3.5 h-3.5 text-emerald-600 animate-spin" />
+            <div className="flex items-center gap-2 bg-white rounded-2xl px-3.5 py-2 w-fit shadow-sm border border-slate-200 my-1">
+              <RefreshCw className="w-3.5 h-3.5 text-brand-orange animate-spin" />
               <span className="text-xs text-slate-600">Extracting receipt fields with OCR...</span>
             </div>
           )}

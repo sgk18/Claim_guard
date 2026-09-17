@@ -93,33 +93,33 @@ export const ReceiptUploader: React.FC<Props> = ({ onFileSelected, isUploading }
             type="button"
             disabled={isUploading}
             onClick={() => loadPresetReceipt("/receipts/demo_indian_oil.jpg", "indian_oil_fuel.jpg")}
-            className="px-2 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 rounded-lg text-slate-700 font-medium text-left truncate border border-slate-200 transition-colors"
+            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-800 font-medium text-left truncate border border-slate-300 transition-colors"
           >
-            ⛽ Fuel Bill (₹3,850)
+            Fuel Bill (INR 3,850)
           </button>
           <button
             type="button"
             disabled={isUploading}
             onClick={() => loadPresetReceipt("/receipts/demo_indian_oil_dup.jpg", "receipt_fuel_ioc_4471.jpg")}
-            className="px-2 py-1.5 bg-slate-100 hover:bg-rose-50 hover:text-rose-800 rounded-lg text-slate-700 font-medium text-left truncate border border-slate-200 transition-colors"
+            className="px-2.5 py-1.5 bg-slate-100 hover:bg-rose-50 hover:text-rose-800 rounded-lg text-slate-800 font-medium text-left truncate border border-slate-300 transition-colors"
           >
-            ⚠️ Duplicate Test
+            Duplicate Test
           </button>
           <button
             type="button"
             disabled={isUploading}
             onClick={() => loadPresetReceipt("/receipts/demo_restaurant.jpg", "restaurant_dining.jpg")}
-            className="px-2 py-1.5 bg-slate-100 hover:bg-amber-50 hover:text-amber-800 rounded-lg text-slate-700 font-medium text-left truncate border border-slate-200 transition-colors"
+            className="px-2.5 py-1.5 bg-slate-100 hover:bg-amber-50 hover:text-amber-800 rounded-lg text-slate-800 font-medium text-left truncate border border-slate-300 transition-colors"
           >
-            🍽️ Dining (Mismatch)
+            Dining Mismatch
           </button>
           <button
             type="button"
             disabled={isUploading}
             onClick={() => loadPresetReceipt("/receipts/demo_clean_1850.jpg", "blur_unclear_smudge.jpg")}
-            className="px-2 py-1.5 bg-slate-100 hover:bg-sky-50 hover:text-sky-800 rounded-lg text-slate-700 font-medium text-left truncate border border-slate-200 transition-colors"
+            className="px-2.5 py-1.5 bg-slate-100 hover:bg-sky-50 hover:text-sky-800 rounded-lg text-slate-800 font-medium text-left truncate border border-slate-300 transition-colors"
           >
-            🔍 Blurry / Low OCR
+            Low Clarity OCR
           </button>
         </div>
       </div>

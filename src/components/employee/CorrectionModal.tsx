@@ -146,9 +146,9 @@ export const CorrectionModal: React.FC<Props> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1.5 shadow-md transition-colors disabled:opacity-50"
+              className="flex-1 py-2.5 px-3 rounded-xl bg-brand-orange hover:bg-brand-orange/90 text-white font-bold flex items-center justify-center gap-1.5 shadow-tactile border border-brand-orange/80 transition-all disabled:opacity-50"
             >
-              <Check className="w-4 h-4" />
+              <Check className="w-4 h-4 stroke-[2.5]" />
               {isSubmitting ? "Submitting..." : "Save & Submit Claim"}
             </button>
           </div>

@@ -12,28 +12,40 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // Strict ClaimGuard Design Palette
         brand: {
-          50: "#eefbf4",
-          100: "#d7f6e4",
-          200: "#b1edcc",
-          300: "#7cdeab",
-          400: "#41c684",
-          500: "#1baa65",
-          600: "#10884f",
-          700: "#0f6c41",
-          800: "#105636",
-          900: "#0f472e",
-          950: "#06281a",
+          orange: "#F97316", // Primary Accent
+          peach: "#FDBA74",  // Supporting Warm Token
+          navy: "#0F172A",   // Primary Dark Canvas & Contrast
+          slate: "#334155",  // Borders, Secondary Type & Structures
+          offwhite: "#F8FAFC", // Clean Ground Surface
+          50: "#fff7ed",
+          100: "#ffedd5",
+          200: "#fed7aa",
+          300: "#fdba74",
+          400: "#fb923c",
+          500: "#f97316",
+          600: "#ea580c",
+          700: "#c2410c",
+          800: "#9a3412",
+          900: "#7c2d12",
+          950: "#431407",
         },
         risk: {
           low: "#10b981",
           medium: "#f59e0b",
           high: "#ef4444",
-          critical: "#7f1d1d",
+          critical: "#991b1b",
         }
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      boxShadow: {
+        tactile: "0 2px 0 0 rgba(15, 23, 42, 0.08), 0 4px 12px 0 rgba(15, 23, 42, 0.04)",
+        clay: "inset 0 1px 1px 0 rgba(255, 255, 255, 0.6), 0 4px 6px -1px rgba(15, 23, 42, 0.08)",
+        brutal: "2px 2px 0px 0px #0F172A",
+        "brutal-orange": "2px 2px 0px 0px #F97316",
       }
     },
   },

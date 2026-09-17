@@ -219,49 +219,49 @@ export default function EmployeeWebViewPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 sm:py-6 flex flex-col items-center justify-center p-0 sm:p-4">
-      {/* Top Bar for Reviewers on Desktop */}
-      <div className="w-full max-w-md hidden sm:flex items-center justify-between text-xs text-slate-400 mb-3 px-2">
-        <Link href="/" className="hover:text-white flex items-center gap-1 transition-colors">
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to Home
+    <div className="min-h-screen ambient-mesh-bg flex flex-col justify-center items-center sm:p-4 font-sans selection:bg-orange-100 selection:text-orange-900">
+      {/* Desktop Ribbon / Mode Switcher */}
+      <div className="hidden sm:flex items-center justify-between w-full max-w-md mb-2 px-2 text-xs text-slate-600">
+        <Link href="/" className="inline-flex items-center gap-1 hover:text-brand-orange font-semibold transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to Portal Home
         </Link>
         <div className="flex items-center gap-2">
-          <span>ClaimGuard Mobile Simulator</span>
           <button
             onClick={() => setDeviceFrame(!deviceFrame)}
-            className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 text-[10px]"
+            className="px-2 py-1 rounded-md bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-medium shadow-xs"
           >
-            {deviceFrame ? "Full Width" : "Device Frame"}
+            {deviceFrame ? "Minimal Window" : "Phone Frame"}
           </button>
         </div>
       </div>
 
-      {/* Mobile-First Frame */}
+      {/* Mobile Device Frame */}
       <div
-        className={`w-full max-w-md bg-white flex flex-col h-screen sm:h-[844px] sm:max-h-[90vh] sm:rounded-[36px] overflow-hidden shadow-2xl border-0 ${
-          deviceFrame ? "sm:border-[8px] sm:border-slate-800" : "sm:border border-slate-700"
+        className={`w-full max-w-md bg-white flex flex-col h-screen sm:h-[844px] sm:max-h-[90vh] sm:rounded-[36px] overflow-hidden shadow-2xl ${
+          deviceFrame ? "sm:border-[8px] sm:border-slate-800" : "sm:border border-slate-200"
         }`}
       >
         {/* Header */}
-        <header className="bg-slate-900 text-white px-4 py-3 flex items-center justify-between shadow-md border-b-2 border-slate-800 select-none z-10">
+        <header className="bg-white/95 backdrop-blur-md text-slate-900 px-4 py-3 flex items-center justify-between shadow-xs border-b border-slate-200 select-none z-10">
           <div className="flex items-center gap-3">
-            <Link href="/" className="sm:hidden p-1 -ml-1 text-slate-300 hover:text-white">
+            <Link href="/" className="sm:hidden p-1 -ml-1 text-slate-500 hover:text-slate-900">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-slate-800 border-2 border-brand-orange/60 flex items-center justify-center font-bold text-white shadow-tactile">
-                <ShieldCheck className="w-6 h-6 text-brand-orange" />
+              <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
+                <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
               </div>
-              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-brand-orange border-2 border-slate-900"></span>
+              <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h1 className="font-bold text-sm leading-tight text-white">Claim<span className="text-brand-orange">Guard</span></h1>
-                <span className="text-[10px] bg-slate-800 text-brand-peach px-1.5 py-0.5 rounded border border-slate-700 font-semibold">
+                <h1 className="font-extrabold text-sm leading-tight text-slate-900">Claim<span className="text-brand-orange">Guard</span></h1>
+                <span className="text-[10px] bg-orange-50 text-orange-700 px-1.5 py-0.5 rounded border border-orange-200 font-bold">
                   Assistant
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">Online &bull; Instant Verification</p>
+              <p className="text-[11px] text-slate-500 leading-tight">Instant Expense Verification</p>
             </div>
           </div>
 
@@ -270,11 +270,11 @@ export default function EmployeeWebViewPage() {
             <button
               onClick={() => setIsHistoryOpen(true)}
               title="Claim History"
-              className="relative p-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white transition-colors"
+              className="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 transition-colors shadow-2xs"
             >
               <History className="w-4 h-4" />
               {employeeClaims.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-orange text-slate-950 font-bold text-[9px] flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-orange text-white font-bold text-[9px] flex items-center justify-center">
                   {employeeClaims.length}
                 </span>
               )}
@@ -284,14 +284,14 @@ export default function EmployeeWebViewPage() {
 
         {/* Employee Context Ribbon */}
         {employee && (
-          <div className="bg-slate-850 text-slate-300 px-4 py-1.5 text-[11px] flex items-center justify-between border-b border-slate-800">
+          <div className="bg-slate-50/90 text-slate-700 px-4 py-1.5 text-[11px] flex items-center justify-between border-b border-slate-200">
             <div className="flex items-center gap-1.5 truncate">
               <User className="w-3.5 h-3.5 text-brand-orange" />
-              <span className="font-semibold text-white">{employee.name}</span>
-              <span className="text-slate-400 truncate">({employee.department})</span>
+              <span className="font-bold text-slate-900">{employee.name}</span>
+              <span className="text-slate-500 truncate">({employee.department})</span>
             </div>
-            <span className="text-[10px] bg-slate-800 text-brand-peach border border-slate-700 px-1.5 py-0.5 rounded font-mono shrink-0">
-              Avg: INR {employee.historicalClaimAvg.toLocaleString()}
+            <span className="text-[10px] bg-white text-orange-800 border border-orange-200 px-2 py-0.5 rounded font-mono font-bold shadow-2xs shrink-0">
+              Avg: ₹{employee.historicalClaimAvg.toLocaleString()}
             </span>
           </div>
         )}

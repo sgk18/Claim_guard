@@ -22,10 +22,10 @@ export const ExtractedCard: React.FC<Props> = ({
       <div className="w-full max-w-[92%] sm:max-w-[85%] bg-white rounded-2xl p-4 shadow-md border border-slate-200">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-md bg-orange-50 text-brand-orange flex items-center justify-center">
               <ShieldCheck className="w-4 h-4" />
             </div>
-            <span className="font-bold text-slate-800 text-sm">Extracted Receipt Details</span>
+            <span className="font-bold text-slate-900 text-sm">Extracted Receipt Details</span>
           </div>
           {isLowConfidence ? (
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
@@ -33,7 +33,7 @@ export const ExtractedCard: React.FC<Props> = ({
               Verify Fields
             </span>
           ) : (
-            <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
               High Confidence
             </span>
           )}
@@ -50,7 +50,7 @@ export const ExtractedCard: React.FC<Props> = ({
 
           <div className="flex justify-between py-1 border-b border-slate-50 items-center">
             <span className="text-slate-500 font-medium">Amount:</span>
-            <span className="font-bold text-base text-emerald-700">
+            <span className="font-black text-base text-slate-900">
               ₹{data.amount > 0 ? data.amount.toLocaleString() : "0.00"}
             </span>
           </div>
@@ -68,7 +68,7 @@ export const ExtractedCard: React.FC<Props> = ({
           {data.gstin && (
             <div className="flex justify-between py-1">
               <span className="text-slate-500 font-medium">GSTIN:</span>
-              <span className="font-mono text-[11px] text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">
+              <span className="font-mono text-[11px] text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                 {data.gstin}
               </span>
             </div>
@@ -82,11 +82,11 @@ export const ExtractedCard: React.FC<Props> = ({
         )}
 
         {/* Action Buttons */}
-        <div className="mt-4 pt-2.5 border-t border-slate-200 flex gap-2">
+        <div className="mt-4 pt-2.5 border-t border-slate-100 flex gap-2">
           <button
             onClick={onConfirm}
             disabled={isSubmitting}
-            className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-tactile transition-all disabled:opacity-50"
+            className="flex-1 bg-brand-orange hover:bg-orange-600 text-white font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all disabled:opacity-50 active:scale-95"
           >
             <Check className="w-3.5 h-3.5 stroke-[2.5]" />
             {isSubmitting ? "Submitting..." : "Everything is correct"}
@@ -94,7 +94,7 @@ export const ExtractedCard: React.FC<Props> = ({
           <button
             onClick={onEdit}
             disabled={isSubmitting}
-            className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1 border border-slate-300 transition-colors"
+            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1 border border-slate-200 transition-colors"
           >
             <Edit3 className="w-3.5 h-3.5" />
             Edit

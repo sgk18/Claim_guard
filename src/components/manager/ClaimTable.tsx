@@ -60,7 +60,7 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
             placeholder="Search by vendor, employee, or CLM-ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+            className="w-full pl-9 pr-4 py-2 bg-white rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-brand-orange font-medium"
           />
         </div>
 
@@ -70,7 +70,7 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
           <select
             value={riskFilter}
             onChange={(e) => setRiskFilter(e.target.value)}
-            className="bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-orange"
           >
             <option value="ALL">Risk: All Tiers</option>
             <option value="CRITICAL">Critical Risk (80-100)</option>
@@ -83,7 +83,7 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-orange"
           >
             <option value="ALL">Status: All</option>
             <option value="PENDING">Pending Review</option>
@@ -95,7 +95,7 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 capitalize"
+            className="bg-white border border-slate-300 text-xs rounded-xl px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-orange capitalize"
           >
             <option value="ALL">Category: All</option>
             <option value="fuel">Fuel</option>
@@ -137,10 +137,10 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
               filteredClaims.map((claim) => (
                 <tr
                   key={claim.id}
-                  className="hover:bg-slate-50/90 transition-colors group cursor-pointer"
+                  className="hover:bg-orange-50/40 transition-colors group cursor-pointer"
                 >
                   <td className="py-3 px-4 font-mono font-bold text-slate-900">
-                    <Link href={`/manager/claims/${claim.id}`} className="hover:text-emerald-600">
+                    <Link href={`/manager/claims/${claim.id}`} className="hover:text-brand-orange">
                       {claim.id}
                     </Link>
                   </td>
@@ -197,7 +197,7 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
                   <td className="py-3 px-4 text-right whitespace-nowrap">
                     <Link
                       href={`/manager/claims/${claim.id}`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-600 hover:text-white font-semibold text-slate-700 transition-colors shadow-xs"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-brand-orange hover:text-white font-semibold text-slate-700 transition-colors shadow-xs"
                     >
                       Review
                       <ChevronRight className="w-3.5 h-3.5" />

@@ -49,8 +49,8 @@ export const ReceiptUploader: React.FC<Props> = ({ onFileSelected, isUploading }
         onClick={() => !isUploading && fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-2xl p-4 text-center cursor-pointer transition-all ${
           isDragging
-            ? "border-emerald-500 bg-emerald-50/50"
-            : "border-slate-300 hover:border-emerald-500/70 hover:bg-slate-50"
+            ? "border-brand-orange bg-orange-50/50"
+            : "border-slate-300 hover:border-brand-orange hover:bg-orange-50/20"
         } ${isUploading ? "opacity-60 pointer-events-none" : ""}`}
       >
         <input
@@ -66,15 +66,15 @@ export const ReceiptUploader: React.FC<Props> = ({ onFileSelected, isUploading }
         />
 
         <div className="flex flex-col items-center justify-center gap-1.5">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-orange-50 text-brand-orange border border-orange-200 flex items-center justify-center shadow-xs">
             {isUploading ? (
-              <RefreshCw className="w-5 h-5 animate-spin" />
+              <RefreshCw className="w-5 h-5 animate-spin text-brand-orange" />
             ) : (
               <Camera className="w-5 h-5" />
             )}
           </div>
           <div className="text-xs">
-            <span className="font-bold text-slate-800">
+            <span className="font-bold text-slate-900">
               {isUploading ? "Reading receipt with OCR..." : "Tap to capture or upload receipt"}
             </span>
             <p className="text-[10px] text-slate-500 mt-0.5">JPEG, PNG, WebP up to 10MB</p>

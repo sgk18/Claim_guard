@@ -329,3 +329,33 @@ test("Scenario 7: Multiple Compounding Signals -> CRITICAL Risk", () => {
   assert.equal(risk.level, "CRITICAL");
   assert.equal(risk.recommendedAction, "REJECT_RECOMMENDED");
 });
+
+test("GSTIN Validation - Edge Cases: empty, whitespace, and case normalization", () => {
+  assert.equal(validateGSTIN("").isValid, false);
+  assert.equal(validateGSTIN("   ").isValid, false);
+  assert.equal(validateGSTIN(undefined).isValid, false);
+
+  // Lowercase valid GSTIN should be trimmed and normalized
+  const validLower = "29aaaci1681g1zs";
+  const res = validateGSTIN(validLower);
+  assert.equal(res.isValid, true);
+  assert.equal(res.stateCode, "29");
+  assert.equal(res.pan, "AAACI1681G");
+});
+
+test("Perceptual Hash - Edge Cases: distance boundary and identical strings", () => {
+  const h1 = "0000000000000000";
+  const h2 = "0000000000000000";
+  assert.equal(computeHammingDistance(h1, h2), 0);
+  assert.equal(areImagesSimilar(h1, h2, 10), true);
+
+  // Exactly 10 bits distance (threshold boundary)
+  const h3 = "000000000000000f"; // 4 bits diff (f = 1111)
+  assert.equal(areImagesSimilar(h1, h3, 10), true);
+
+  // Completely distinct hashes (all 16 characters differ)
+  const hFar = "ffffffffffffffff";
+  assert.equal(computeHammingDistance(h1, hFar), 16);
+  assert.equal(areImagesSimilar(h1, hFar, 10), false);
+});
+

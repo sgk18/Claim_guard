@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
         (c) =>
           c.id.toLowerCase().includes(search) ||
           c.vendorName.toLowerCase().includes(search) ||
-          c.employee?.name.toLowerCase().includes(search) ||
+          (c.employee?.name?.toLowerCase().includes(search) ?? false) ||
           c.category.toLowerCase().includes(search)
       );
     }

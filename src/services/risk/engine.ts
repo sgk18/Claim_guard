@@ -1,4 +1,4 @@
-import type { FraudSignal, RiskAssessment, RiskLevel } from "../../types/index.ts";
+import type { FraudSignal, RiskAssessment, RiskLevel } from "@/types";
 
 export interface RiskScoreResult {
   score: number;

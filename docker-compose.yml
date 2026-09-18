@@ -1,0 +1,55 @@
+# ClaimGuard Local Development Docker Compose
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: claimguard-nginx-dev
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+      - server
+    networks:
+      - claimguard-net
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: claimguard-web-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - CLAIMGUARD_MOCK_MODE=true
+    env_file:
+      - .env.example
+    networks:
+      - claimguard-net
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: claimguard-server-dev
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - HOST=0.0.0.0
+      - CLAIMGUARD_MOCK_MODE=true
+    env_file:
+      - .env.example
+    networks:
+      - claimguard-net
+
+networks:
+  claimguard-net:
+    driver: bridge

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Claim } from "@/types";
 import { ReceiptViewer } from "@/components/manager/ReceiptViewer";
@@ -14,12 +14,20 @@ import {
   ArrowLeft,
   Check,
   X,
+  Clock,
   User,
+  Calendar,
+  IndianRupee,
   FileText,
+  AlertTriangle,
+  Receipt,
+  Download,
+  ShieldCheck,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 
-export default function ClaimDetailPage() {
+export default function ClaimReviewPage() {
   const params = useParams();
   const router = useRouter();
   const claimId = params.id as string;
@@ -29,7 +37,7 @@ export default function ClaimDetailPage() {
   const [actionModal, setActionModal] = useState<"APPROVE" | "REJECT" | null>(null);
   const [isProcessingAction, setIsProcessingAction] = useState(false);
 
-  const fetchClaim = async () => {
+  const fetchClaim = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch(`/api/claims/${claimId}`);
@@ -42,11 +50,13 @@ export default function ClaimDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [claimId]);
 
   useEffect(() => {
-    if (claimId) fetchClaim();
-  }, [claimId]);
+    if (claimId) {
+      fetchClaim();
+    }
+  }, [claimId, fetchClaim]);
 
   const handleDecision = async (notes: string) => {
     if (!actionModal || !claim) return;

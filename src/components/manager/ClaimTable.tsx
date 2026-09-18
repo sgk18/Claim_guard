@@ -21,8 +21,8 @@ export const ClaimTable: React.FC<Props> = ({ claims }) => {
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       const matchId = claim.id.toLowerCase().includes(term);
-      const matchVendor = claim.vendorName.toLowerCase().includes(term);
-      const matchEmp = claim.employee?.name.toLowerCase().includes(term);
+      const matchVendor = (claim.vendorName || "").toLowerCase().includes(term);
+      const matchEmp = claim.employee?.name?.toLowerCase().includes(term) ?? false;
       if (!matchId && !matchVendor && !matchEmp) return false;
     }
 

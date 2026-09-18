@@ -1,0 +1,62 @@
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: claimguard-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - web
+      - server
+    networks:
+      - claimguard-net
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: claimguard-web
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    env_file:
+      - .env.local
+    networks:
+      - claimguard-net
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: claimguard-server
+    restart: unless-stopped
+    expose:
+      - "3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - HOST=0.0.0.0
+      - AWS_REGION=${AWS_REGION:-ap-south-1}
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - CLAIMGUARD_MOCK_MODE=${CLAIMGUARD_MOCK_MODE:-false}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+    env_file:
+      - .env.local
+    networks:
+      - claimguard-net
+
+networks:
+  claimguard-net:
+    driver: bridge

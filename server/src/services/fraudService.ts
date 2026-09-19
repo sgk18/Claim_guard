@@ -20,7 +20,7 @@ export interface FraudCheckContext {
 
 export class DeterministicFraudEngine {
   // Category policy ceilings (in INR)
-  private readonly POLICY_LIMITS: Record<ExpenseCategory, number> = {
+  private readonly POLICY_LIMITS: Record<string, number> = {
     MEALS: 2500,
     FUEL: 5000,
     HOTEL: 8000,

@@ -18,7 +18,17 @@ export type AuthenticityState =
   | "SUSPICIOUS"
   | "UNABLE TO VERIFY";
 
-export type ExpenseCategory = "MEALS" | "FUEL" | "HOTEL" | "TRAVEL" | "MISC";
+export type ExpenseCategory =
+  | "MEALS"
+  | "FUEL"
+  | "HOTEL"
+  | "TRAVEL"
+  | "MISC"
+  | "fuel"
+  | "food"
+  | "lodging"
+  | "travel"
+  | "misc";
 
 export type Role = "MANAGER" | "EMPLOYEE" | "ADMIN";
 
@@ -40,6 +50,26 @@ export interface Profile {
   phone?: string;
   avatarUrl?: string;
   createdAt: string;
+}
+
+export interface Employee {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: string;
+  department: string;
+  companyId: string;
+  historicalClaimCount: number;
+  historicalClaimAvg: number;
+}
+
+export interface Manager {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  companyId: string;
 }
 
 export interface OrganizationMember {
@@ -78,7 +108,8 @@ export interface Session {
 }
 
 export interface ReceiptLineItem {
-  item: string;
+  item?: string;
+  description?: string;
   quantity?: number;
   rate?: number;
   amount: number;
@@ -93,6 +124,7 @@ export interface Receipt {
   mimeType: string;
   storageKey: string;
   imageHash?: string;
+  perceptualHash?: string;
   rawOcrText?: string;
   ocrConfidence?: Record<string, number>;
   lineItems?: ReceiptLineItem[];
@@ -104,12 +136,14 @@ export interface ExtractedReceiptData {
   amount: number;
   currency: string;
   date: string;
-  category: ExpenseCategory;
+  category: any;
   gstin?: string;
   lineItems: ReceiptLineItem[];
   ocrConfidence: number; // 0.0 - 1.0
   inconsistencies: string[];
   rawText?: string;
+  confidence?: Record<string, number>;
+  needsReview?: boolean;
 }
 
 export interface FraudSignal {
@@ -137,8 +171,15 @@ export interface RiskAssessment {
   claimId: string;
   score: number; // 0–100
   level: RiskLevel;
-  authenticityState: AuthenticityState;
-  recommendedAction: "APPROVE" | "REJECT" | "REVIEW" | "CLARIFICATION";
+  authenticityState?: AuthenticityState;
+  recommendedAction:
+    | "APPROVE"
+    | "REJECT"
+    | "REVIEW"
+    | "CLARIFICATION"
+    | "APPROVE_RECOMMENDED"
+    | "REJECT_RECOMMENDED"
+    | "REVIEW_RECOMMENDED";
   summary: string;
   aiNarrative?: string;
   signals: FraudSignal[];
@@ -148,10 +189,10 @@ export interface RiskAssessment {
 
 export interface AuditLog {
   id: string;
-  organizationId: string;
+  organizationId?: string;
   claimId?: string;
-  actorType: "EMPLOYEE" | "MANAGER" | "SYSTEM";
-  actorId: string;
+  actorType: "EMPLOYEE" | "MANAGER" | "SYSTEM" | "SYSTEM_OCR" | "SYSTEM_FRAUD_ENGINE" | "SYSTEM_AI";
+  actorId?: string;
   actorName?: string;
   action: string;
   details?: Record<string, any>;
@@ -160,7 +201,8 @@ export interface AuditLog {
 
 export interface Claim {
   id: string;
-  organizationId: string;
+  organizationId?: string;
+  companyId?: string;
   employeeId: string;
   employeeName?: string;
   vendorName: string;
@@ -173,8 +215,11 @@ export interface Claim {
   managerNotes?: string;
   employeeNotes?: string;
   rejectionReason?: string;
+  employee?: Employee;
   receipt?: Receipt;
   riskAssessment?: RiskAssessment;
+  auditLogs?: AuditLog[];
+  matchedClaim?: Claim;
   createdAt: string;
   updatedAt: string;
 }

@@ -6,19 +6,33 @@ export interface OutboundMessage {
   metadata?: Record<string, any>;
 }
 
+export interface NotificationPayload {
+  to: string;
+  channel?: "webview" | "whatsapp" | "push" | "email";
+  template?: string;
+  variables?: Record<string, any>;
+}
+
 export interface MessagingProvider {
   channelName: string;
   sendMessage(message: OutboundMessage): Promise<{ success: boolean; messageId: string }>;
+  sendNotification(notification: NotificationPayload): Promise<{ success: boolean; messageId: string }>;
 }
 
 export class WebViewMessagingProvider implements MessagingProvider {
   channelName = "WEBVIEW";
 
   async sendMessage(message: OutboundMessage) {
-    // In WebView, messages are held in state or dispatched via WebSocket/Realtime
     return {
       success: true,
       messageId: `msg_wv_${Date.now()}`,
+    };
+  }
+
+  async sendNotification(notification: NotificationPayload) {
+    return {
+      success: true,
+      messageId: `notif_wv_${Date.now()}`,
     };
   }
 }
@@ -35,14 +49,12 @@ export class WhatsAppMessagingProvider implements MessagingProvider {
 
   async sendMessage(message: OutboundMessage) {
     if (!this.accessToken || !this.phoneNumberId) {
-      // Mock mode delivery
       return {
         success: true,
         messageId: `mock_wa_${Date.now()}`,
       };
     }
 
-    // Meta Cloud API POST /v20.0/{phone_number_id}/messages
     const response = await fetch(`https://graph.facebook.com/v20.0/${this.phoneNumberId}/messages`, {
       method: "POST",
       headers: {
@@ -63,5 +75,12 @@ export class WhatsAppMessagingProvider implements MessagingProvider {
       success: response.ok,
       messageId: data?.messages?.[0]?.id || `wa_err_${Date.now()}`,
     };
+  }
+
+  async sendNotification(notification: NotificationPayload) {
+    return this.sendMessage({
+      recipientId: notification.to,
+      text: `[ClaimGuard Notification] ${notification.template || "update"}: ${JSON.stringify(notification.variables || {})}`,
+    });
   }
 }

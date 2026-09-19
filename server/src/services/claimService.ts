@@ -111,7 +111,7 @@ export class ClaimService {
       category: input.category,
       claimDate: input.claimDate,
       gstin: input.gstin,
-      authenticityState: riskAssessment.authenticityState,
+      authenticityState: riskAssessment.authenticityState || "REVIEW REQUIRED",
       score: riskAssessment.score,
       signals,
     });

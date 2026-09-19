@@ -9,28 +9,33 @@ export interface OCRProvider {
 }
 
 export class MockOCRProvider implements OCRProvider {
-  async extractReceipt(buffer: Buffer, fileName: string) {
+  async extractReceipt(buffer: Buffer, fileName: string): Promise<{
+    extracted: ExtractedReceiptData;
+    rawText: string;
+    perceptualHash: string;
+  }> {
     const lower = fileName.toLowerCase();
 
     // Default Fuel extraction
     let vendorName = "Indian Oil Corporation Ltd";
     let amount = 3850;
     let date = new Date().toISOString().split("T")[0];
-    let category: any = "fuel";
+    let category: any = "FUEL";
     let gstin = "29AAACI1681G1Z1";
     let confidence = { vendor: 0.98, amount: 0.99, date: 0.95, overall: 0.97 };
     let needsReview = false;
+    const inconsistencies: string[] = [];
 
     if (lower.includes("hotel") || lower.includes("lodging") || lower.includes("taj")) {
       vendorName = "The Taj Gateway Hotel";
       amount = 7499;
-      category = "lodging";
+      category = "HOTEL";
       gstin = "27AAACT1234F1Z5";
       confidence = { vendor: 0.95, amount: 0.96, date: 0.92, overall: 0.94 };
-    } else if (lower.includes("food") || lower.includes("bikanervala") || lower.includes("restaurant")) {
+    } else if (lower.includes("food") || lower.includes("bikanervala") || lower.includes("restaurant") || lower.includes("meals")) {
       vendorName = "Bikanervala Sweets & Restaurant";
       amount = 850;
-      category = "food";
+      category = "MEALS";
       gstin = "07AAACB5678J1Z9";
       confidence = { vendor: 0.96, amount: 0.97, date: 0.94, overall: 0.95 };
     } else if (lower.includes("low") || lower.includes("blurred") || lower.includes("crinkled")) {
@@ -38,6 +43,7 @@ export class MockOCRProvider implements OCRProvider {
       amount = 2400;
       confidence = { vendor: 0.62, amount: 0.68, date: 0.70, overall: 0.66 };
       needsReview = true;
+      inconsistencies.push("Low image sharpness detected in vendor name region");
     }
 
     // Generate perceptual image hash
@@ -59,9 +65,12 @@ export class MockOCRProvider implements OCRProvider {
         date,
         category,
         gstin,
-        lineItems: [{ description: `${category.toUpperCase()} Charge`, amount }],
+        lineItems: [{ item: `${category} Service`, description: `${category} Charge`, amount }],
         confidence,
+        ocrConfidence: confidence.overall,
         needsReview,
+        inconsistencies,
+        rawText,
       },
       rawText,
       perceptualHash: hash,

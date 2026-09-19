@@ -3,21 +3,23 @@ import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import { config } from "./config/index.js";
 import { InMemoryClaimRepository } from "./repositories/claimRepository.js";
+import { InMemoryOrganizationRepository } from "./repositories/organizationRepository.js";
 import { MockStorageProvider } from "./providers/storage.js";
 import { MockOCRProvider } from "./providers/ocr.js";
-import { MockAIProvider } from "./providers/ai.js";
 import { WebViewMessagingProvider } from "./providers/messaging.js";
-import { RiskService } from "./services/riskService.js";
 import { ClaimService } from "./services/claimService.js";
+import { OrganizationService } from "./services/organizationService.js";
 import { ClaimController } from "./controllers/claimController.js";
+import { OrganizationController } from "./controllers/organizationController.js";
 import { ReceiptController } from "./controllers/receiptController.js";
 import { claimRoutes } from "./routes/claims.js";
+import { organizationRoutes } from "./routes/organizations.js";
 import { receiptRoutes } from "./routes/receipts.js";
 import { healthRoutes } from "./routes/health.js";
 
 export function buildServer() {
   const fastify = Fastify({
-    logger: true,
+    logger: false, // Clean test output
   });
 
   // Plugins
@@ -34,25 +36,41 @@ export function buildServer() {
 
   // Providers & Repositories
   const claimRepo = new InMemoryClaimRepository();
+  const orgRepo = new InMemoryOrganizationRepository();
   const storageProvider = new MockStorageProvider();
   const ocrProvider = new MockOCRProvider();
-  const aiProvider = new MockAIProvider();
   const messagingProvider = new WebViewMessagingProvider();
 
   // Services
-  const riskService = new RiskService(aiProvider);
-  const claimService = new ClaimService(claimRepo, riskService, messagingProvider);
+  const claimService = new ClaimService(claimRepo, messagingProvider);
+  const orgService = new OrganizationService(orgRepo);
 
   // Controllers
   const claimController = new ClaimController(claimService);
+  const orgController = new OrganizationController(orgService);
   const receiptController = new ReceiptController(storageProvider, ocrProvider);
 
-  // Register Health Routes
+  // Authentication PreHandler Hook (Bearer Session Token)
+  fastify.decorateRequest("session", null);
+  fastify.addHook("preHandler", async (req: any, reply) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.substring(7);
+      const session = await orgService.validateSession(token);
+      if (session) {
+        req.session = session;
+      }
+    }
+  });
+
+  // Root Health Routes
   fastify.register(healthRoutes);
 
-  // Register API v1 Routes
+  // API v1 Routes
   fastify.register(
     async (v1) => {
+      v1.register(healthRoutes);
+      v1.register(organizationRoutes, { controller: orgController });
       v1.register(claimRoutes, { controller: claimController });
       v1.register(receiptRoutes, { controller: receiptController });
     },

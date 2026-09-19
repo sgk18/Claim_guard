@@ -3,7 +3,7 @@ import { isPerceptualDuplicate } from "./perceptualHash.js";
 import { validateGSTIN } from "./gstin.js";
 
 export interface PolicyLimits {
-  categoryCaps: Record<ExpenseCategory, number>;
+  categoryCaps: Record<string, number>;
   dailyMax: number;
 }
 
@@ -14,6 +14,11 @@ export const DEFAULT_POLICY_LIMITS: PolicyLimits = {
     travel: 6000,
     lodging: 5000,
     misc: 2000,
+    FUEL: 4000,
+    MEALS: 1500,
+    TRAVEL: 6000,
+    HOTEL: 5000,
+    MISC: 2000,
   },
   dailyMax: 10000,
 };
@@ -107,7 +112,7 @@ export function evaluateFraudSignals(input: FraudEvaluationInput): FraudSignal[]
 
   // 4. CATEGORY MISMATCH
   const vendorLower = input.vendorName.toLowerCase();
-  if (input.category === "fuel" && (vendorLower.includes("bikanervala") || vendorLower.includes("restaurant") || vendorLower.includes("hotel"))) {
+  if (input.category?.toLowerCase() === "fuel" && (vendorLower.includes("bikanervala") || vendorLower.includes("restaurant") || vendorLower.includes("hotel"))) {
     signals.push({
       id: `sig_cat_${Date.now()}`,
       claimId: input.claimId,

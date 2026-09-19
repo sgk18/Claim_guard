@@ -1,4 +1,3 @@
-import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 import { FraudSignal, AuthenticityState } from "../types/index.js";
 
 export interface AIEvaluationPrompt {
@@ -15,20 +14,20 @@ export interface AIEvaluationPrompt {
 }
 
 export class BedrockAIService {
-  private client: BedrockRuntimeClient | null = null;
   private region: string;
 
   constructor() {
     this.region = process.env.AWS_REGION || "us-east-1";
-    // Initialize Bedrock if AWS credentials exist
-    if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
-      this.client = new BedrockRuntimeClient({ region: this.region });
-    }
   }
 
   public async generateManagerExplanation(context: AIEvaluationPrompt): Promise<string> {
-    if (this.client) {
+    // Attempt dynamic load of AWS SDK if credentials exist
+    if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
       try {
+        // @ts-ignore dynamic runtime import
+        const { BedrockRuntimeClient, InvokeModelCommand } = await import("@aws-sdk/client-bedrock-runtime");
+        const client = new BedrockRuntimeClient({ region: this.region });
+
         const promptText = `You are ClaimGuard AI, an expense audit explanation assistant.
 Analyze this expense submission and synthesize a concise, objective 2-3 sentence risk explanation for the finance manager.
 Claim Details:
@@ -59,11 +58,11 @@ Rules:
           body: Buffer.from(JSON.stringify(payload)),
         });
 
-        const response = await this.client.send(command);
+        const response = await client.send(command);
         const decoded = JSON.parse(new TextDecoder().decode(response.body));
         return decoded.content?.[0]?.text?.trim() || this.generateDeterministicSummary(context);
       } catch (err) {
-        console.warn("Bedrock invoke failed, falling back to deterministic explanation:", err);
+        // Fall back gracefully to deterministic explanation
       }
     }
 

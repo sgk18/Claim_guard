@@ -47,7 +47,6 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
       _step = 1;
     });
 
-    // Populate according to sample type
     if (sampleType == 'meal') {
       _vendorController.text = 'Haldirams Restaurant Pune';
       _amountController.text = '1240.00';
@@ -87,10 +86,9 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
       ];
     }
 
-    // Call Fastify analyze API
     try {
       await widget.state.api.analyzeReceipt(
-        [0xFF, 0xD8, 0xFF, 0xE0], // JPEG magic bytes
+        [0xFF, 0xD8, 0xFF, 0xE0],
         _sampleFileName,
       );
     } catch (_) {}
@@ -99,7 +97,7 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
 
     if (mounted) {
       setState(() {
-        _step = 2; // Show extracted review sheet
+        _step = 2;
       });
     }
   }
@@ -134,32 +132,147 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Receipt Scanner'),
+        title: const Text(
+          'Smart Receipt Scanner',
+          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+        ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: ClaimGuardTheme.brandOrangeSurface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: ClaimGuardTheme.brandOrangeLight),
+            ),
+            child: const Row(
+              children: [
+                Icon(Icons.bolt_rounded, size: 14, color: ClaimGuardTheme.brandOrange),
+                SizedBox(width: 4),
+                Text(
+                  'AWS Textract',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: ClaimGuardTheme.brandOrange),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
-        child: _buildBody(),
+        child: Column(
+          children: [
+            // Step Progress Indicator
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              color: ClaimGuardTheme.surfaceWhite,
+              child: Row(
+                children: [
+                  _buildStepDot(0, 'Capture'),
+                  _buildStepLine(0),
+                  _buildStepDot(1, 'OCR Scan'),
+                  _buildStepLine(1),
+                  _buildStepDot(2, 'Review'),
+                  _buildStepLine(2),
+                  _buildStepDot(3, 'Queued'),
+                ],
+              ),
+            ),
+            const Divider(height: 1, color: ClaimGuardTheme.slateBorder),
+
+            Expanded(child: _buildBody()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStepDot(int stepIndex, String label) {
+    final isActive = _step == stepIndex;
+    final isDone = _step > stepIndex;
+
+    Color color;
+    if (isDone) {
+      color = ClaimGuardTheme.riskLow;
+    } else if (isActive) {
+      color = ClaimGuardTheme.brandOrange;
+    } else {
+      color = ClaimGuardTheme.slateBorder;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircleAvatar(
+          radius: 10,
+          backgroundColor: color,
+          child: isDone
+              ? const Icon(Icons.check, size: 12, color: ClaimGuardTheme.surfaceWhite)
+              : Text(
+                  '${stepIndex + 1}',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: isActive ? ClaimGuardTheme.surfaceWhite : ClaimGuardTheme.slateMuted,
+                  ),
+                ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 9.5,
+            fontWeight: isActive || isDone ? FontWeight.w800 : FontWeight.w500,
+            color: isActive ? ClaimGuardTheme.slateDark : ClaimGuardTheme.slateMuted,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStepLine(int stepIndex) {
+    final isDone = _step > stepIndex;
+    return Expanded(
+      child: Container(
+        height: 2,
+        margin: const EdgeInsets.only(bottom: 14, left: 4, right: 4),
+        color: isDone ? ClaimGuardTheme.riskLow : ClaimGuardTheme.slateBorder,
       ),
     );
   }
 
   Widget _buildBody() {
     if (_step == 1) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: ClaimGuardTheme.brandOrange),
-            SizedBox(height: 20),
-            Text(
-              'Analyzing Receipt Image...',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: ClaimGuardTheme.slateDark),
-            ),
-            SizedBox(height: 6),
-            Text(
-              'Running AWS Textract OCR, GSTIN validation & duplicate check',
-              style: TextStyle(fontSize: 12, color: ClaimGuardTheme.slateMuted),
-            ),
-          ],
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: ClaimGuardTheme.brandOrangeSurface,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: ClaimGuardTheme.brandOrangeLight, width: 2),
+                ),
+                child: const Center(
+                  child: CircularProgressIndicator(color: ClaimGuardTheme.brandOrange, strokeWidth: 3),
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Analyzing Receipt Image...',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: ClaimGuardTheme.slateDark),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Executing AWS Textract OCR, GSTIN Luhn Modulo-36 check, and image duplicate hash comparison.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13, height: 1.4, color: ClaimGuardTheme.slateMuted),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -175,8 +288,8 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: ClaimGuardTheme.riskLowBg,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: ClaimGuardTheme.riskLow.withAlpha(80)),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: ClaimGuardTheme.riskLowBorder, width: 1.2),
               ),
               child: Row(
                 children: [
@@ -185,7 +298,7 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
                   Expanded(
                     child: Text(
                       'OCR Confidence: ${(_ocrConfidence * 100).toStringAsFixed(0)}% • Compliant with company policy',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: ClaimGuardTheme.riskLow),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: ClaimGuardTheme.riskLow),
                     ),
                   ),
                 ],
@@ -194,12 +307,12 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
             const SizedBox(height: 18),
 
             const Text(
-              'Verify Extracted Details',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: ClaimGuardTheme.slateDark),
+              'Verify Extracted Bill Details',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: ClaimGuardTheme.slateDark, letterSpacing: -0.3),
             ),
             const SizedBox(height: 4),
             const Text(
-              'Confirm merchant, date, and line item amounts before final submission.',
+              'Confirm merchant, date, and line items before final submission.',
               style: TextStyle(fontSize: 12, color: ClaimGuardTheme.slateMuted),
             ),
             const SizedBox(height: 16),
@@ -224,7 +337,7 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
                 Expanded(
                   child: TextField(
                     controller: _dateController,
-                    decoration: const InputDecoration(labelText: 'Invoice Date'),
+                    decoration: const InputDecoration(labelText: 'Invoice Date (YYYY-MM-DD)'),
                   ),
                 ),
               ],
@@ -259,28 +372,41 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
               ],
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 22),
             // Itemized Breakdown Table
-            const Text(
-              'Extracted Line Items',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: ClaimGuardTheme.slateDark),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Extracted Line Items',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: ClaimGuardTheme.slateDark),
+                ),
+                Text(
+                  '${_lineItems.length} items found',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: ClaimGuardTheme.slateMuted),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
                 color: ClaimGuardTheme.surfaceWhite,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: ClaimGuardTheme.slateBorder),
+                boxShadow: ClaimGuardTheme.cardShadow,
               ),
               child: Column(
                 children: _lineItems.map((item) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: const BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1)),
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(item.item, style: const TextStyle(fontSize: 12, color: ClaimGuardTheme.slateDark)),
-                        Text('INR ${item.amount.toStringAsFixed(2)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: ClaimGuardTheme.slateDark)),
+                        Text(item.item, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: ClaimGuardTheme.slateDark)),
+                        Text('₹${item.amount.toStringAsFixed(2)}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: ClaimGuardTheme.slateDark)),
                       ],
                     ),
                   );
@@ -288,17 +414,18 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
               ),
             ),
 
-            const SizedBox(height: 28),
-            ElevatedButton(
+            const SizedBox(height: 26),
+            ElevatedButton.icon(
               onPressed: widget.state.isLoading ? null : _confirmAndSubmit,
-              child: widget.state.isLoading
-                  ? const CircularProgressIndicator(color: ClaimGuardTheme.surfaceWhite)
+              icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
+              label: widget.state.isLoading
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: ClaimGuardTheme.surfaceWhite, strokeWidth: 2))
                   : const Text('Confirm & Submit to Queue'),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             OutlinedButton(
               onPressed: () => setState(() => _step = 0),
-              child: const Text('Discard & Retake'),
+              child: const Text('Discard & Rescan'),
             ),
           ],
         ),
@@ -308,34 +435,35 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
     if (_step == 3) {
       return Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(28.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 64,
-                height: 64,
+                width: 72,
+                height: 72,
                 decoration: const BoxDecoration(
                   color: ClaimGuardTheme.riskLowBg,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check, color: ClaimGuardTheme.riskLow, size: 36),
+                child: const Icon(Icons.check_rounded, color: ClaimGuardTheme.riskLow, size: 42),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 22),
               const Text(
-                'Claim Submitted',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: ClaimGuardTheme.slateDark),
+                'Claim Submitted!',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: ClaimGuardTheme.slateDark, letterSpacing: -0.5),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
               const Text(
-                'Your expense receipt has been submitted and queued for manager review.',
-                style: TextStyle(fontSize: 13, color: ClaimGuardTheme.slateMuted),
+                'Your expense invoice has been analyzed, scored by the deterministic fraud engine, and queued for manager approval.',
+                style: TextStyle(fontSize: 13, height: 1.4, color: ClaimGuardTheme.slateMuted),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 28),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: () => setState(() => _step = 0),
-                child: const Text('Scan Another Receipt'),
+                icon: const Icon(Icons.add_a_photo_outlined, size: 18),
+                label: const Text('Scan Another Receipt'),
               ),
             ],
           ),
@@ -344,23 +472,82 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
     }
 
     // Step 0: Capture Screen / Sample Picker
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Camera Viewfinder Mock / Frame
+          // Styled Camera Viewfinder Frame with Crosshairs
           Container(
             width: double.infinity,
-            height: 280,
+            height: 260,
             decoration: BoxDecoration(
-              color: ClaimGuardTheme.slateDark,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: ClaimGuardTheme.slateSecondary, width: 2),
+              gradient: ClaimGuardTheme.heroGradient,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: ClaimGuardTheme.floatingShadow,
             ),
             child: Stack(
               alignment: Alignment.center,
               children: [
+                // Corner Crosshairs / Viewfinder brackets
+                Positioned(
+                  top: 20,
+                  left: 20,
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                        left: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 20,
+                  right: 20,
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                        right: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                        left: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  right: 20,
+                  child: Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                        right: BorderSide(color: ClaimGuardTheme.brandOrange, width: 3),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Center shutter icon
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -372,17 +559,17 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: ClaimGuardTheme.brandOrange, width: 2),
                       ),
-                      child: const Icon(Icons.camera_alt, color: ClaimGuardTheme.surfaceWhite, size: 32),
+                      child: const Icon(Icons.camera_alt_rounded, color: ClaimGuardTheme.surfaceWhite, size: 30),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 14),
                     const Text(
-                      'Position Receipt Inside Frame',
-                      style: TextStyle(color: ClaimGuardTheme.surfaceWhite, fontSize: 14, fontWeight: FontWeight.w700),
+                      'Align Receipt Within Viewfinder',
+                      style: TextStyle(color: ClaimGuardTheme.surfaceWhite, fontSize: 14, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'Ensure merchant name, date, and total are legible',
-                      style: TextStyle(color: ClaimGuardTheme.slateBorder, fontSize: 11),
+                    Text(
+                      'Auto-extracts vendor, GSTIN, amount & date',
+                      style: TextStyle(color: ClaimGuardTheme.surfaceWhite.withAlpha(160), fontSize: 11),
                     ),
                   ],
                 ),
@@ -391,31 +578,37 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
           ),
 
           const SizedBox(height: 24),
-          const Text(
-            'Select Sample Invoice to Test OCR:',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: ClaimGuardTheme.slateDark),
+          const Row(
+            children: [
+              Icon(Icons.touch_app_rounded, size: 16, color: ClaimGuardTheme.brandOrange),
+              SizedBox(width: 6),
+              Text(
+                'Test Invoice Scenarios (Instant OCR):',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: ClaimGuardTheme.slateDark),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
 
           // 3 Quick Sample Invoices
           _SampleInvoiceTile(
-            title: 'Fuel Station Invoice (INR 3,850)',
-            subtitle: 'Indian Oil Corp Ltd • Verified GSTIN',
-            icon: Icons.local_gas_station_outlined,
+            title: 'Fuel Station Invoice (₹3,850.00)',
+            subtitle: 'Indian Oil Corp Ltd • 42.3L Diesel • GSTIN: 29AAACI...',
+            category: 'FUEL',
             onTap: () => _simulateCapture('fuel'),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           _SampleInvoiceTile(
-            title: 'Client Dining Bill (INR 1,240)',
-            subtitle: 'Haldirams Pune • Itemized Thali',
-            icon: Icons.restaurant_outlined,
+            title: 'Team Dining Meal (₹1,240.00)',
+            subtitle: 'Haldirams Pune • Thali & Beverages • GST: 5%',
+            category: 'MEALS',
             onTap: () => _simulateCapture('meal'),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           _SampleInvoiceTile(
-            title: 'Field Hotel Lodging (INR 7,499)',
-            subtitle: 'The Taj Gateway Hotel • GSTIN',
-            icon: Icons.hotel_outlined,
+            title: 'Field Hotel Lodging (₹7,499.00)',
+            subtitle: 'The Taj Gateway Hotel • Executive Suite • Room Dining',
+            category: 'HOTEL',
             onTap: () => _simulateCapture('hotel'),
           ),
         ],
@@ -427,49 +620,68 @@ class _ReceiptScannerScreenState extends State<ReceiptScannerScreen> {
 class _SampleInvoiceTile extends StatelessWidget {
   final String title;
   final String subtitle;
-  final IconData icon;
+  final String category;
   final VoidCallback onTap;
 
   const _SampleInvoiceTile({
     required this.title,
     required this.subtitle,
-    required this.icon,
+    required this.category,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: ClaimGuardTheme.surfaceWhite,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: ClaimGuardTheme.slateBorder),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: ClaimGuardTheme.brandOrange, size: 22),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: ClaimGuardTheme.slateDark),
+    final catColor = ClaimGuardTheme.getCategoryColor(category);
+    final catIcon = ClaimGuardTheme.getCategoryIcon(category);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: ClaimGuardTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: ClaimGuardTheme.slateBorder),
+        boxShadow: ClaimGuardTheme.cardShadow,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: catColor.withAlpha(20),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(fontSize: 11, color: ClaimGuardTheme.slateMuted),
+                  child: Icon(catIcon, color: catColor, size: 22),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: ClaimGuardTheme.slateDark),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(fontSize: 11, color: ClaimGuardTheme.slateMuted),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: ClaimGuardTheme.slateMuted),
+              ],
             ),
-            const Icon(Icons.arrow_forward_ios, size: 12, color: ClaimGuardTheme.slateMuted),
-          ],
+          ),
         ),
       ),
     );

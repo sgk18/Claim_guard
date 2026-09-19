@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/models/claim.dart';
 import '../../core/models/session.dart';
 import '../../core/providers/app_state.dart';
@@ -32,18 +33,18 @@ class ManagerDashboardScreen extends StatelessWidget {
     return Scaffold(
       appBar: BrandHeader(
         title: org?.name ?? 'ABC Technologies',
-        subtitle: 'Finance Controller Workspace',
+        subtitle: 'Finance Operations Console',
         role: Role.manager,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: ClaimGuardTheme.slateDark),
+            icon: const Icon(Icons.refresh_rounded, color: ClaimGuardTheme.slateDark),
             tooltip: 'Refresh Queue',
             onPressed: () => state.loadClaims(),
           ),
           IconButton(
-            icon: const Icon(Icons.logout_outlined, color: ClaimGuardTheme.slateMuted),
-            tooltip: 'Logout',
-            onPressed: () => state.logout(),
+            icon: const Icon(Icons.swap_horiz_rounded, color: ClaimGuardTheme.brandOrange),
+            tooltip: 'Switch to Employee View',
+            onPressed: () => state.switchRole(Role.employee),
           ),
         ],
       ),
@@ -52,86 +53,159 @@ class ManagerDashboardScreen extends StatelessWidget {
         color: ClaimGuardTheme.brandOrange,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Organization Banner with Join Code
+              // Organization Join Code Card
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   color: ClaimGuardTheme.surfaceWhite,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: ClaimGuardTheme.slateBorder),
-                  boxShadow: [
-                    BoxShadow(
-                      color: ClaimGuardTheme.slateDark.withAlpha(8),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  boxShadow: ClaimGuardTheme.cardShadow,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'ORGANIZATION CODE',
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            color: ClaimGuardTheme.slateMuted,
-                            letterSpacing: 0.5,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(Icons.key_rounded, size: 14, color: ClaimGuardTheme.slateMuted),
+                              SizedBox(width: 5),
+                              Text(
+                                'ACTIVE STAFF JOIN CODE',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  color: ClaimGuardTheme.slateMuted,
+                                  letterSpacing: 0.6,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          org?.activeJoinCode ?? 'CG-7K4P9X',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.5,
-                            color: ClaimGuardTheme.brandOrange,
-                            fontFamily: 'monospace',
+                          const SizedBox(height: 6),
+                          GestureDetector(
+                            onTap: () {
+                              final code = org?.activeJoinCode ?? 'CG-7K4P9X';
+                              Clipboard.setData(ClipboardData(text: code));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Join code copied: $code')),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  org?.activeJoinCode ?? 'CG-7K4P9X',
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 2.0,
+                                    color: ClaimGuardTheme.brandOrange,
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.copy_rounded, size: 16, color: ClaimGuardTheme.slateMuted),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(120, 40),
+                        backgroundColor: ClaimGuardTheme.brandOrangeSurface,
+                        foregroundColor: ClaimGuardTheme.brandOrange,
+                        minimumSize: const Size(110, 42),
                         padding: const EdgeInsets.symmetric(horizontal: 12),
+                        side: const BorderSide(color: ClaimGuardTheme.brandOrangeLight),
+                        elevation: 0,
                       ),
                       onPressed: onQuickScan,
-                      icon: const Icon(Icons.document_scanner_outlined, size: 16),
-                      label: const Text('Quick Scan', style: TextStyle(fontSize: 12)),
+                      icon: const Icon(Icons.document_scanner_rounded, size: 16),
+                      label: const Text('Test Bill', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 20),
-              // Executive KPI Grid
+              const SizedBox(height: 14),
+
+              // High-Risk Alert Banner (if flagged claims exist)
+              if (state.flaggedCount > 0) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: ClaimGuardTheme.riskHighBg,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: ClaimGuardTheme.riskHighBorder, width: 1.2),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: ClaimGuardTheme.riskHigh.withAlpha(25),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.warning_amber_rounded, color: ClaimGuardTheme.riskHigh, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${state.flaggedCount} High-Risk Claims Require Action',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: ClaimGuardTheme.riskHigh,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            const Text(
+                              'Duplicate receipt hashes or amount anomalies detected by deterministic engine.',
+                              style: TextStyle(fontSize: 11, color: ClaimGuardTheme.slateDark),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 14),
+              ],
+
+              // Executive KPI Grid (2x2)
               Row(
                 children: [
                   Expanded(
                     child: _KpiCard(
                       label: 'PENDING TRIAGE',
                       value: state.pendingCount.toString(),
+                      subtext: 'Awaiting manager sign-off',
                       color: ClaimGuardTheme.brandOrange,
-                      icon: Icons.hourglass_top_outlined,
+                      icon: Icons.hourglass_top_rounded,
+                      bg: ClaimGuardTheme.brandOrangeSurface,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: _KpiCard(
-                      label: 'HIGH RISK / DUPS',
+                      label: 'ANOMALIES & DUPS',
                       value: state.flaggedCount.toString(),
+                      subtext: 'Flagged by audit rules',
                       color: ClaimGuardTheme.riskHigh,
                       icon: Icons.warning_amber_rounded,
+                      bg: ClaimGuardTheme.riskHighBg,
                     ),
                   ),
                 ],
@@ -143,38 +217,45 @@ class ManagerDashboardScreen extends StatelessWidget {
                     child: _KpiCard(
                       label: 'APPROVED CLAIMS',
                       value: state.approvedCount.toString(),
+                      subtext: 'Cleared for disbursement',
                       color: ClaimGuardTheme.riskLow,
-                      icon: Icons.check_circle_outline,
+                      icon: Icons.check_circle_rounded,
+                      bg: ClaimGuardTheme.riskLowBg,
                     ),
                   ),
                   const SizedBox(width: 10),
                   const Expanded(
                     child: _KpiCard(
-                      label: 'FIELD STAFF',
+                      label: 'FIELD EMPLOYEES',
                       value: '12 Active',
+                      subtext: '3 field departments',
                       color: ClaimGuardTheme.slateDark,
-                      icon: Icons.people_outline,
+                      icon: Icons.groups_rounded,
+                      bg: ClaimGuardTheme.canvasOffWhite,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 26),
+              const SizedBox(height: 24),
+
               // Section Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Pending Review Queue',
+                    'Priority Action Queue',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w900,
                       color: ClaimGuardTheme.slateDark,
+                      letterSpacing: -0.3,
                     ),
                   ),
-                  TextButton(
+                  TextButton.icon(
                     onPressed: onViewAllClaims,
-                    child: const Text('View All Queue'),
+                    icon: const Icon(Icons.arrow_forward_rounded, size: 14),
+                    label: const Text('View All', style: TextStyle(fontWeight: FontWeight.w800)),
                   ),
                 ],
               ),
@@ -193,21 +274,22 @@ class ManagerDashboardScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(28),
                   decoration: BoxDecoration(
                     color: ClaimGuardTheme.surfaceWhite,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: ClaimGuardTheme.slateBorder),
+                    boxShadow: ClaimGuardTheme.cardShadow,
                   ),
                   child: const Center(
                     child: Column(
                       children: [
-                        Icon(Icons.done_all_rounded, color: ClaimGuardTheme.riskLow, size: 36),
-                        SizedBox(height: 8),
+                        Icon(Icons.done_all_rounded, color: ClaimGuardTheme.riskLow, size: 38),
+                        SizedBox(height: 10),
                         Text(
                           'Queue Clear',
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: ClaimGuardTheme.slateDark),
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: ClaimGuardTheme.slateDark),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'All pending expenses have been processed.',
+                          'All pending employee submissions have been audited.',
                           style: TextStyle(fontSize: 12, color: ClaimGuardTheme.slateMuted),
                         ),
                       ],
@@ -238,24 +320,29 @@ class ManagerDashboardScreen extends StatelessWidget {
 class _KpiCard extends StatelessWidget {
   final String label;
   final String value;
+  final String subtext;
   final Color color;
+  final Color bg;
   final IconData icon;
 
   const _KpiCard({
     required this.label,
     required this.value,
+    required this.subtext,
     required this.color,
+    required this.bg,
     required this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: ClaimGuardTheme.surfaceWhite,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: ClaimGuardTheme.slateBorder),
+        boxShadow: ClaimGuardTheme.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,13 +353,20 @@ class _KpiCard extends StatelessWidget {
               Text(
                 label,
                 style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 9.5,
+                  fontWeight: FontWeight.w800,
                   color: ClaimGuardTheme.slateMuted,
                   letterSpacing: 0.5,
                 ),
               ),
-              Icon(icon, size: 16, color: color),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 16, color: color),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -282,6 +376,16 @@ class _KpiCard extends StatelessWidget {
               fontSize: 22,
               fontWeight: FontWeight.w900,
               color: color,
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            subtext,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              color: ClaimGuardTheme.slateMuted,
             ),
           ),
         ],

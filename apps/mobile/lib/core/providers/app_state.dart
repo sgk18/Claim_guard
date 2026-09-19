@@ -150,6 +150,10 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void switchRole(Role role) {
+    setPreseededSession(role);
+  }
+
   void logout() {
     _session = null;
     _claims = [];

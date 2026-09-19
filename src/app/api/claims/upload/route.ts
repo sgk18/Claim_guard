@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { MockLocalReceiptStorageProvider } from "@/services/storage/mock";
-import { MockOCRProvider } from "@/services/ocr/mock";
+import { getOCRProvider } from "@/services/providers";
 import { db } from "@/db/store";
 import crypto from "crypto";
 
 const storageProvider = new MockLocalReceiptStorageProvider();
-const ocrProvider = new MockOCRProvider();
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,7 +27,7 @@ export async function POST(req: NextRequest) {
     const storedFile = await storageProvider.uploadReceipt(buffer, file.name, file.type);
 
     // 2. Run OCR extraction
-    const extractedData = await ocrProvider.processReceipt(buffer, file.name);
+    const extractedData = await getOCRProvider().processReceipt(buffer, file.name);
 
     // 3. Save draft in database
     const draftId = `drf_${crypto.randomUUID().substring(0, 8)}`;

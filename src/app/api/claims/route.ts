@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db/store";
 import { evaluateFraudSignals } from "@/services/fraud/rules";
 import { calculateDeterministicRiskScore } from "@/services/risk/engine";
-import { MockAIProvider } from "@/services/ai/mock";
+import { getAIProvider } from "@/services/providers";
 import { Claim, AuditLog, ExpenseCategory } from "@/types";
-
-const aiProvider = new MockAIProvider();
 
 export async function GET(req: NextRequest) {
   try {
@@ -111,7 +109,7 @@ export async function POST(req: NextRequest) {
     const riskResult = calculateDeterministicRiskScore(signals);
 
     // 4. Run AI Explanation Layer
-    const aiExplanation = await aiProvider.explainRiskSignals(
+    const aiExplanation = await getAIProvider().explainRiskSignals(
       {
         amount: Number(amount),
         vendorName,

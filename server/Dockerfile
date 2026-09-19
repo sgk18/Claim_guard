@@ -28,6 +28,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=builder --chown=claimguard:nodejs /app/dist ./dist
+COPY --chown=claimguard:nodejs db ./db
 
 USER claimguard
 

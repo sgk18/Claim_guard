@@ -4,6 +4,9 @@ import multipart from "@fastify/multipart";
 import { config } from "./config/index.js";
 import { InMemoryClaimRepository } from "./repositories/claimRepository.js";
 import { InMemoryOrganizationRepository } from "./repositories/organizationRepository.js";
+import { PgClaimRepository } from "./repositories/pgClaimRepository.js";
+import { PgOrganizationRepository } from "./repositories/pgOrganizationRepository.js";
+import { getPool } from "./db/pool.js";
 import { MockStorageProvider } from "./providers/storage.js";
 import { MockOCRProvider } from "./providers/ocr.js";
 import { WebViewMessagingProvider } from "./providers/messaging.js";
@@ -35,8 +38,10 @@ export function buildServer() {
   });
 
   // Providers & Repositories
-  const claimRepo = new InMemoryClaimRepository();
-  const orgRepo = new InMemoryOrganizationRepository();
+  // Aurora PostgreSQL when DB_HOST is set, otherwise in-memory demo data.
+  const usePostgres = config.database.enabled;
+  const claimRepo = usePostgres ? new PgClaimRepository(getPool()) : new InMemoryClaimRepository();
+  const orgRepo = usePostgres ? new PgOrganizationRepository(getPool()) : new InMemoryOrganizationRepository();
   const storageProvider = new MockStorageProvider();
   const ocrProvider = new MockOCRProvider();
   const messagingProvider = new WebViewMessagingProvider();

@@ -24,72 +24,95 @@ class BrandHeader extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       titleSpacing: 16,
       automaticallyImplyLeading: false,
+      backgroundColor: ClaimGuardTheme.surfaceWhite,
+      surfaceTintColor: Colors.transparent,
       title: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
-              color: ClaimGuardTheme.brandOrange,
-              borderRadius: BorderRadius.circular(8),
+              gradient: ClaimGuardTheme.brandGradient,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: ClaimGuardTheme.brandOrange.withAlpha(50),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
-            child: const Icon(
-              Icons.shield_outlined,
-              color: ClaimGuardTheme.surfaceWhite,
-              size: 20,
+            child: const Center(
+              child: Icon(
+                Icons.shield_rounded,
+                color: ClaimGuardTheme.surfaceWhite,
+                size: 22,
+              ),
             ),
           ),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: ClaimGuardTheme.slateDark,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.2,
-                    ),
-                  ),
-                  if (role != null) ...[
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: role == Role.manager ? ClaimGuardTheme.brandOrange.withAlpha(25) : ClaimGuardTheme.slateBorder.withAlpha(50),
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                          color: role == Role.manager ? ClaimGuardTheme.brandOrange : ClaimGuardTheme.slateMuted,
-                          width: 0.8,
-                        ),
-                      ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
                       child: Text(
-                        role == Role.manager ? 'MANAGER' : 'EMPLOYEE',
-                        style: TextStyle(
-                          color: role == Role.manager ? ClaimGuardTheme.brandOrange : ClaimGuardTheme.slateDark,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: ClaimGuardTheme.slateDark,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.3,
                         ),
                       ),
                     ),
+                    if (role != null) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                        decoration: BoxDecoration(
+                          color: role == Role.manager
+                              ? ClaimGuardTheme.brandOrangeSurface
+                              : ClaimGuardTheme.canvasOffWhite,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: role == Role.manager
+                                ? ClaimGuardTheme.brandOrange.withAlpha(120)
+                                : ClaimGuardTheme.slateBorder,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          role == Role.manager ? 'MANAGER' : 'EMPLOYEE',
+                          style: TextStyle(
+                            color: role == Role.manager
+                                ? ClaimGuardTheme.brandOrange
+                                : ClaimGuardTheme.slateDark,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
-              ),
-              if (subtitle != null)
-                Text(
-                  subtitle!,
-                  style: const TextStyle(
-                    color: ClaimGuardTheme.slateMuted,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                  ),
                 ),
-            ],
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: ClaimGuardTheme.slateMuted,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ],
       ),

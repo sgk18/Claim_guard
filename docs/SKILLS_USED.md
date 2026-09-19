@@ -1,27 +1,22 @@
-# CLAIMGUARD — Skills Used
+# ClaimGuard — Skills Registry & Utilization Matrix
 
-This document records the specialized engineering and architectural skills evaluated, selected, and applied across the ClaimGuard project lifecycle according to Section 0 and Section 1.
-
-| Skill | Purpose | Agent Using It | Why It Was Selected | Status |
-|---|---|---|---|---|
-| **`s0xdk/refactoring-ui`** | Visual hierarchy, spacing scales, contrast minimums, and strict no-decoration UI discipline. | UX/UI Designer, Design Systems Engineer, UI Reviewer | Provides battle-tested rules for the 40/30/20/10 composition, brutalist 2px contrast borders, tactile depth, and strict exclusion of emojis/decorative noise. | Newly Retrieved via `ui-skills` |
-| **`codebase-design`** | Designing deep modules with small interfaces, clean seams, and high caller leverage. | Principal Architect, Backend Architect, AWS Cloud Architect | Used to design isolated provider abstractions (`StorageProvider`, `OCRProvider`, `AIProvider`, `MessagingProvider`) and ensure no shallow pass-through layers. | Already Installed |
-| **`domain-modeling`** | Enforcing strict vocabulary and domain consistency (`Claim`, `Receipt`, `FraudSignal`, `RiskAssessment`, `AuditLog`). | Product Architect, Database Engineer | Prevents overloaded terminology between employee expense claims, duplicate image hashes, and manager clearance states. | Already Installed |
-| **`modern-web-guidance`** | Best practices for modern Next.js App Router, accessible semantic HTML, and responsive CSS tokens. | Frontend Architect, UX/UI Designer, Design Systems Engineer | Guides the tokenized palette without hardcoded hexes and mobile-first responsive chat bubbles. | Already Installed |
-| **`tdd`** | Test-driven verification for deterministic rules (perceptual hashing, GSTIN validation, and anomaly bounds). | Fraud Detection Engineer, Risk Engine Engineer, QA Engineer | Ensures 100% deterministic reproducibility for mathematical thresholds and policy caps without depending on nondeterministic LLMs. | Already Installed |
-| **`writing-for-agents`** | Structured agent contracts, handoffs, and documentation standards. | DevOps Engineer, Documentation Engineer, Final Reviewer | Ensures consistent handoffs across all 24 subagents and clean Markdown technical documentation. | Already Installed |
-| **`code-review`** | Standards and specification compliance review across all changes. | Final Architecture Reviewer, Final Product Reviewer | Used to audit adherence to the no-decoration rule, strict zero-emoji mandate, and server-side authorization checks. | Already Installed |
+This document tracks all agent skills identified, installed, or leveraged for the ClaimGuard unified build across mobile, web, backend, database, and cloud infrastructure.
 
 ---
 
-## Skill Validation & Constraints Record
+## 1. Skills Utilization Table
 
-- **`s0xdk/refactoring-ui`**:
-  - *Applicable Area*: UI styling, layout hierarchy, and contrast compliance.
-  - *Hard Constraints Enforced*: Never use color as only signal; no emojis as icons; 2px borders for brutalist structure; tactile elevation for claymorphic depth.
-- **`codebase-design`**:
-  - *Applicable Area*: `src/services/` and `src/db/`.
-  - *Limitation*: Focuses on interface design; actual runtime execution relies on TypeScript strict mode.
-- **`tdd`**:
-  - *Applicable Area*: `tests/` directory with Node test runner.
-  - *Limitation*: Validates deterministic code paths; AI explanations are validated against structural JSON schema constraints.
+| Skill Name | Purpose | Installation Method | Scope | Assigned Subagents | Reason |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`mobile-app-ui-design`** | Mobile UI/UX screen design, thumb zone layout, Flutter component patterns, 8-pt grid, 60/30/10 palette rules | Installed via `npx skills add ceorkm/mobile-app-ui-design` into `.agents/skills/` | Project / Mobile | `MOBILE UI/UX DESIGNER`, `FLUTTER ENGINEER` | Required reference for professional Flutter mobile app UX/UI design across Manager and Employee flows |
+| **`design-system`** | Enforcing typography, color palettes, spacing tokens, and component standards | Existing Global (`.agents/skills/design-system`) | Project-wide | `DESIGN SYSTEM ENGINEER`, `WEB ENGINEER`, `FLUTTER ENGINEER` | Ensures visual identity parity between Web and Mobile applications |
+| **`codebase-design`** | Deep module design, clean boundaries, decoupled providers | Existing Global (`.gemini/config/skills/codebase-design`) | Architecture | `PRODUCT ARCHITECT`, `BACKEND ARCHITECT`, `MOBILE ARCHITECT` | Guarantees provider interfaces (`DatabaseProvider`, `StorageProvider`, `OCRProvider`, etc.) remain modular |
+| **`domain-modeling`** | Data modeling, ubiquitous domain language, and entity consistency | Existing Global (`.gemini/config/skills/domain-modeling`) | Architecture / DB | `PRODUCT ARCHITECT`, `SUPABASE ENGINEER` | Aligns organization, join-code, claim, risk, and fraud domain models across Flutter, Web, and Backend |
+| **`amazon-bedrock`** | AWS Bedrock integration, Anthropic Claude prompt design for risk summaries | Existing Global (`.agents/skills/amazon-bedrock`) | Backend / Cloud | `AI ENGINEER`, `AWS INFRASTRUCTURE ENGINEER` | Direct guidance on invoking Bedrock models for manager narratives without granting AI decision authority |
+| **`aws-serverless`** | Serverless orchestration, Lambda functions, Step Functions state machines | Existing Global (`.agents/skills/aws-serverless`) | Cloud Infrastructure | `AWS ARCHITECT`, `AWS INFRASTRUCTURE ENGINEER` | Implements the Textract -> Fraud -> Risk -> Bedrock pipeline |
+| **`aws-storage`** | S3 private buckets, pre-signed upload URLs, bucket policies | Existing Global (`.agents/skills/aws-storage`) | Cloud / Security | `AWS INFRASTRUCTURE ENGINEER`, `SECURITY ENGINEER` | Enforces private receipt storage and prevents public object exposure |
+| **`aws-iam`** | Least-privilege IAM policies, ECS task execution roles, SCP/RCP compliance | Existing Global (`.agents/skills/aws-iam`) | Cloud Security | `SECURITY ENGINEER`, `AWS ARCHITECT` | Adheres to high help-level AWS project constraints |
+| **`security-audit`** | IDOR analysis, join-code brute force mitigation, session validation, RLS review | Existing Global (`.agents/skills/security-audit`) | Security | `SECURITY ENGINEER` | Guarantees multi-tenant isolation between organizations and between employees |
+| **`tdd`** | Test-driven development, unit and regression testing | Existing Global (`.gemini/config/skills/tdd`) | Testing | `BACKEND ENGINEER`, `FLUTTER TEST ENGINEER`, `QA ENGINEER` | Ensures deterministic verification logic (GSTIN, pHash, score thresholds) is covered by automated unit tests |
+| **`qa-plan`** | End-to-end verification scenario planning across mobile, web, and server | Existing Global (`.agents/skills/qa-plan`) | Verification | `QA ENGINEER`, `E2E TEST ENGINEER` | Maps and verifies the full lifecycle flow from join code to manager claim approval |
+| **`code-review`** | Standards and specification compliance verification | Existing Global (`.gemini/config/skills/code-review`) | Quality Gate | `FINAL INTEGRATION REVIEWER`, `FINAL UI REVIEWER` | Ensures zero mockups, real API communication, and compliance with all design rules |

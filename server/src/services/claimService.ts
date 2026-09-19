@@ -1,26 +1,54 @@
 import { IClaimRepository } from "../repositories/claimRepository.js";
-import { evaluateFraudSignals } from "../domain/rules.js";
-import { RiskService } from "./riskService.js";
+import { DeterministicFraudEngine } from "./fraudService.js";
+import { ConfigurableRiskEngine } from "./riskService.js";
+import { BedrockAIService } from "./aiService.js";
 import { MessagingProvider } from "../providers/messaging.js";
-import { Claim, ClaimStatus, AuditLog } from "../types/index.js";
+import { Claim, ClaimStatus, AuditLog, ExpenseCategory, Receipt } from "../types/index.js";
+import crypto from "crypto";
+
+export interface SubmitClaimInput {
+  organizationId?: string;
+  employeeId: string;
+  vendorName: string;
+  amount: number;
+  currency?: string;
+  claimDate: string;
+  category: ExpenseCategory;
+  gstin?: string;
+  receipt?: Receipt;
+  employeeNotes?: string;
+}
 
 export class ClaimService {
   private claimRepo: IClaimRepository;
-  private riskService: RiskService;
+  private fraudEngine: DeterministicFraudEngine;
+  private riskEngine: ConfigurableRiskEngine;
+  private aiService: BedrockAIService;
   private messagingProvider: MessagingProvider;
 
   constructor(
     claimRepo: IClaimRepository,
-    riskService: RiskService,
     messagingProvider: MessagingProvider
   ) {
     this.claimRepo = claimRepo;
-    this.riskService = riskService;
+    this.fraudEngine = new DeterministicFraudEngine();
+    this.riskEngine = new ConfigurableRiskEngine();
+    this.aiService = new BedrockAIService();
     this.messagingProvider = messagingProvider;
   }
 
-  async getAllClaims(): Promise<Claim[]> {
-    return this.claimRepo.getClaims();
+  async getAllClaims(filter?: { organizationId?: string; employeeId?: string; status?: ClaimStatus }): Promise<Claim[]> {
+    let claims = await this.claimRepo.getClaims();
+    if (filter?.organizationId) {
+      claims = claims.filter((c) => !c.organizationId || c.organizationId === filter.organizationId);
+    }
+    if (filter?.employeeId) {
+      claims = claims.filter((c) => c.employeeId === filter.employeeId);
+    }
+    if (filter?.status) {
+      claims = claims.filter((c) => c.status === filter.status);
+    }
+    return claims;
   }
 
   async getClaim(id: string): Promise<Claim | null> {
@@ -38,183 +66,212 @@ export class ClaimService {
     return claim;
   }
 
-  async submitClaim(input: {
-    employeeId: string;
-    vendorName: string;
-    amount: number;
-    claimDate: string;
-    category: any;
-    gstin?: string;
-    receipt?: any;
-    employeeNotes?: string;
-  }): Promise<Claim> {
-    const employee = await this.claimRepo.getEmployee(input.employeeId);
-    const historicalClaims = await this.claimRepo.getHistoricalClaimsForComparison();
+  async submitClaim(input: SubmitClaimInput): Promise<Claim> {
     const claimId = `CLM-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orgId = input.organizationId || "a0000000-0000-0000-0000-000000000001";
+    const currency = input.currency || "INR";
 
-    // 1. Run Deterministic Fraud Checks
-    const signals = evaluateFraudSignals({
+    // 1. Get historical claims for comparison
+    const rawHistory = await this.claimRepo.getHistoricalClaimsForComparison();
+    const historicalClaims = rawHistory.map((h) => ({
+      id: h.id,
+      amount: h.amount,
+      vendorName: h.vendorName,
+      imageHash: h.perceptualHash,
+      claimDate: h.claimDate,
+    }));
+
+    // 2. Run Deterministic Fraud Checks
+    const signals = this.fraudEngine.evaluate({
       claimId,
       vendorName: input.vendorName,
       amount: input.amount,
+      claimDate: input.claimDate,
+      category: input.category,
+      gstin: input.gstin,
+      imageHash: input.receipt?.imageHash,
+      historicalClaims,
+    });
+
+    // 3. Run Configurable Risk Scoring
+    const ocrConf = input.receipt?.ocrConfidence?.total || 0.95;
+    const riskAssessment = this.riskEngine.calculateRisk({
+      claimId,
+      signals,
+      ocrConfidence: ocrConf,
+      amount: input.amount,
+    });
+
+    // 4. Generate AI Explanation (AWS Bedrock Claude 3.5 Sonnet)
+    const aiNarrative = await this.aiService.generateManagerExplanation({
+      claimId,
+      vendorName: input.vendorName,
+      amount: input.amount,
+      currency,
       category: input.category,
       claimDate: input.claimDate,
       gstin: input.gstin,
-      perceptualHash: input.receipt?.perceptualHash,
-      historicalClaims,
-      employeeHistoricalAvg: employee?.historicalClaimAvg,
-    });
-
-    // 2. Run Deterministic Risk Calculation
-    const riskAssessment = await this.riskService.calculateRisk(
-      claimId,
+      authenticityState: riskAssessment.authenticityState,
+      score: riskAssessment.score,
       signals,
-      {
-        amount: input.amount,
-        vendorName: input.vendorName,
-        category: input.category,
-        claimDate: input.claimDate,
-      }
-    );
+    });
+    riskAssessment.aiNarrative = aiNarrative;
 
-    // Initial status:
-    // If low risk (score < 30) -> PENDING or AUTO-APPROVED if policy dictates.
-    // In ClaimGuard ("AI Assists, Humans Decide"), medium, high, and critical require manager review.
+    // 5. Derive Initial Status
     let status: ClaimStatus = "PENDING";
-    if (riskAssessment.level === "CRITICAL" || riskAssessment.level === "HIGH") {
-      status = "REVIEW_REQUIRED";
-    } else if (riskAssessment.level === "MEDIUM") {
+    if (riskAssessment.authenticityState === "SUSPICIOUS" || riskAssessment.level === "CRITICAL") {
       status = "REVIEW_REQUIRED";
     }
 
-    const auditLogs: AuditLog[] = [
-      {
-        id: `aud_${Date.now()}_1`,
-        claimId,
-        actorType: "EMPLOYEE",
-        actorId: input.employeeId,
-        action: "CLAIM_SUBMITTED",
-        details: { amount: input.amount, vendor: input.vendorName },
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: `aud_${Date.now()}_2`,
-        claimId,
-        actorType: "SYSTEM_FRAUD_ENGINE",
-        action: "RISK_EVALUATED",
-        details: { score: riskAssessment.score, level: riskAssessment.level, flags: signals.length },
-        createdAt: new Date().toISOString(),
-      },
-    ];
+    const employee = await this.claimRepo.getEmployee(input.employeeId);
 
     const claim: Claim = {
       id: claimId,
+      organizationId: orgId,
       employeeId: input.employeeId,
-      companyId: employee?.companyId || "comp_apex_01",
+      employeeName: employee?.name || "Employee",
       vendorName: input.vendorName,
       amount: input.amount,
-      currency: "INR",
+      currency,
       claimDate: input.claimDate,
       category: input.category,
       gstin: input.gstin,
       status,
       employeeNotes: input.employeeNotes,
-      receipt: input.receipt ? {
-        id: `rcpt_${claimId}`,
-        claimId,
-        fileName: input.receipt.fileName || "receipt.jpg",
-        fileUrl: input.receipt.fileUrl || "/receipts/demo_indian_oil.jpg",
-        fileSizeBytes: input.receipt.fileSizeBytes || 250000,
-        mimeType: input.receipt.mimeType || "image/jpeg",
-        storageKey: input.receipt.storageKey || "receipts/demo.jpg",
-        perceptualHash: input.receipt.perceptualHash,
-        rawOcrText: input.receipt.rawOcrText,
-        createdAt: new Date().toISOString(),
-      } : undefined,
+      receipt: input.receipt,
       riskAssessment,
-      auditLogs,
-      employee: employee || undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
     await this.claimRepo.createClaim(claim);
 
-    // Notify employee of submission state
-    await this.messagingProvider.sendMessage({
-      recipientId: input.employeeId,
-      text: `Claim ${claimId} submitted for ₹${input.amount.toLocaleString()}. Current status: ${status}.`,
+    // 6. Record Audit Log
+    await this.claimRepo.addAuditLog(claimId, {
+      id: crypto.randomUUID(),
+      claimId,
+      organizationId: orgId,
+      actorType: "EMPLOYEE",
+      actorId: input.employeeId,
+      actorName: employee?.name,
+      action: "CLAIM_SUBMITTED",
+      details: {
+        amount: input.amount,
+        vendor: input.vendorName,
+        authenticityState: riskAssessment.authenticityState,
+        riskScore: riskAssessment.score,
+      },
+      createdAt: new Date().toISOString(),
+    });
+
+    // 7. Emit Notification
+    try {
+      await this.messagingProvider.sendNotification({
+        to: input.employeeId,
+        channel: "webview",
+        template: "claim_submitted",
+        variables: {
+          claimId,
+          amount: `${currency} ${input.amount}`,
+          vendor: input.vendorName,
+        },
+      });
+    } catch (e) {
+      console.warn("Notification dispatch skipped:", e);
+    }
+
+    return claim;
+  }
+
+  async confirmClaim(id: string, confirmedData: Partial<Claim>): Promise<Claim | null> {
+    const claim = await this.claimRepo.getClaimById(id);
+    if (!claim) return null;
+
+    if (confirmedData.vendorName) claim.vendorName = confirmedData.vendorName;
+    if (confirmedData.amount) claim.amount = confirmedData.amount;
+    if (confirmedData.category) claim.category = confirmedData.category;
+    if (confirmedData.claimDate) claim.claimDate = confirmedData.claimDate;
+    if (confirmedData.gstin) claim.gstin = confirmedData.gstin;
+
+    claim.status = "PENDING";
+    claim.updatedAt = new Date().toISOString();
+
+    await this.claimRepo.addAuditLog(id, {
+      id: crypto.randomUUID(),
+      claimId: id,
+      organizationId: claim.organizationId,
+      actorType: "EMPLOYEE",
+      actorId: claim.employeeId,
+      action: "CLAIM_CONFIRMED_BY_EMPLOYEE",
+      details: confirmedData,
+      createdAt: new Date().toISOString(),
     });
 
     return claim;
   }
 
-  async approveClaim(claimId: string, managerId: string, notes: string): Promise<Claim | null> {
-    const updated = await this.claimRepo.updateClaimStatus(claimId, "APPROVED", notes);
+  async approveClaim(id: string, managerId: string, notes?: string): Promise<Claim | null> {
+    const updated = await this.claimRepo.updateClaimStatus(id, "APPROVED", notes);
     if (!updated) return null;
 
-    const auditLog: AuditLog = {
-      id: `aud_${Date.now()}`,
-      claimId,
+    await this.claimRepo.addAuditLog(id, {
+      id: crypto.randomUUID(),
+      claimId: id,
+      organizationId: updated.organizationId,
       actorType: "MANAGER",
       actorId: managerId,
       action: "CLAIM_APPROVED",
-      details: { notes, timestamp: new Date().toISOString() },
+      details: { notes: notes || "Approved" },
       createdAt: new Date().toISOString(),
-    };
-    await this.claimRepo.addAuditLog(claimId, auditLog);
-
-    await this.messagingProvider.sendMessage({
-      recipientId: updated.employeeId,
-      text: `Your claim ${claimId} (₹${updated.amount.toLocaleString()}) has been APPROVED by your manager.`,
     });
 
     return updated;
   }
 
-  async rejectClaim(claimId: string, managerId: string, notes: string): Promise<Claim | null> {
-    const updated = await this.claimRepo.updateClaimStatus(claimId, "REJECTED", notes);
+  async rejectClaim(id: string, managerId: string, reason: string): Promise<Claim | null> {
+    if (!reason || reason.trim() === "") {
+      throw new Error("Rejection reason is mandatory");
+    }
+
+    const updated = await this.claimRepo.updateClaimStatus(id, "REJECTED", reason);
     if (!updated) return null;
 
-    const auditLog: AuditLog = {
-      id: `aud_${Date.now()}`,
-      claimId,
+    updated.rejectionReason = reason;
+
+    await this.claimRepo.addAuditLog(id, {
+      id: crypto.randomUUID(),
+      claimId: id,
+      organizationId: updated.organizationId,
       actorType: "MANAGER",
       actorId: managerId,
       action: "CLAIM_REJECTED",
-      details: { notes, timestamp: new Date().toISOString() },
+      details: { reason },
       createdAt: new Date().toISOString(),
-    };
-    await this.claimRepo.addAuditLog(claimId, auditLog);
-
-    await this.messagingProvider.sendMessage({
-      recipientId: updated.employeeId,
-      text: `Notice: Your claim ${claimId} (₹${updated.amount.toLocaleString()}) was REJECTED: ${notes}`,
     });
 
     return updated;
   }
 
-  async requestClarification(claimId: string, managerId: string, question: string): Promise<Claim | null> {
-    const updated = await this.claimRepo.updateClaimStatus(claimId, "ACTION_REQUIRED", question);
+  async requestClarification(id: string, managerId: string, message: string): Promise<Claim | null> {
+    const updated = await this.claimRepo.updateClaimStatus(id, "CLARIFICATION_REQUESTED", message);
     if (!updated) return null;
 
-    const auditLog: AuditLog = {
-      id: `aud_${Date.now()}`,
-      claimId,
+    await this.claimRepo.addAuditLog(id, {
+      id: crypto.randomUUID(),
+      claimId: id,
+      organizationId: updated.organizationId,
       actorType: "MANAGER",
       actorId: managerId,
       action: "CLARIFICATION_REQUESTED",
-      details: { question },
+      details: { message },
       createdAt: new Date().toISOString(),
-    };
-    await this.claimRepo.addAuditLog(claimId, auditLog);
-
-    await this.messagingProvider.sendMessage({
-      recipientId: updated.employeeId,
-      text: `Manager inquiry for claim ${claimId}: "${question}". Please submit clarification.`,
     });
 
     return updated;
+  }
+
+  async getAuditHistory(id: string): Promise<AuditLog[]> {
+    const claim = await this.claimRepo.getClaimById(id);
+    return (claim as any)?.auditLogs || [];
   }
 }

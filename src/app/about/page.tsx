@@ -153,7 +153,7 @@ export default function AboutPage() {
         <section className="mt-16 rounded-2xl bg-slate-900 text-white p-8 text-center shadow-lg">
           <h2 className="text-2xl font-extrabold">AI assists. Humans decide.</h2>
           <p className="mt-3 text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            ClaimGuard never auto-rejects an employee's expense claim. The AI
+            ClaimGuard never auto-rejects an employee&apos;s expense claim. The AI
             surfaces signals and explains them. The manager makes the call.
           </p>
         </section>
@@ -189,7 +189,7 @@ export default function AboutPage() {
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-900">Who it's for</h2>
+            <h2 className="text-2xl font-extrabold text-slate-900">Who it&apos;s for</h2>
             <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
               Indian companies with roughly 50 to 300 field agents in logistics
               and freight, FMCG field sales, or pharmaceutical representation.

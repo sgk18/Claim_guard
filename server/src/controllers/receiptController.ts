@@ -98,4 +98,30 @@ export class ReceiptController {
       });
     }
   }
+
+  async analyze(req: FastifyRequest, reply: FastifyReply) {
+    try {
+      const body = (req.body || {}) as any;
+      const fakeBuffer = Buffer.from(body.imageBytes || "mock_receipt_data");
+      const filename = body.fileName || "receipt_analysis.jpg";
+      const ocrRes = await this.ocr.extractReceipt(fakeBuffer, filename);
+
+      return reply.code(200).send({
+        success: true,
+        data: {
+          receipt: {
+            fileName: filename,
+            perceptualHash: ocrRes.perceptualHash,
+            rawOcrText: ocrRes.rawText,
+          },
+          extracted: ocrRes.extracted,
+        },
+      });
+    } catch (err: any) {
+      return reply.code(500).send({
+        success: false,
+        error: { code: "ANALYSIS_FAILED", message: err.message || "Failed to analyze receipt" },
+      });
+    }
+  }
 }

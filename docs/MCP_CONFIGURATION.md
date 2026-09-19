@@ -1,51 +1,26 @@
-# ClaimGuard — MCP Configuration Specification
+# ClaimGuard — Model Context Protocol (MCP) Configuration
 
-**Status**: Active / Production Blueprint  
-**Standard**: Model Context Protocol (MCP) Integration for Development & Operations  
-**Security Boundary**: Development infrastructure only. Production runtime does NOT depend on MCP.
+This document specifies the Model Context Protocol (MCP) server integration strategy for the ClaimGuard platform development lifecycle.
 
 ---
 
-## 1. Overview
+## 1. Principles & Boundaries
 
-The Model Context Protocol (MCP) provides standardized context and tool execution interfaces during engineering, database inspection, design reconciliation, and automated testing phases.
-
-ClaimGuard defines clear boundaries:
-- **Development & CI**: MCP tools may be invoked to inspect schemas, query cloud metrics, or automate headless browser tests.
-- **Production Runtime**: The ClaimGuard Fastify backend and Next.js frontend depend strictly on compiled application code, standard AWS SDKs, and Supabase client libraries.
+1. **Development Assistance Only**: MCP tools are strictly developer/orchestrator tooling used during coding, database management, testing, and cloud inspection.
+2. **Zero Client Dependency**: The production Flutter mobile application, Next.js web application, and standalone Fastify backend do **not** depend on MCP runtime.
+3. **Least Privilege**: All MCP servers operate with scoped access matching the environment security boundaries.
 
 ---
 
-## 2. Configured & Recommended MCP Servers
+## 2. Server Matrix
 
-### A. Supabase Database MCP (`@modelcontextprotocol/server-postgres` / `supabase-mcp`)
-- **Purpose**: Schema migration verification, index performance evaluation, RLS policy validation.
-- **Tools**:
-  - `query_schema`: Inspect tables (`claims`, `receipts`, `fraud_signals`, `risk_assessments`, `audit_logs`).
-  - `explain_query`: Validate execution plans on foreign key lookups and JSONB queries.
-  - `validate_rls`: Confirm that non-admin database roles cannot select claims across different tenant companies.
-- **Security Rule**: Uses isolated read-only or development database connection strings. Service-role master keys are never stored in client-accessible MCP configs.
-
-### B. AWS Cloud MCP (`aws-mcp`)
-- **Purpose**: CloudWatch metric monitoring, S3 signed URL lifecycle inspection, Step Functions execution status tracing.
-- **Tools**:
-  - `get_step_functions_execution`: Trace receipt processing state machine transitions.
-  - `inspect_s3_bucket_policy`: Verify bucket encryption (AES-256) and public access blocks.
-  - `get_cloudwatch_alarms`: Audit error rates and Lambda cold-start latency.
-- **Security Rule**: Operates under an IAM Development Role with strict read-only access to staging resources.
-
-### C. Playwright Testing MCP (`playwright-mcp`)
-- **Purpose**: End-to-end browser automation, regression testing, and mobile responsiveness validation.
-- **Tools**:
-  - `navigate`: Open employee WebView (`/employee`) and manager dashboard (`/manager`).
-  - `screenshot`: Capture visual regression artifacts.
-  - `interact`: Emulate receipt file upload, form submission, and manager approval clicks.
-
-### D. GitHub MCP (`github-mcp`)
-- **Purpose**: Issue tracking, PR reviews, CI workflow triggers.
-- **Tools**:
-  - `inspect_workflow_runs`: Verify GitHub Actions status.
-  - `manage_releases`: Tag semantic version releases.
+| Server | Role / Purpose | Type | Integration Target |
+| :--- | :--- | :--- | :--- |
+| **AWS MCP** | Query AWS resources (S3 buckets, Step Functions, CloudWatch logs, ECS services) during cloud orchestration | Cloud Dev | AWS selected region infrastructure |
+| **Supabase MCP** | Inspect PostgreSQL schemas, run database migrations, verify RLS policies, inspect seed data | Database Dev | Supabase PostgreSQL project |
+| **Playwright MCP** | Automate browser-based E2E scenarios for Web `/employee` and `/manager` workflows | Testing | Local Next.js dev server (`http://localhost:3000`) |
+| **GitHub MCP** | Manage CI/CD workflows, pull requests, issue tracking, and repository releases | DevOps | Repository `sgk18/Claim_guard` |
+| **Blender MCP** | 3D / visual asset generation (available locally in user environment) | Assets | Optional marketing/diagram asset generation |
 
 ---
 
@@ -56,21 +31,22 @@ ClaimGuard defines clear boundaries:
   "mcpServers": {
     "supabase": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "postgresql://postgres:[DEV_PASSWORD]@db.[REF].supabase.co:5432/postgres"
-      ],
+      "args": ["-y", "@supabase/mcp-server"],
       "env": {
-        "DEBUG": "false"
+        "SUPABASE_URL": "https://your-project.supabase.co",
+        "SUPABASE_SERVICE_KEY": "env:SUPABASE_SERVICE_ROLE_KEY"
+      }
+    },
+    "aws": {
+      "command": "npx",
+      "args": ["-y", "@aws/mcp-server"],
+      "env": {
+        "AWS_REGION": "selected-region"
       }
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@executeautomation/playwright-mcp-server"],
-      "env": {
-        "HEADLESS": "true"
-      }
+      "args": ["-y", "@executeautomation/playwright-mcp-server"]
     }
   }
 }
@@ -78,8 +54,7 @@ ClaimGuard defines clear boundaries:
 
 ---
 
-## 4. Least-Privilege & Secret Protection Rules
+## 4. Operational Guardrails
 
-1. **Zero Secret Leakage**: No AWS access keys, Supabase service-role keys, or Bedrock tokens are committed into MCP configuration files or logs.
-2. **Read-Only Scope**: Development MCP tools operate with read-only scopes on production databases.
-3. **Audit Trail**: Every automated schema or environment inspection is logged in the project audit notes.
+- Never embed MCP credentials or keys into Flutter `pubspec.yaml`, Android build configurations, or client web source code.
+- Fastify server communicates with Supabase through standard PostgreSQL connections (`pg` / `@supabase/supabase-js`) and with AWS via the official AWS SDK v3 (`@aws-sdk/client-s3`, `@aws-sdk/client-textract`, `@aws-sdk/client-bedrock-runtime`).

@@ -1,34 +1,87 @@
 export type ClaimStatus =
+  | "DRAFT"
   | "PENDING"
   | "PROCESSING"
   | "ACTION_REQUIRED"
   | "REVIEW_REQUIRED"
   | "APPROVED"
   | "REJECTED"
+  | "CLARIFICATION_REQUESTED"
   | "FAILED";
 
 export type RiskLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 
-export type ExpenseCategory = "fuel" | "food" | "travel" | "lodging" | "misc";
+export type AuthenticityState =
+  | "VERIFIED"
+  | "LIKELY VALID"
+  | "REVIEW REQUIRED"
+  | "SUSPICIOUS"
+  | "UNABLE TO VERIFY";
 
-export interface Employee {
+export type ExpenseCategory = "MEALS" | "FUEL" | "HOTEL" | "TRAVEL" | "MISC";
+
+export type Role = "MANAGER" | "EMPLOYEE" | "ADMIN";
+
+export interface Organization {
   id: string;
   name: string;
-  email: string;
-  phone?: string;
-  role: string;
-  department: string;
-  companyId: string;
-  historicalClaimCount: number;
-  historicalClaimAvg: number;
+  slug: string;
+  currency: string;
+  gstin?: string;
+  activeJoinCode?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface Manager {
+export interface Profile {
   id: string;
-  name: string;
-  email: string;
-  role: string;
-  companyId: string;
+  fullName: string;
+  email?: string;
+  phone?: string;
+  avatarUrl?: string;
+  createdAt: string;
+}
+
+export interface OrganizationMember {
+  id: string;
+  organizationId: string;
+  userId: string;
+  role: Role;
+  department: string;
+  status: "ACTIVE" | "SUSPENDED" | "REMOVED";
+  profile?: Profile;
+  joinedAt: string;
+}
+
+export interface JoinCode {
+  id: string;
+  organizationId: string;
+  code: string; // e.g. CG-7K4P9X
+  status: "ACTIVE" | "REVOKED" | "EXPIRED";
+  maxUses: number;
+  timesUsed: number;
+  expiresAt: string;
+  createdBy?: string;
+  createdAt: string;
+}
+
+export interface Session {
+  id: string;
+  token: string;
+  userId: string;
+  organizationId: string;
+  role: Role;
+  profile: Profile;
+  organization: Organization;
+  expiresAt: string;
+  createdAt: string;
+}
+
+export interface ReceiptLineItem {
+  item: string;
+  quantity?: number;
+  rate?: number;
+  amount: number;
 }
 
 export interface Receipt {
@@ -39,9 +92,24 @@ export interface Receipt {
   fileSizeBytes: number;
   mimeType: string;
   storageKey: string;
-  perceptualHash?: string;
+  imageHash?: string;
   rawOcrText?: string;
+  ocrConfidence?: Record<string, number>;
+  lineItems?: ReceiptLineItem[];
   createdAt: string;
+}
+
+export interface ExtractedReceiptData {
+  vendorName: string;
+  amount: number;
+  currency: string;
+  date: string;
+  category: ExpenseCategory;
+  gstin?: string;
+  lineItems: ReceiptLineItem[];
+  ocrConfidence: number; // 0.0 - 1.0
+  inconsistencies: string[];
+  rawText?: string;
 }
 
 export interface FraudSignal {
@@ -60,6 +128,7 @@ export interface FraudSignal {
   scoreImpact: number;
   description: string;
   matchedClaimId?: string;
+  metadata?: Record<string, any>;
   createdAt: string;
 }
 
@@ -68,8 +137,10 @@ export interface RiskAssessment {
   claimId: string;
   score: number; // 0–100
   level: RiskLevel;
+  authenticityState: AuthenticityState;
+  recommendedAction: "APPROVE" | "REJECT" | "REVIEW" | "CLARIFICATION";
   summary: string;
-  recommendedAction: "APPROVE_RECOMMENDED" | "REJECT_RECOMMENDED" | "REVIEW_RECOMMENDED";
+  aiNarrative?: string;
   signals: FraudSignal[];
   rulesTriggered: string[];
   createdAt: string;
@@ -77,9 +148,11 @@ export interface RiskAssessment {
 
 export interface AuditLog {
   id: string;
-  claimId: string;
-  actorType: "EMPLOYEE" | "MANAGER" | "SYSTEM_OCR" | "SYSTEM_FRAUD_ENGINE" | "SYSTEM_AI";
-  actorId?: string;
+  organizationId: string;
+  claimId?: string;
+  actorType: "EMPLOYEE" | "MANAGER" | "SYSTEM";
+  actorId: string;
+  actorName?: string;
   action: string;
   details?: Record<string, any>;
   createdAt: string;
@@ -87,8 +160,9 @@ export interface AuditLog {
 
 export interface Claim {
   id: string;
+  organizationId: string;
   employeeId: string;
-  companyId: string;
+  employeeName?: string;
   vendorName: string;
   amount: number;
   currency: string;
@@ -98,27 +172,9 @@ export interface Claim {
   status: ClaimStatus;
   managerNotes?: string;
   employeeNotes?: string;
+  rejectionReason?: string;
   receipt?: Receipt;
   riskAssessment?: RiskAssessment;
-  auditLogs?: AuditLog[];
-  employee?: Employee;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface ExtractedReceiptData {
-  vendorName: string;
-  amount: number;
-  currency: string;
-  date: string;
-  category: ExpenseCategory;
-  gstin?: string;
-  lineItems?: Array<{ description: string; amount: number }>;
-  confidence: {
-    vendor: number;
-    amount: number;
-    date: number;
-    overall: number;
-  };
-  needsReview: boolean;
 }

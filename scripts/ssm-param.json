@@ -1,0 +1,5 @@
+{
+  "commands": [
+    "tail -n 25 /var/log/claimguard-init.log"
+  ]
+}

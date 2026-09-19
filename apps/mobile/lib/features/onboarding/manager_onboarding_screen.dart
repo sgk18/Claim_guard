@@ -101,9 +101,9 @@ class _ManagerOnboardingScreenState extends State<ManagerOnboardingScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Text(
+                const Text(
                   'Your organization profile has been provisioned. Share this code with field staff to authorize device onboarding.',
-                  style: const TextStyle(fontSize: 13, height: 1.4, color: ClaimGuardTheme.slateMuted),
+                  style: TextStyle(fontSize: 13, height: 1.4, color: ClaimGuardTheme.slateMuted),
                 ),
                 const SizedBox(height: 28),
 

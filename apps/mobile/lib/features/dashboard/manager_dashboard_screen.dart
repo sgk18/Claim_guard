@@ -148,7 +148,7 @@ class ManagerDashboardScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(
+                  const Expanded(
                     child: _KpiCard(
                       label: 'FIELD STAFF',
                       value: '12 Active',

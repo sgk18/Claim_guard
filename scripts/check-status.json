@@ -1,7 +1,0 @@
-{
-  "commands": [
-    "systemctl is-active nginx claimguard-server claimguard-web || true",
-    "journalctl -u claimguard-server -n 15 --no-pager || true",
-    "journalctl -u claimguard-web -n 15 --no-pager || true"
-  ]
-}

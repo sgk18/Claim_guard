@@ -61,7 +61,7 @@ class ClaimGuardTheme {
           letterSpacing: -0.2,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surfaceWhite,
         elevation: 1,
         shadowColor: slateDark.withAlpha(15),

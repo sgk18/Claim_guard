@@ -14,7 +14,7 @@ export const config: AppConfig = {
   port: parseInt(process.env.PORT || "3001", 10),
   host: process.env.HOST || "0.0.0.0",
   mockMode: process.env.CLAIMGUARD_MOCK_MODE !== "false", // default true for dev
-  awsRegion: process.env.AWS_REGION || "ap-south-1",
+  awsRegion: process.env.AWS_REGION || "ap-southeast-2",
   s3Bucket: process.env.AWS_S3_BUCKET || "claimguard-receipts-prod",
   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || "https://mock.supabase.co",
   supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "mock-anon-key",

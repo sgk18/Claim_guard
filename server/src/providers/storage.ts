@@ -30,7 +30,7 @@ export class S3StorageProvider implements StorageProvider {
   private bucket: string;
   private region: string;
 
-  constructor(bucket: string, region: string = "ap-south-1") {
+  constructor(bucket: string, region: string = "ap-southeast-2") {
     this.bucket = bucket;
     this.region = region;
   }

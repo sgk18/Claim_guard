@@ -47,7 +47,7 @@ services:
       - NODE_ENV=production
       - PORT=3001
       - HOST=0.0.0.0
-      - AWS_REGION=${AWS_REGION:-ap-south-1}
+      - AWS_REGION=${AWS_REGION:-ap-southeast-2}
       - AWS_S3_BUCKET=${AWS_S3_BUCKET}
       - CLAIMGUARD_MOCK_MODE=${CLAIMGUARD_MOCK_MODE:-false}
       - SUPABASE_URL=${SUPABASE_URL}

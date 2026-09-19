@@ -23,7 +23,7 @@ provider "aws" {
 
 variable "aws_region" {
   type    = string
-  default = "ap-south-1" # Mumbai, India
+  default = "ap-southeast-2" # Selected Project Region
 }
 
 variable "environment" {

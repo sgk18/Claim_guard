@@ -20,6 +20,9 @@ export default function HomePage() {
           </div>
         </div>
         <div className="flex items-center gap-3 text-xs">
+          <Link href="/about" className="font-semibold text-slate-700 hover:text-brand-orange transition-colors">
+            About
+          </Link>
           <span className="hidden sm:inline bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-1 rounded-md font-medium">
             India-First Expense Architecture
           </span>

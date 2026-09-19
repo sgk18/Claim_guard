@@ -195,6 +195,7 @@ export class ClaimService {
 
     claim.status = "PENDING";
     claim.updatedAt = new Date().toISOString();
+    await this.claimRepo.saveClaim(claim);
 
     await this.claimRepo.addAuditLog(id, {
       id: crypto.randomUUID(),

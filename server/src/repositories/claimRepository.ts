@@ -4,6 +4,8 @@ export interface IClaimRepository {
   getClaims(): Promise<Claim[]>;
   getClaimById(id: string): Promise<Claim | null>;
   createClaim(claim: Claim): Promise<Claim>;
+  /** Persist edits made to an already-loaded claim (vendor, amount, notes, status...). */
+  saveClaim(claim: Claim): Promise<void>;
   updateClaimStatus(id: string, status: ClaimStatus, managerNotes?: string): Promise<Claim | null>;
   getEmployee(id: string): Promise<Employee | null>;
   getEmployeeClaims(employeeId: string): Promise<Claim[]>;
@@ -231,6 +233,10 @@ export class InMemoryClaimRepository implements IClaimRepository {
   async createClaim(claim: Claim): Promise<Claim> {
     this.claims.set(claim.id, claim);
     return claim;
+  }
+
+  async saveClaim(claim: Claim): Promise<void> {
+    this.claims.set(claim.id, claim);
   }
 
   async updateClaimStatus(id: string, status: ClaimStatus, managerNotes?: string): Promise<Claim | null> {

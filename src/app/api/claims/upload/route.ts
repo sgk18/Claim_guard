@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const storedFile = await storageProvider.uploadReceipt(buffer, file.name, file.type);
 
     // 2. Run OCR extraction
-    const extractedData = await getOCRProvider().processReceipt(buffer, file.name);
+    const extractedData = await getOCRProvider().processReceipt(buffer, file.name, storedFile.mimeType);
 
     // 3. Save draft in database
     const draftId = `drf_${crypto.randomUUID().substring(0, 8)}`;

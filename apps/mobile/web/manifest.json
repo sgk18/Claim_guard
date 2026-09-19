@@ -1,0 +1,11 @@
+{
+  "name": "ClaimGuard Mobile",
+  "short_name": "ClaimGuard",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#F97316",
+  "description": "ClaimGuard Real-Time Expense Verification & Fraud Prevention Mobile App",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}

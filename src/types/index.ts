@@ -26,8 +26,19 @@ export type SignalSeverity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
 export interface Company {
   id: string;
   name: string;
+  code?: string;
   gstin?: string;
   currency: string;
+  createdAt: string;
+}
+
+export interface Manager {
+  id: string;
+  companyId: string;
+  name: string;
+  email: string;
+  role: string;
+  department: string;
   createdAt: string;
 }
 

@@ -1,9 +1,30 @@
 import { OCRProvider } from "./index";
 import { ExtractedReceiptData } from "@/types";
+import { TesseractOCRService } from "./tesseractEngine";
 
 export class MockOCRProvider implements OCRProvider {
+  private tesseractService = new TesseractOCRService();
+
   async processReceipt(imageBuffer: Buffer, fileName: string): Promise<ExtractedReceiptData> {
-    const lowerName = fileName.toLowerCase();
+    const lowerName = (fileName || "").toLowerCase();
+
+    // If a real image was uploaded and is not an explicit simulated blur test, attempt real optical OCR first
+    if (
+      imageBuffer &&
+      imageBuffer.length > 500 &&
+      !lowerName.includes("blur") &&
+      !lowerName.includes("unclear") &&
+      !lowerName.includes("damaged")
+    ) {
+      try {
+        const realExtraction = await this.tesseractService.processReceipt(imageBuffer, fileName);
+        if (realExtraction.amount > 0 || realExtraction.vendorName !== "Merchant Receipt") {
+          return realExtraction;
+        }
+      } catch (err) {
+        console.warn(`[MockOCRProvider] Optical reading fallback to presets:`, err);
+      }
+    }
 
     // Scenario 6: Low OCR Confidence / Blurry test
     if (lowerName.includes("blur") || lowerName.includes("unclear") || lowerName.includes("damaged")) {

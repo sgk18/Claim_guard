@@ -6,31 +6,45 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test-and-build:
+  quality-and-verification:
+    name: Test, Build & Container Verification
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js Runtime (v22)
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: "npm"
 
-      # 1. Root & Frontend Quality Checks
+      # 1. Root & Web Frontend Quality Suite
       - name: Install Root Dependencies
         run: npm ci
 
-      - name: Run Deterministic Engine Tests
-        run: node tests/claimguard.test.mjs
+      - name: Run Frontend Lint
+        run: npm run lint
 
-      - name: Build Next.js Production Frontend
+      - name: Validate TypeScript Compilation (Frontend)
+        run: npx tsc --noEmit
+
+      - name: Execute Full Test Suite (Deterministic Engine, API & CSAD QA)
+        run: npm test
+
+      - name: Build Next.js Production Application
         run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          NODE_ENV: production
 
-      # 2. Standalone Server Quality Checks
+      # 2. Standalone Fastify Server Quality Suite
       - name: Install Server Dependencies
         run: npm --prefix server ci
 
@@ -40,11 +54,11 @@ jobs:
       - name: Run Standalone Server Integration Tests
         run: npm --prefix server test
 
-      # 3. Container Verification
+      # 3. Production Container Verification
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker Container Image
+      - name: Build Server Container Image (Verification)
         uses: docker/build-push-action@v5
         with:
           context: ./server

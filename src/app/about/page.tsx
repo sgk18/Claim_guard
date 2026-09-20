@@ -1,3 +1,16 @@
+/**
+ * ClaimGuard About Page
+ * 
+ * Clean-Code UI Compliance:
+ * - Enterprise neutral canvas (#F8FAFC / bg-slate-50) replacing pure white backgrounds.
+ * - Zero radial orbs, ambient mesh gradients, or decorative patterns.
+ * - Crisp opaque surfaces with standard 1px border strokes (border-slate-200/300) without backdrop-blur filters.
+ * - Strict elimination of heavy drop shadows (shadow-lg / shadow-xl).
+ * - Standardized engineering radii (rounded-md / rounded-lg) replacing bubbly soft curves.
+ * - Structured grid architecture without fake testimonials, bento grids, emojis, or three-card clichés.
+ * - Restrained, professional typography and semantic color hierarchy.
+ */
+
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -17,131 +30,121 @@ import {
 export const metadata = {
   title: "About | ClaimGuard",
   description:
-    "ClaimGuard is a pre-payment verification layer for expense claims from India's field workforces.",
+    "ClaimGuard is a deterministic pre-payment verification layer for expense claims from India's field workforces.",
 };
 
 const steps = [
   {
     icon: Smartphone,
-    title: "Send a receipt",
-    text: "Field staff photograph a fuel, toll, travel or per-diem bill and send it on WhatsApp, with an optional caption or voice note. No new app to install.",
+    title: "Receipt Ingestion",
+    text: "Field workforce captures a fuel, toll, lodging, or meal receipt via mobile web view or direct upload. Zero mandatory native app installations.",
   },
   {
     icon: ScanLine,
-    title: "Extract and screen",
-    text: "Vendor, amount, date, GSTIN and category are read from the image, then checked against duplicates, policy limits, the employee's trip and GST rules.",
+    title: "Deterministic OCR & Signal Extraction",
+    text: "Vendor metadata, total amount, transaction date, category, and GSTIN are parsed and checked against duplicate bill hashes and company policy rules.",
   },
   {
     icon: Gauge,
-    title: "Explainable risk score",
-    text: "The manager gets a claim card with a risk score and the specific reasons behind it, not a black-box number.",
+    title: "Explainable Risk Scoring",
+    text: "The finance manager receives an auditable risk evaluation explaining exact policy breaches and anomaly signals, not a black-box percentage.",
   },
   {
     icon: BadgeCheck,
-    title: "Approve or reject",
-    text: "One reply decides the claim. Approved claims are queued for payout, written to an immutable audit record and flagged for GST Input Tax Credit recovery where eligible.",
+    title: "Manager Decision & Audit Trail",
+    text: "Every approve or reject action requires authorized manager identity attribution and is logged to an append-only immutable audit trail.",
   },
 ];
 
 const differentiators = [
   {
     icon: FileText,
-    title: "GSTIN validation",
-    text: "State-code and checksum validation of the GSTIN printed on each bill.",
+    title: "GSTIN Modulo-36 Validation",
+    text: "State-code verification and checksum computation for every printed merchant GSTIN.",
   },
   {
     icon: Receipt,
-    title: "GST ITC recovery",
-    text: "Eligible input tax credit is identified per claim and staged for filing.",
+    title: "GST ITC Staging",
+    text: "Eligible Input Tax Credit is systematically staged per verified claim for finance reconciliation.",
   },
   {
     icon: BookOpen,
-    title: "Tally and Zoho Books",
-    text: "Reconciliation exports built for the accounting stack Indian finance teams already use.",
+    title: "ERP & Accounting Integration",
+    text: "Structured reconciliation data ready for standard corporate Indian accounting software.",
   },
   {
     icon: MapPin,
-    title: "Route cross-checking",
-    text: "Claims are compared against trip manifests so a fuel bill has to match the journey.",
+    title: "Perceptual Duplicate Detection",
+    text: "Bitwise Hamming distance perceptual hashing flags re-photographed and cropped bill copies.",
   },
 ];
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen ambient-mesh-bg text-slate-900 flex flex-col selection:bg-orange-100 selection:text-orange-900">
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-orange-100 selection:text-orange-900">
+      {/* Header */}
+      <header className="border-b border-slate-200 bg-slate-50 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
-            <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
+          <div className="w-9 h-9 rounded-md bg-orange-600 text-white flex items-center justify-center border border-orange-700">
+            <ShieldCheck className="w-5 h-5 stroke-[2.2]" />
           </div>
-          <span className="font-extrabold text-xl tracking-tight text-slate-900">
-            Claim<span className="text-brand-orange">Guard</span>
+          <span className="font-bold text-lg tracking-tight text-slate-900">
+            Claim<span className="text-orange-600">Guard</span>
           </span>
         </Link>
         <Link
           href="/"
-          className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-brand-orange transition-colors"
+          className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors px-2.5 py-1.5 rounded-md border border-slate-200 hover:border-slate-300"
         >
-          <ArrowLeft className="w-4 h-4" /> Back home
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Console
         </Link>
       </header>
 
-      <div className="max-w-5xl mx-auto px-6 py-12 lg:py-20 w-full flex-1">
+      <div className="max-w-4xl mx-auto px-6 py-12 lg:py-16 w-full flex-1">
         {/* Intro */}
         <section className="text-center">
-          <span className="inline-block px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-orange-800 text-xs font-semibold shadow-sm">
-            About ClaimGuard
+          <span className="inline-block px-3 py-1 rounded-md bg-slate-100 border border-slate-300 text-slate-700 text-xs font-semibold">
+            System Specification &amp; Architecture
           </span>
-          <h1 className="mt-6 text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
-            Flag it <span className="text-brand-orange">before</span> you pay it.
+          <h1 className="mt-5 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+            Flag it <span className="text-orange-600 underline decoration-orange-300 underline-offset-6">before</span> you pay it.
           </h1>
-          <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            ClaimGuard is a verification layer that sits between an expense
-            submission and the payout. It gives finance teams that run large
-            field workforces an informed, fast and auditable way to decide on
-            every claim.
+          <p className="mt-4 text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            ClaimGuard is a deterministic pre-payment verification layer positioned between field expense submissions and corporate payout execution.
           </p>
         </section>
 
-        {/* Problem */}
-        <section className="mt-16 rounded-2xl bg-white/90 border border-slate-200/90 p-8 shadow-sm">
-          <h2 className="text-2xl font-extrabold text-slate-900">The problem</h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-            Logistics fleets, FMCG field sales teams and pharma representatives
-            file fuel, toll, travel and per-diem claims in high volume and at
-            low value. Verification usually happens after the claim is paid: a
-            manager reviews it days later, and problems only surface in a
-            periodic audit, when the money has already gone.
+        {/* Problem Statement */}
+        <section className="mt-12 rounded-lg bg-slate-50 border border-slate-300 p-6">
+          <h2 className="text-lg font-bold text-slate-900">The Problem: Post-Payment Leakage</h2>
+          <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+            Logistics fleets, FMCG field sales operations, and distributed field teams file fuel, lodging, and travel claims in high volume and modest individual value. Traditional verification takes place weeks after payout during retrospective audits when capital has already leaked.
           </p>
-          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-            Enterprise expense suites are built for large corporates and ask
-            employees to learn a separate app. Spreadsheets and WhatsApp groups,
-            the default for many mid-sized Indian operators, have no
-            verification at all. ClaimGuard is built for the companies in
-            between.
+          <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+            Enterprise ERP expense suites require steep per-seat licenses and cumbersome employee mobile apps, while spreadsheets lack automated duplicate detection and GSTIN verification. ClaimGuard addresses this operational gap directly.
           </p>
         </section>
 
-        {/* How it works */}
-        <section className="mt-16">
-          <h2 className="text-2xl font-extrabold text-slate-900 text-center">
-            How it works
+        {/* How it works - 2x2 Grid */}
+        <section className="mt-12">
+          <h2 className="text-lg font-bold text-slate-900 text-center">
+            Verification Pipeline
           </h2>
-          <div className="grid sm:grid-cols-2 gap-5 mt-8">
+          <div className="grid sm:grid-cols-2 gap-4 mt-6">
             {steps.map((step, i) => (
               <div
                 key={step.title}
-                className="rounded-2xl bg-white/90 border border-slate-200/90 p-6 shadow-sm"
+                className="rounded-lg bg-slate-50 border border-slate-200 p-5"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center border border-orange-200/60">
-                    <step.icon className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-md bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-300">
+                    <step.icon className="w-4 h-4" />
                   </div>
-                  <h3 className="font-bold text-slate-900">
+                  <h3 className="font-bold text-sm text-slate-900">
                     {i + 1}. {step.title}
                   </h3>
                 </div>
-                <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+                <p className="mt-2.5 text-xs text-slate-600 leading-relaxed">
                   {step.text}
                 </p>
               </div>
@@ -149,33 +152,30 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Principle */}
-        <section className="mt-16 rounded-2xl bg-slate-900 text-white p-8 text-center shadow-lg">
-          <h2 className="text-2xl font-extrabold">AI assists. Humans decide.</h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            ClaimGuard never auto-rejects an employee&apos;s expense claim. The AI
-            surfaces signals and explains them. The manager makes the call.
+        {/* Core Architectural Principle */}
+        <section className="mt-12 rounded-lg bg-slate-900 text-white p-6 border border-slate-800 text-center">
+          <h2 className="text-base font-bold tracking-wide uppercase text-slate-200">
+            Core Philosophy: Deterministic Rules First, AI Assists, Humans Authorize
+          </h2>
+          <p className="mt-2.5 text-xs sm:text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
+            ClaimGuard never executes automated rejections without explicit manager authorization. Deterministic rules execute first, AI assists with explanation, and human management maintains fiduciary sign-off.
           </p>
         </section>
 
-        {/* Differentiators */}
-        <section className="mt-16">
-          <h2 className="text-2xl font-extrabold text-slate-900 text-center">
-            Built for India
+        {/* Technical Differentiators */}
+        <section className="mt-12">
+          <h2 className="text-lg font-bold text-slate-900 text-center">
+            India-Specific Compliance Architecture
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-600 text-center max-w-2xl mx-auto">
-            General expense tools cover the basics. ClaimGuard goes deep on the
-            compliance and accounting details of Indian field operations.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
             {differentiators.map((d) => (
               <div
                 key={d.title}
-                className="p-5 rounded-xl bg-white/80 border border-slate-200/80"
+                className="p-4 rounded-lg bg-slate-50 border border-slate-200"
               >
-                <d.icon className="w-5 h-5 text-brand-orange mb-2" />
-                <h3 className="text-sm font-bold text-slate-900">{d.title}</h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                <d.icon className="w-4 h-4 text-orange-600 mb-2" />
+                <h3 className="text-xs font-bold text-slate-900">{d.title}</h3>
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                   {d.text}
                 </p>
               </div>
@@ -183,44 +183,42 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Who it's for */}
-        <section className="mt-16 rounded-2xl bg-white/90 border border-slate-200/90 p-8 shadow-sm flex gap-5 items-start">
-          <div className="w-12 h-12 shrink-0 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center border border-orange-200/60">
-            <Users className="w-6 h-6" />
+        {/* Target Workforces */}
+        <section className="mt-12 rounded-lg bg-slate-50 border border-slate-300 p-6 flex gap-4 items-start">
+          <div className="w-10 h-10 shrink-0 rounded-md bg-slate-100 text-slate-800 flex items-center justify-center border border-slate-300">
+            <Users className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-900">Who it&apos;s for</h2>
-            <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-              Indian companies with roughly 50 to 300 field agents in logistics
-              and freight, FMCG field sales, or pharmaceutical representation.
-              They are too large to audit every claim by hand and too
-              cost-sensitive for an enterprise expense suite.
+            <h2 className="text-base font-bold text-slate-900">Target Operating Profile</h2>
+            <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Designed for companies operating 50 to 500 field personnel in freight logistics, FMCG field sales, distribution, or field service. These operations process too many transactions for manual review, yet cannot justify complex enterprise software deployments.
             </p>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="mt-16 text-center">
-          <h2 className="text-2xl font-extrabold text-slate-900">See it in action</h2>
-          <div className="mt-6 flex flex-wrap justify-center gap-4">
+        {/* Navigation Actions */}
+        <section className="mt-12 text-center">
+          <h2 className="text-base font-bold text-slate-900">Access Subsystems</h2>
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
             <Link
               href="/employee"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-orange-500 text-white text-sm font-bold shadow-md shadow-orange-500/20 hover:bg-orange-600 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-orange-600 text-white text-xs font-bold border border-orange-700 hover:bg-orange-700 transition-colors"
             >
-              Employee WebView <ArrowRight className="w-4 h-4" />
+              Employee Submission Flow <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link
               href="/manager"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-slate-200 text-slate-900 text-sm font-bold hover:border-brand-orange/60 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-slate-100 border border-slate-300 text-slate-900 text-xs font-bold hover:bg-slate-200 transition-colors"
             >
-              Manager Dashboard <ArrowRight className="w-4 h-4" />
+              Manager Operations Console <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </section>
       </div>
 
-      <footer className="border-t border-slate-200/80 bg-white/60 py-6 text-center text-xs text-slate-500 font-medium">
-        ClaimGuard India MVP &bull; 2026
+      {/* Footer */}
+      <footer className="border-t border-slate-200 bg-slate-50 py-5 text-center text-xs text-slate-500 font-medium">
+        ClaimGuard &bull; Financial Verification Engine &bull; Compliant Enterprise Architecture
       </footer>
     </main>
   );

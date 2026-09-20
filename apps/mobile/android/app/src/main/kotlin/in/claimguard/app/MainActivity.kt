@@ -1,4 +1,4 @@
-package in.claimguard.app
+package `in`.claimguard.app
 
 import io.flutter.embedding.android.FlutterActivity
 

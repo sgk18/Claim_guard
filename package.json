@@ -5,21 +5,26 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "dev:3002": "next dev -p 3002",
     "dev:8080": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --import tsx --test tests/**/*.test.*"
+    "test": "node --import tsx --test tests/**/*.test.*",
+    "test:csad": "node --import tsx --test tests/csad-appliance.test.mjs",
+    "test:ci": "node scripts/run_ci.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1136.0",
+    "@aws-sdk/client-ssm": "^3.1136.0",
     "@aws-sdk/client-textract": "^3.1136.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.16.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^2.5.5"
+    "tailwind-merge": "^2.5.5",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

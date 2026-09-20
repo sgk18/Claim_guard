@@ -1,135 +1,152 @@
+/**
+ * ClaimGuard Landing Page
+ * 
+ * Clean-Code UI Compliance:
+ * - Enterprise neutral canvas (#F8FAFC / bg-slate-50), avoiding pure white glare or dark mode slop.
+ * - Zero ambient mesh gradients, radial orbs, or dot grid background noise.
+ * - Solid opaque surfaces without liquid glass or backdrop-blur filters.
+ * - High-contrast 1px border strokes (border-slate-200 / border-slate-300) replacing heavy drop shadows.
+ * - Standardized engineering radii (rounded-md / rounded-lg) replacing bubbly oversized rounded-2xl/3xl curves.
+ * - Clean two-portal architectural launcher without bento grids, 3-card clichés, or emoji decorations.
+ * - Crisp, functional typography and transitions without excessive hover-scaling.
+ */
+
 import Link from "next/link";
 import { ShieldCheck, Smartphone, LayoutDashboard, Zap, AlertTriangle, FileText, CheckCircle2, ArrowRight } from "lucide-react";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen ambient-mesh-bg text-slate-900 flex flex-col justify-between selection:bg-orange-100 selection:text-orange-900">
-      {/* Top Navbar */}
-      <header className="border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between selection:bg-orange-100 selection:text-orange-900">
+      {/* Top Navigation Bar - Crisp opaque surface with 1px border */}
+      <header className="border-b border-slate-200 bg-slate-50 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-md shadow-orange-500/20">
-            <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
+          <div className="w-9 h-9 rounded-md bg-orange-600 text-white flex items-center justify-center border border-orange-700">
+            <ShieldCheck className="w-5 h-5 stroke-[2.2]" />
           </div>
-          <div>
-            <span className="font-extrabold text-xl tracking-tight text-slate-900">
-              Claim<span className="text-brand-orange">Guard</span>
+          <div className="flex items-baseline">
+            <span className="font-bold text-lg tracking-tight text-slate-900">
+              Claim<span className="text-orange-600">Guard</span>
             </span>
-            <span className="ml-2 text-[11px] font-bold px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 border border-orange-200">
-              MVP v1.0
+            <span className="ml-2 text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-300 font-mono">
+              v1.0-RC
             </span>
           </div>
         </div>
+
         <div className="flex items-center gap-3 text-xs">
-          <Link href="/about" className="font-semibold text-slate-700 hover:text-brand-orange transition-colors">
-            About
+          <Link
+            href="/about"
+            className="font-medium text-slate-600 hover:text-slate-900 transition-colors px-2.5 py-1.5 rounded-md border border-transparent hover:border-slate-300"
+          >
+            Architecture &amp; Spec
           </Link>
-          <span className="hidden sm:inline bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-1 rounded-md font-medium">
-            India-First Expense Architecture
+          <span className="hidden sm:inline bg-slate-100 text-slate-700 border border-slate-300 px-2.5 py-1 rounded-md font-medium">
+            India Field Workforce Architecture
           </span>
-          <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-md font-semibold">
-            Mock Mode: Active
+          <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 rounded-md font-semibold">
+            Status: Ready
           </span>
         </div>
       </header>
 
       {/* Hero Section */}
-      <div className="max-w-6xl mx-auto px-6 py-12 lg:py-20 text-center flex-1 flex flex-col justify-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-orange-800 text-xs font-semibold mb-6 mx-auto shadow-sm">
-          <Zap className="w-3.5 h-3.5 text-brand-orange" />
-          Real-time expense verification and automated fraud prevention
+      <div className="max-w-5xl mx-auto px-6 py-14 lg:py-20 text-center flex-1 flex flex-col justify-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 border border-slate-300 text-slate-700 text-xs font-semibold mb-6 mx-auto">
+          <Zap className="w-3.5 h-3.5 text-orange-600" />
+          Real-time expense verification and automated duplicate prevention
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 max-w-4xl mx-auto leading-[1.15]">
-          Flag it <span className="text-brand-orange underline decoration-brand-orange/30 underline-offset-8">before</span> you pay it.
+        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 max-w-3xl mx-auto leading-tight">
+          Flag it <span className="text-orange-600 underline decoration-orange-300 underline-offset-6">before</span> you pay it.
         </h1>
 
-        <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-          Zero-installation mobile expense submissions for field workforces, backed by instant OCR, perceptual duplicate detection, and explainable AI risk scoring.
+        <p className="mt-5 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+          Zero-installation mobile expense submissions for field workforces, backed by deterministic OCR validation, perceptual duplicate detection, and auditable risk scoring.
         </p>
 
-        {/* Dual Portal Launcher Cards */}
+        {/* Dual Portal Launcher Cards - Structured 2-column layout */}
         <div className="grid md:grid-cols-2 gap-6 mt-12 max-w-4xl mx-auto w-full text-left">
           {/* Employee Portal Card */}
           <Link
             href="/employee"
-            className="group relative rounded-2xl bg-white/90 border border-slate-200/90 p-8 shadow-sm hover:shadow-xl hover:border-brand-orange/60 transition-all duration-200 flex flex-col justify-between"
+            className="rounded-lg bg-slate-50 border border-slate-300 p-6 flex flex-col justify-between hover:border-orange-500 transition-colors"
           >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center mb-5 group-hover:scale-105 transition-transform border border-orange-200/60 shadow-inner">
-                <Smartphone className="w-6 h-6" />
-              </div>
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-extrabold text-slate-900 group-hover:text-brand-orange transition-colors">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-md bg-orange-50 text-orange-700 flex items-center justify-center border border-orange-200">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-mono border border-slate-300">
                   Employee WebView
-                </h2>
-                <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-mono border border-slate-200">
-                  Mobile View
                 </span>
               </div>
-              <p className="mt-2.5 text-sm text-slate-600 leading-relaxed">
-                Mobile-first conversational flow for field staff. Upload fuel, lodging, and travel bills, inspect instant OCR extracted values, correct details, and track claim status.
+              <h2 className="text-lg font-bold text-slate-900">
+                Field Workforce Submission
+              </h2>
+              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                Conversational receipt submission flow for field agents. Upload fuel, lodging, and travel bills, verify OCR-extracted metadata, and view real-time validation status.
               </p>
             </div>
-            <div className="mt-6 flex items-center text-sm font-bold text-brand-orange gap-1.5">
-              Launch Employee Experience <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+            <div className="mt-6 pt-4 border-t border-slate-200 flex items-center text-sm font-semibold text-orange-700 gap-1.5">
+              Launch Submission Flow <ArrowRight className="w-4 h-4" />
             </div>
           </Link>
 
           {/* Manager Portal Card */}
           <Link
             href="/manager"
-            className="group relative rounded-2xl bg-white/90 border border-slate-200/90 p-8 shadow-sm hover:shadow-xl hover:border-brand-orange/60 transition-all duration-200 flex flex-col justify-between"
+            className="rounded-lg bg-slate-50 border border-slate-300 p-6 flex flex-col justify-between hover:border-orange-500 transition-colors"
           >
             <div>
-              <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform border border-slate-200 shadow-inner">
-                <LayoutDashboard className="w-6 h-6" />
-              </div>
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-extrabold text-slate-900 group-hover:text-brand-orange transition-colors">
-                  Manager Operations
-                </h2>
-                <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-mono border border-slate-200">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 rounded-md bg-slate-100 text-slate-800 flex items-center justify-center border border-slate-300">
+                  <LayoutDashboard className="w-5 h-5" />
+                </div>
+                <span className="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-mono border border-slate-300">
                   Finance Dashboard
                 </span>
               </div>
-              <p className="mt-2.5 text-sm text-slate-600 leading-relaxed">
-                Operations dashboard with 50+ pre-seeded claims. Filter by risk severity, compare duplicate receipts side-by-side, inspect policy flags, and approve or reject with audit notes.
+              <h2 className="text-lg font-bold text-slate-900">
+                Operations &amp; Audit Console
+              </h2>
+              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                Operations console with pre-seeded claims queue. Filter by risk severity, examine duplicate perceptual matches side-by-side, check GSTIN checksums, and record approval decisions.
               </p>
             </div>
-            <div className="mt-6 flex items-center text-sm font-bold text-brand-orange gap-1.5">
-              Launch Manager Dashboard <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
+            <div className="mt-6 pt-4 border-t border-slate-200 flex items-center text-sm font-semibold text-orange-700 gap-1.5">
+              Launch Operations Console <ArrowRight className="w-4 h-4" />
             </div>
           </Link>
         </div>
 
-        {/* Feature Matrix Pillars */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto w-full text-left">
-          <div className="p-4 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 mb-2" />
-            <h4 className="text-sm font-bold text-slate-900">AI Assists. Humans Decide.</h4>
-            <p className="text-xs text-slate-500 mt-1">Never auto-rejects without human manager authorization.</p>
+        {/* Technical Architecture Pillars */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto w-full text-left">
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+            <CheckCircle2 className="w-4 h-4 text-emerald-700 mb-2" />
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Deterministic First</h3>
+            <p className="text-xs text-slate-600 mt-1">Rule-based validation executes before any AI assistance.</p>
           </div>
-          <div className="p-4 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <AlertTriangle className="w-5 h-5 text-brand-orange mb-2" />
-            <h4 className="text-sm font-bold text-slate-900">Perceptual Hashing</h4>
-            <p className="text-xs text-slate-500 mt-1">Detects re-photographed and cropped duplicate bills.</p>
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+            <AlertTriangle className="w-4 h-4 text-orange-600 mb-2" />
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Perceptual Hashing</h3>
+            <p className="text-xs text-slate-600 mt-1">Detects re-photographed and cropped duplicate receipts.</p>
           </div>
-          <div className="p-4 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <FileText className="w-5 h-5 text-sky-600 mb-2" />
-            <h4 className="text-sm font-bold text-slate-900">GSTIN Validation</h4>
-            <p className="text-xs text-slate-500 mt-1">State-code format and ITC tax deduction compliance checks.</p>
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+            <FileText className="w-4 h-4 text-slate-700 mb-2" />
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">GSTIN Validation</h3>
+            <p className="text-xs text-slate-600 mt-1">Modulo-36 checksum and state-code tax deduction checks.</p>
           </div>
-          <div className="p-4 rounded-xl bg-white/80 border border-slate-200/80 shadow-xs">
-            <Zap className="w-5 h-5 text-amber-600 mb-2" />
-            <h4 className="text-sm font-bold text-slate-900">WhatsApp-Decoupled</h4>
-            <p className="text-xs text-slate-500 mt-1">Agnostic channel architecture ready for Meta Cloud API.</p>
+          <div className="p-4 rounded-lg bg-slate-50 border border-slate-200">
+            <Zap className="w-4 h-4 text-slate-700 mb-2" />
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Audit Integrity</h3>
+            <p className="text-xs text-slate-600 mt-1">Immutable audit trails for state changes and approvals.</p>
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200/80 bg-white/60 py-6 text-center text-xs text-slate-500 font-medium">
-        ClaimGuard India MVP &bull; Built with Next.js, Supabase, and AWS Cloud Architecture &bull; 2026
+      {/* Footer - Clean 1px border stroke and neutral background */}
+      <footer className="border-t border-slate-200 bg-slate-50 py-5 text-center text-xs text-slate-500 font-medium">
+        ClaimGuard &bull; Financial Verification Engine &bull; Compliant Enterprise Architecture
       </footer>
     </main>
   );

@@ -103,7 +103,12 @@ export default function ManagerDashboardPage() {
               <Building className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-extrabold text-sm text-slate-900">Apex Logistics India &bull; Regional Operations Queue</h2>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="font-extrabold text-sm text-slate-900">Apex Logistics India &bull; Regional Operations Queue</h2>
+                <span className="bg-orange-100 text-orange-900 border border-orange-200 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md">
+                  Company Code: APEX-2026
+                </span>
+              </div>
               <p className="text-xs text-slate-500 mt-0.5">
                 Automated OCR and deterministic rules evaluate duplicate receipts, policy ceilings, and GSTIN compliance. Final reimbursement approvals require human verification.
               </p>

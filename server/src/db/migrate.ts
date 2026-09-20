@@ -12,7 +12,7 @@ async function main() {
   const { rows } = await pool.query(
     "SELECT table_name FROM information_schema.tables WHERE table_schema = current_schema() ORDER BY 1"
   );
-  console.log(`[db:migrate] schema applied. ${rows.length} tables:`, rows.map((r) => r.table_name).join(", "));
+  console.log(`[db:migrate] schema applied. ${rows.length} tables:`, rows.map((r: any) => r.table_name).join(", "));
 }
 
 main()

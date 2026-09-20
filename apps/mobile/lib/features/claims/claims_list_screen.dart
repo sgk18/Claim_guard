@@ -49,75 +49,111 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expense Claims Queue'),
+        title: const Text(
+          'Expense Claims Queue',
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16, letterSpacing: -0.3),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh_rounded, size: 20),
+            tooltip: 'Refresh Queue',
             onPressed: () => widget.state.loadClaims(),
           ),
         ],
       ),
       body: Column(
         children: [
-          // Search & Filter Header
+          // Search & Filter Header Container
           Container(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            color: ClaimGuardTheme.surfaceWhite,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            decoration: const BoxDecoration(
+              color: ClaimGuardTheme.surfaceWhite,
+              border: Border(bottom: BorderSide(color: ClaimGuardTheme.slateBorder)),
+            ),
             child: Column(
               children: [
                 TextField(
                   onChanged: (val) => setState(() => _searchQuery = val),
                   decoration: InputDecoration(
-                    hintText: 'Search merchant, ID, or category...',
-                    prefixIcon: const Icon(Icons.search, size: 20, color: ClaimGuardTheme.slateMuted),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    hintText: 'Search merchant, claim ID, or category...',
+                    hintStyle: const TextStyle(fontSize: 13, color: ClaimGuardTheme.slateMuted),
+                    prefixIcon: const Icon(Icons.search_rounded, size: 20, color: ClaimGuardTheme.slateMuted),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    filled: true,
+                    fillColor: ClaimGuardTheme.canvasOffWhite,
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, size: 18),
+                            icon: const Icon(Icons.clear_rounded, size: 18),
                             onPressed: () => setState(() => _searchQuery = ''),
                           )
                         : null,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: ClaimGuardTheme.slateBorder),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: ClaimGuardTheme.slateBorder),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: ClaimGuardTheme.slateDark, width: 1.5),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _buildChip('ALL', 'All (${widget.state.claims.length})'),
-                      _buildChip('PENDING', 'Pending (${widget.state.pendingCount})'),
-                      _buildChip('FLAGGED', 'Flagged (${widget.state.flaggedCount})'),
-                      _buildChip('APPROVED', 'Approved (${widget.state.approvedCount})'),
-                      _buildChip('REJECTED', 'Rejected (${widget.state.rejectedCount})'),
+                      _buildChip('ALL', 'All', widget.state.claims.length),
+                      _buildChip('PENDING', 'Pending', widget.state.pendingCount),
+                      _buildChip('FLAGGED', 'Flagged', widget.state.flaggedCount, isAlert: widget.state.flaggedCount > 0),
+                      _buildChip('APPROVED', 'Approved', widget.state.approvedCount),
+                      _buildChip('REJECTED', 'Rejected', widget.state.rejectedCount),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          const Divider(height: 1, color: ClaimGuardTheme.slateBorder),
 
-          // Claims Feed
+          // Claims Feed List
           Expanded(
             child: widget.state.isLoading
                 ? const Center(child: CircularProgressIndicator(color: ClaimGuardTheme.brandOrange))
                 : filtered.isEmpty
                     ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.inbox_outlined, size: 48, color: ClaimGuardTheme.slateMuted),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'No Claims Found',
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: ClaimGuardTheme.slateDark),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _searchQuery.isNotEmpty ? 'No matches for "$_searchQuery"' : 'No claims matching current filter',
-                              style: const TextStyle(fontSize: 12, color: ClaimGuardTheme.slateMuted),
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 64,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  color: ClaimGuardTheme.canvasOffWhite,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(color: ClaimGuardTheme.slateBorder),
+                                ),
+                                child: const Icon(Icons.inbox_outlined, size: 30, color: ClaimGuardTheme.slateMuted),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'No Claims Found',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: ClaimGuardTheme.slateDark),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                _searchQuery.isNotEmpty
+                                    ? 'No expense claims match "$_searchQuery"'
+                                    : 'There are no claims currently in this queue.',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 12, color: ClaimGuardTheme.slateMuted, height: 1.4),
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     : RefreshIndicator(
@@ -141,29 +177,74 @@ class _ClaimsListScreenState extends State<ClaimsListScreen> {
     );
   }
 
-  Widget _buildChip(String filterKey, String label) {
+  Widget _buildChip(String filterKey, String label, int count, {bool isAlert = false}) {
     final isSelected = _selectedFilter == filterKey;
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
-      child: ChoiceChip(
-        label: Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: isSelected ? ClaimGuardTheme.surfaceWhite : ClaimGuardTheme.slateDark,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: () => setState(() => _selectedFilter = filterKey),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? ClaimGuardTheme.slateDark
+                : isAlert
+                    ? ClaimGuardTheme.riskHigh.withAlpha(20)
+                    : ClaimGuardTheme.canvasOffWhite,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isSelected
+                  ? ClaimGuardTheme.slateDark
+                  : isAlert
+                      ? ClaimGuardTheme.riskHigh.withAlpha(80)
+                      : ClaimGuardTheme.slateBorder,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: isSelected
+                      ? Colors.white
+                      : isAlert
+                          ? ClaimGuardTheme.riskHigh
+                          : ClaimGuardTheme.slateDark,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? Colors.white.withAlpha(40)
+                      : isAlert
+                          ? ClaimGuardTheme.riskHigh.withAlpha(40)
+                          : ClaimGuardTheme.slateBorder.withAlpha(120),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  count.toString(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: isSelected
+                        ? Colors.white
+                        : isAlert
+                            ? ClaimGuardTheme.riskHigh
+                            : ClaimGuardTheme.slateSecondary,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        selected: isSelected,
-        selectedColor: ClaimGuardTheme.slateDark,
-        backgroundColor: ClaimGuardTheme.canvasOffWhite,
-        side: BorderSide(
-          color: isSelected ? ClaimGuardTheme.slateDark : ClaimGuardTheme.slateBorder,
-          width: 1,
-        ),
-        onSelected: (_) {
-          setState(() => _selectedFilter = filterKey);
-        },
       ),
     );
   }

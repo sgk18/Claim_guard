@@ -1,8 +1,9 @@
-import { Claim, Employee, Policy, Trip, Company, AuditLog, ManagerStats, ExtractedReceiptData } from "@/types";
-import { SEED_COMPANY, SEED_EMPLOYEES, SEED_POLICIES, SEED_TRIPS, generateSeedClaims } from "./seed";
+import { Claim, Employee, Policy, Trip, Company, Manager, AuditLog, ManagerStats, ExtractedReceiptData } from "@/types";
+import { SEED_COMPANY, SEED_MANAGER, SEED_EMPLOYEES, SEED_POLICIES, SEED_TRIPS, generateSeedClaims } from "./seed";
 
 class DatabaseStore {
   public company: Company = SEED_COMPANY;
+  public manager: Manager = SEED_MANAGER;
   public employees: Map<string, Employee> = new Map();
   public policies: Map<string, Policy> = new Map();
   public trips: Map<string, Trip> = new Map();

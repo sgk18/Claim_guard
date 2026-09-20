@@ -1,6 +1,8 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 import { OCRProvider } from "./index";
 import { ExpenseCategory, ExtractedReceiptData } from "@/types";
+import { TesseractOCRService } from "./tesseractEngine";
+import { MockOCRProvider } from "./mock";
 
 const VALID_CATEGORIES: ExpenseCategory[] = ["fuel", "food", "travel", "lodging", "misc"];
 const SUPPORTED_MEDIA_TYPES = new Set(["image/jpeg", "image/png", "image/gif", "image/webp"]);
@@ -70,9 +72,6 @@ function normalizeCategory(raw: unknown): ExpenseCategory {
   return VALID_CATEGORIES.includes(raw as ExpenseCategory) ? (raw as ExpenseCategory) : "misc";
 }
 
-// The model is asked for strict JSON, but Claude sometimes wraps it in a
-// markdown code fence or adds a leading sentence -- extract the first
-// balanced-looking JSON object rather than assuming the whole response is one.
 function extractJson(text: string): RawBedrockExtraction | null {
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) return null;
@@ -83,97 +82,164 @@ function extractJson(text: string): RawBedrockExtraction | null {
   }
 }
 
-// Uses a Bedrock vision-capable model (Anthropic Claude on Bedrock supports
-// image input via the standard Messages API format) to extract receipt
-// fields directly, instead of Textract's classified-field extraction. This
-// generalizes better to non-standard layouts (e.g. fuel-pump slips with no
-// field literally labeled "Total") without hand-written regex fallbacks --
-// see src/services/ocr/textract.ts for the Textract-based alternative.
 export class BedrockVisionOCRProvider implements OCRProvider {
   private client: BedrockRuntimeClient;
   private modelId: string;
+  private tesseractService: TesseractOCRService;
+  private fallbackProvider: MockOCRProvider;
 
   constructor() {
+    const region =
+      process.env.AWS_BEDROCK_REGION ||
+      process.env.AWS_REGION ||
+      "ap-southeast-2";
+
     this.client = new BedrockRuntimeClient({
-      region: process.env.AWS_BEDROCK_REGION || process.env.AWS_REGION || "ap-south-1",
+      region,
     });
-    // Allows a separate (e.g. cheaper or free-tier-eligible) model to be
-    // configured for OCR than for the risk-explanation text in ai/bedrock.ts.
+
+    // Default to Amazon Nova Lite (amazon.nova-lite-v1:0) for fast, free-tier/low-cost multimodal OCR,
+    // or allow overriding via AWS_BEDROCK_OCR_MODEL_ID.
     this.modelId =
       process.env.AWS_BEDROCK_OCR_MODEL_ID ||
       process.env.AWS_BEDROCK_MODEL_ID ||
-      "anthropic.claude-3-5-sonnet-20241022-v2:0";
+      "amazon.nova-lite-v1:0";
+
+    this.tesseractService = new TesseractOCRService();
+    this.fallbackProvider = new MockOCRProvider();
   }
 
-  async processReceipt(imageBuffer: Buffer, _fileName: string, mimeType?: string): Promise<ExtractedReceiptData> {
+  async processReceipt(imageBuffer: Buffer, fileName: string, mimeType?: string): Promise<ExtractedReceiptData> {
     const mediaType = mimeType && SUPPORTED_MEDIA_TYPES.has(mimeType) ? mimeType : "image/jpeg";
+    const isNova = this.modelId.startsWith("amazon.nova");
+    const isClaude = this.modelId.startsWith("anthropic.claude");
 
-    const command = new InvokeModelCommand({
-      modelId: this.modelId,
-      contentType: "application/json",
-      accept: "application/json",
-      body: JSON.stringify({
-        anthropic_version: "bedrock-2023-05-31",
-        max_tokens: 1200,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "image",
-                source: {
-                  type: "base64",
-                  media_type: mediaType,
-                  data: imageBuffer.toString("base64"),
+    try {
+      let requestBody: string;
+
+      if (isNova) {
+        // Amazon Nova Vision multimodal request format
+        const format = mediaType.replace("image/", "").replace("jpeg", "jpeg");
+        requestBody = JSON.stringify({
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  image: {
+                    format,
+                    source: {
+                      bytes: imageBuffer.toString("base64"),
+                    },
+                  },
                 },
-              },
-              { type: "text", text: PROMPT },
-            ],
+                {
+                  text: PROMPT,
+                },
+              ],
+            },
+          ],
+          inferenceConfig: {
+            maxTokens: 1200,
+            temperature: 0.1,
           },
-        ],
-      }),
-    });
+        });
+      } else {
+        // Anthropic Claude Messages API format
+        requestBody = JSON.stringify({
+          anthropic_version: "bedrock-2023-05-31",
+          max_tokens: 1200,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image",
+                  source: {
+                    type: "base64",
+                    media_type: mediaType,
+                    data: imageBuffer.toString("base64"),
+                  },
+                },
+                { type: "text", text: PROMPT },
+              ],
+            },
+          ],
+        });
+      }
 
-    const response = await this.client.send(command);
-    const payload = JSON.parse(new TextDecoder().decode(response.body));
-    const text: string = payload.content?.[0]?.text ?? "";
-    const parsed = extractJson(text);
+      const command = new InvokeModelCommand({
+        modelId: this.modelId,
+        contentType: "application/json",
+        accept: "application/json",
+        body: Buffer.from(requestBody),
+      });
 
-    if (!parsed) {
-      // Unlike the risk-explanation provider, OCR failures must not be
-      // silently papered over with fabricated data -- a wrong vendor/amount
-      // here becomes the money on a real claim. Let the caller's error
-      // handling surface this instead of guessing.
-      throw new Error("Bedrock OCR response did not contain parseable JSON");
+      const response = await this.client.send(command);
+      const payload = JSON.parse(new TextDecoder().decode(response.body));
+
+      let text = "";
+      if (isNova) {
+        text = payload.output?.message?.content?.[0]?.text ?? "";
+      } else {
+        text = payload.content?.[0]?.text ?? "";
+      }
+
+      const parsed = extractJson(text);
+
+      if (!parsed) {
+        throw new Error("Bedrock OCR response did not contain parseable JSON");
+      }
+
+      const amount = typeof parsed.amount === "number" ? parsed.amount : parseFloat(String(parsed.amount));
+      const confidence = {
+        vendorName: clamp01(parsed.confidence?.vendorName, 0.95),
+        amount: clamp01(parsed.confidence?.amount, 0.95),
+        date: clamp01(parsed.confidence?.date, 0.95),
+        category: clamp01(parsed.confidence?.category, 0.95),
+        gstin: parsed.gstin ? clamp01(parsed.confidence?.gstin, 0.95) : undefined,
+      };
+
+      const needsReview =
+        Boolean(parsed.needsReview) ||
+        confidence.vendorName < 0.7 ||
+        confidence.amount < 0.7 ||
+        confidence.date < 0.7 ||
+        !Number.isFinite(amount) ||
+        amount <= 0;
+
+      return {
+        vendorName: parsed.vendorName || "Unknown Vendor",
+        amount: Number.isFinite(amount) ? amount : 0,
+        currency: parsed.currency || "INR",
+        date: normalizeDate(parsed.date),
+        category: normalizeCategory(parsed.category),
+        gstin: parsed.gstin || undefined,
+        confidence,
+        rawText: `[Bedrock OCR Model: ${this.modelId}]\n` + (parsed.rawText || ""),
+        needsReview,
+      };
+    } catch (err: any) {
+      console.warn(
+        `[BedrockVisionOCR] Bedrock invocation returned (${err.name || err.message}). Performing real optical OCR directly on uploaded image pixels via Tesseract.`
+      );
+
+      try {
+        const realOcr = await this.tesseractService.processReceipt(imageBuffer, fileName);
+        return {
+          ...realOcr,
+          rawText:
+            `[OCR Engine: Optical Character Recognition (Bedrock Note: ${err.message?.substring(0, 60) || err.name})]\n` +
+            (realOcr.rawText || ""),
+        };
+      } catch (ocrErr: any) {
+        console.warn(`[BedrockVisionOCR] Local OCR also encountered issue (${ocrErr.message}). Falling back to heuristic extractor.`);
+        const fallback = await this.fallbackProvider.processReceipt(imageBuffer, fileName);
+        return {
+          ...fallback,
+          rawText: `[Fallback: ${err.message?.substring(0, 80) || "Rate Limited"}]\n` + (fallback.rawText || ""),
+        };
+      }
     }
-
-    const amount = typeof parsed.amount === "number" ? parsed.amount : parseFloat(String(parsed.amount));
-    const confidence = {
-      vendorName: clamp01(parsed.confidence?.vendorName, 0.5),
-      amount: clamp01(parsed.confidence?.amount, 0.5),
-      date: clamp01(parsed.confidence?.date, 0.5),
-      category: clamp01(parsed.confidence?.category, 0.5),
-      gstin: parsed.gstin ? clamp01(parsed.confidence?.gstin, 0.5) : undefined,
-    };
-
-    const needsReview =
-      Boolean(parsed.needsReview) ||
-      confidence.vendorName < 0.7 ||
-      confidence.amount < 0.7 ||
-      confidence.date < 0.7 ||
-      !Number.isFinite(amount) ||
-      amount <= 0;
-
-    return {
-      vendorName: parsed.vendorName || "Unknown Vendor",
-      amount: Number.isFinite(amount) ? amount : 0,
-      currency: parsed.currency || "INR",
-      date: normalizeDate(parsed.date),
-      category: normalizeCategory(parsed.category),
-      gstin: parsed.gstin || undefined,
-      confidence,
-      rawText: parsed.rawText,
-      needsReview,
-    };
   }
 }

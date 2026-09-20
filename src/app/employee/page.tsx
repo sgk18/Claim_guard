@@ -16,8 +16,10 @@ import {
   Info,
   CheckCircle2,
   RefreshCw,
+  Building2,
 } from "lucide-react";
 import Link from "next/link";
+import { CompanyCodeModal } from "@/components/employee/CompanyCodeModal";
 
 export default function EmployeeWebViewPage() {
   const [employee, setEmployee] = useState<Employee | null>(null);
@@ -31,8 +33,34 @@ export default function EmployeeWebViewPage() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [employeeClaims, setEmployeeClaims] = useState<Claim[]>([]);
   const [deviceFrame, setDeviceFrame] = useState(false); // Mobile frame toggle for desktop reviewers
+  const [isCompanyVerified, setIsCompanyVerified] = useState(false);
+  const [companyInfo, setCompanyInfo] = useState<{ name: string; code: string } | null>(null);
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
+
+  // Check stored company code authentication
+  useEffect(() => {
+    const storedCode = localStorage.getItem("claimguard_company_code");
+    if (storedCode && storedCode.trim().toUpperCase() === "APEX-2026") {
+      setIsCompanyVerified(true);
+      setCompanyInfo({ name: "Apex Logistics India", code: "APEX-2026" });
+    } else {
+      setIsCompanyVerified(false);
+    }
+  }, []);
+
+  const handleCompanyVerified = (data: { company: any; employee: any; manager: any }) => {
+    setIsCompanyVerified(true);
+    setCompanyInfo({ name: data.company?.name || "Apex Logistics India", code: data.company?.code || "APEX-2026" });
+    if (data.employee) {
+      setEmployee(data.employee);
+    }
+  };
+
+  const handleResetCompanyCode = () => {
+    localStorage.removeItem("claimguard_company_code");
+    setIsCompanyVerified(false);
+  };
 
   // Auto-scroll chat
   const scrollToBottom = () => {
@@ -282,6 +310,26 @@ export default function EmployeeWebViewPage() {
           </div>
         </header>
 
+        {/* Company Organization Ribbon */}
+        {companyInfo && (
+          <div className="bg-orange-50/80 text-orange-950 px-4 py-1.5 text-[11px] flex items-center justify-between border-b border-orange-100">
+            <div className="flex items-center gap-1.5 truncate">
+              <Building2 className="w-3.5 h-3.5 text-brand-orange shrink-0" />
+              <span className="font-extrabold text-slate-900 truncate">{companyInfo.name}</span>
+              <span className="bg-orange-200/80 text-orange-900 font-mono text-[9px] px-1.5 py-0.5 rounded font-bold shrink-0">
+                {companyInfo.code}
+              </span>
+            </div>
+            <button
+              onClick={handleResetCompanyCode}
+              title="Change Company Code"
+              className="text-orange-700 hover:text-orange-950 text-[10px] underline font-semibold shrink-0 ml-2"
+            >
+              Change
+            </button>
+          </div>
+        )}
+
         {/* Employee Context Ribbon */}
         {employee && (
           <div className="bg-slate-50/90 text-slate-700 px-4 py-1.5 text-[11px] flex items-center justify-between border-b border-slate-200">
@@ -351,6 +399,12 @@ export default function EmployeeWebViewPage() {
         claims={employeeClaims}
         isOpen={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
+      />
+
+      {/* Company Code Verification Modal */}
+      <CompanyCodeModal
+        isOpen={!isCompanyVerified}
+        onVerified={handleCompanyVerified}
       />
     </div>
   );

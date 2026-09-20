@@ -60,6 +60,7 @@ class ClaimGuardTheme {
           offset: const Offset(0, 1),
         ),
       ];
+  static List<BoxShadow> get subtleShadow => cardShadow;
 
   static List<BoxShadow> get floatingShadow => [
         BoxShadow(

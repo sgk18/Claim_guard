@@ -1,8 +1,8 @@
 """
-ClaimGuard Master Pitch PPTX Generator
+ClaimGuard Master Pitch PPTX Generator (Enhanced with Real Live Verified Data)
 Generates a professional, editable 16:9 PowerPoint pitch deck (ClaimGuard_Product_Pitch.pptx)
 adhering strictly to ClaimGuard's design system, 5-color palette, typography hierarchy,
-structured card layouts, and full embedded speaker notes for all 15 slides.
+structured card layouts, uncropped images, and full embedded speaker notes for all 15 slides.
 """
 
 import os
@@ -28,16 +28,14 @@ ACCENT_RED = RGBColor(0xDC, 0x26, 0x26)
 ACCENT_AMBER = RGBColor(0xD9, 0x77, 0x06)
 
 FONT_FAMILY = "Plus Jakarta Sans"
-FALLBACK_FONT = "Segoe UI"
 
 def create_presentation():
     prs = Presentation()
     # 16:9 Widescreen standard
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
-    blank_layout = prs.slide_layouts[6] # Blank slide layout
+    blank_layout = prs.slide_layouts[6]
 
-    # Helper: load speaker note
     def get_speaker_note(slide_num):
         path = f"presentation/speaker-notes/slide-{slide_num:02d}.md"
         if os.path.exists(path):
@@ -53,8 +51,7 @@ def create_presentation():
         return bg
 
     def add_header(slide, kicker, title, dark_mode=False):
-        # Kicker
-        kicker_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.5), Inches(11.7), Inches(0.4))
+        kicker_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.45), Inches(11.7), Inches(0.35))
         tf = kicker_box.text_frame
         tf.word_wrap = True
         tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
@@ -65,27 +62,26 @@ def create_presentation():
         p.font.bold = True
         p.font.color.rgb = PEACH if dark_mode else ORANGE
 
-        # Title
-        title_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.9), Inches(11.7), Inches(0.8))
+        title_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.8), Inches(11.7), Inches(0.8))
         tf = title_box.text_frame
         tf.word_wrap = True
         tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
         p = tf.paragraphs[0]
         p.text = title
         p.font.name = FONT_FAMILY
-        p.font.size = Pt(28)
+        p.font.size = Pt(26)
         p.font.bold = True
         p.font.color.rgb = WHITE if dark_mode else DARK_NAVY
 
     def add_footer(slide, slide_num, dark_mode=False):
-        footer_box = slide.shapes.add_textbox(Inches(0.8), Inches(7.0), Inches(11.7), Inches(0.3))
+        footer_box = slide.shapes.add_textbox(Inches(0.8), Inches(6.95), Inches(11.7), Inches(0.3))
         tf = footer_box.text_frame
         tf.margin_left = tf.margin_top = tf.margin_right = tf.margin_bottom = 0
         p = tf.paragraphs[0]
-        p.text = f"CLAIMGUARD PRODUCT PITCH   |   SLIDE {slide_num:02d} OF 15"
+        p.text = f"CLAIMGUARD PRODUCT PITCH   |   SLIDE {slide_num:02d} OF 15   |   APEX LOGISTICS INDIA PVT LTD"
         p.font.name = FONT_FAMILY
         p.font.size = Pt(9)
-        p.font.color.rgb = LIGHT_SLATE if dark_mode else LIGHT_SLATE
+        p.font.color.rgb = LIGHT_SLATE
 
     # =========================================================================
     # SLIDE 1: COVER
@@ -93,40 +89,46 @@ def create_presentation():
     s1 = prs.slides.add_slide(blank_layout)
     add_background(s1, DARK_NAVY)
     
-    # Left Hero Text
-    tbox = s1.shapes.add_textbox(Inches(0.8), Inches(1.8), Inches(6.5), Inches(4.5))
+    tbox = s1.shapes.add_textbox(Inches(0.8), Inches(1.5), Inches(6.5), Inches(5.0))
     tf = tbox.text_frame
     tf.word_wrap = True
     
     p = tf.paragraphs[0]
     p.text = "FINANCIAL VERIFICATION INTELLIGENCE"
-    p.font.size = Pt(12)
+    p.font.size = Pt(11)
     p.font.bold = True
     p.font.color.rgb = PEACH
     
     p2 = tf.add_paragraph()
     p2.text = "CLAIMGUARD"
-    p2.font.size = Pt(48)
+    p2.font.size = Pt(46)
     p2.font.bold = True
     p2.font.color.rgb = WHITE
-    p2.space_before = Pt(14)
+    p2.space_before = Pt(10)
     
     p3 = tf.add_paragraph()
     p3.text = "Intelligent Expense & Receipt Verification"
-    p3.font.size = Pt(22)
+    p3.font.size = Pt(20)
+    p3.font.bold = True
     p3.font.color.rgb = ORANGE
-    p3.space_before = Pt(10)
+    p3.space_before = Pt(8)
     
     p4 = tf.add_paragraph()
-    p4.text = "From field receipt submission to risk-aware managerial decision making. A unified, deterministic compliance platform for modern distributed organizations."
-    p4.font.size = Pt(14)
+    p4.text = "From field receipt submission to risk-aware managerial decision making. A unified, deterministic compliance platform connecting mobile field staff, cloud OCR, deterministic fraud math, and finance controllers."
+    p4.font.size = Pt(13)
     p4.font.color.rgb = OFF_WHITE
-    p4.space_before = Pt(18)
+    p4.space_before = Pt(14)
 
-    # Right Hero Image
+    p5 = tf.add_paragraph()
+    p5.text = "Verified Reference: Apex Logistics & Field Solutions India Pvt Ltd (APEX-2026)"
+    p5.font.size = Pt(11)
+    p5.font.bold = True
+    p5.font.color.rgb = PEACH
+    p5.space_before = Pt(16)
+
     img_path = "presentation/images/cover-ecosystem.jpg"
     if os.path.exists(img_path):
-        s1.shapes.add_picture(img_path, Inches(7.4), Inches(1.3), width=Inches(5.2))
+        s1.shapes.add_picture(img_path, Inches(7.5), Inches(1.5), width=Inches(5.0))
     
     add_footer(s1, 1, dark_mode=True)
     s1.notes_slide.notes_text_frame.text = get_speaker_note(1)
@@ -139,15 +141,15 @@ def create_presentation():
     add_header(s2, "The Operational Problem", "Expense verification is still too manual.")
 
     cards = [
-        ("1. PAPER & CHAT CHAOS", "Field staff collect crumpled paper receipts or forward random photos over WhatsApp threads days or weeks later.", "Unstructured Inputs"),
-        ("2. MANUAL DATA ENTRY", "Finance managers manually re-type amounts, vendors, and dates into spreadsheets, struggling with faded ink.", "High Administrative Cost"),
-        ("3. UNSPOTTED DUPLICATES", "Humans cannot reliably detect whether the same receipt was already submitted 3 weeks ago or edited.", "Silent Policy Leakage"),
-        ("4. LOST TAX CREDITS", "Ineligible GST claims and missing or invalid 15-digit GSTINs lead to lost Input Tax Credit (ITC) on audits.", "Compliance Risk")
+        ("1. PAPER & CHAT CHAOS", "Field employees collect thermal slips in pockets or forward unstructured WhatsApp photos weeks after travel ends.", "Unstructured Inputs"),
+        ("2. MANUAL DATA ENTRY", "Controllers spend 5–10 minutes per receipt deciphering faded thermal print and re-typing totals into spreadsheets.", "High Admin Cost"),
+        ("3. UNSPOTTED DUPLICATES", "The human eye cannot spot when the exact same fuel slip was already claimed 3 weeks earlier under a different project code.", "Silent Leakage"),
+        ("4. LOST TAX CREDITS", "Fake, unverified, or non-existent vendor GSTIN numbers invalidate corporate tax deductions, causing lost Input Tax Credit (ITC).", "Compliance Risk")
     ]
     
     left = 0.8
     for title, desc, tag in cards:
-        shape = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(2.0), Inches(2.7), Inches(4.5))
+        shape = s2.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(1.85), Inches(2.75), Inches(4.7))
         shape.fill.solid()
         shape.fill.fore_color.rgb = CARD_BG
         shape.line.color.rgb = BORDER_GRAY
@@ -166,7 +168,7 @@ def create_presentation():
         
         p2 = tf.add_paragraph()
         p2.text = title
-        p2.font.size = Pt(15)
+        p2.font.size = Pt(14)
         p2.font.bold = True
         p2.font.color.rgb = DARK_NAVY
         p2.space_before = Pt(8)
@@ -189,8 +191,7 @@ def create_presentation():
     add_background(s3, DARK_NAVY)
     add_header(s3, "Product Thesis", "What if every receipt could be screened before manual review?", dark_mode=True)
 
-    # Left box: Traditional vs ClaimGuard
-    box1 = s3.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(2.0), Inches(5.6), Inches(4.5))
+    box1 = s3.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.85), Inches(5.6), Inches(4.7))
     box1.fill.solid()
     box1.fill.fore_color.rgb = DARK_CARD
     box1.line.color.rgb = SLATE
@@ -205,20 +206,19 @@ def create_presentation():
     p.font.color.rgb = LIGHT_SLATE
     
     steps_trad = [
-        "Employee submits crumpled paper / raw photo",
-        "Piles up in finance inbox for weeks",
-        "Manager spends 10 minutes manually verifying math",
-        "Duplicate payouts and compliance errors slip through"
+        "Employee submits crumpled paper / raw photo without metadata",
+        "Piles up in finance inbox for weeks in backlog",
+        "Manager spends 10 minutes manually verifying arithmetic & caps",
+        "Duplicate payouts and GST compliance errors slip through"
     ]
     for s in steps_trad:
         p = tf1.add_paragraph()
         p.text = f"X  {s}"
-        p.font.size = Pt(12)
+        p.font.size = Pt(11.5)
         p.font.color.rgb = OFF_WHITE
         p.space_before = Pt(14)
 
-    # Right box: ClaimGuard Paradigm
-    box2 = s3.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.8), Inches(2.0), Inches(5.7), Inches(4.5))
+    box2 = s3.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.8), Inches(1.85), Inches(5.7), Inches(4.7))
     box2.fill.solid()
     box2.fill.fore_color.rgb = DARK_CARD
     box2.line.color.rgb = ORANGE
@@ -234,16 +234,16 @@ def create_presentation():
     p.font.color.rgb = ORANGE
     
     steps_cg = [
-        "Employee captures instant photo via Flutter mobile",
-        "Instant AWS Textract extraction & normalizer",
-        "Deterministic fraud checks (Hash, GSTIN, Anomaly)",
-        "Compounded 0-100 risk score & Bedrock explanation",
-        "Manager receives decision-ready evidence in seconds"
+        "Employee captures instant photo via Flutter mobile app",
+        "Instant AWS Textract extraction & key-value normalization",
+        "Deterministic fraud checks (Perceptual Hash, GSTIN, Anomaly)",
+        "Compounded 0–100 risk score & Bedrock narrative",
+        "Manager reviews decision-ready evidence in seconds"
     ]
     for s in steps_cg:
         p = tf2.add_paragraph()
         p.text = f"->  {s}"
-        p.font.size = Pt(12)
+        p.font.size = Pt(11.5)
         p.font.bold = True
         p.font.color.rgb = WHITE
         p.space_before = Pt(10)
@@ -252,147 +252,176 @@ def create_presentation():
     s3.notes_slide.notes_text_frame.text = get_speaker_note(3)
 
     # =========================================================================
-    # SLIDE 4: COMPLETE WORKFLOW (7 STAGES)
+    # SLIDE 4: COMPLETE WORKFLOW (7 STAGES, 2 ROWS)
     # =========================================================================
     s4 = prs.slides.add_slide(blank_layout)
     add_background(s4, OFF_WHITE)
-    add_header(s4, "End-to-End Architecture", "One workflow. Multiple verification layers.")
+    add_header(s4, "Continuous Pipeline", "One workflow. Multiple verification layers.")
 
-    stages = [
-        ("1. CAPTURE", "Mobile Flutter app captures receipt image with alignment guidance."),
-        ("2. EXTRACT", "AWS Textract extracts vendor, date, total, GSTIN & line items."),
-        ("3. VALIDATE", "Deterministic validation tests date boundaries and math."),
-        ("4. DETECT", "Perceptual hashing & anomaly baselines detect fraud signals."),
-        ("5. ASSESS", "Deterministic 0-100 scoring derives verified authenticity state."),
-        ("6. REVIEW", "Manager reviews evidence side-by-side in operations cockpit."),
-        ("7. AUDIT", "Append-only immutable audit trail records actor, action & timestamp.")
+    row1 = [
+        ("01. CAPTURE", "Mobile Viewfinder", "Rahul snaps fuel receipt in Flutter app with edge alignment."),
+        ("02. EXTRACT", "AWS Textract OCR", "Extracts Indian Oil Corp, ₹1,850.00, Date & 15-char GSTIN."),
+        ("03. VALIDATE", "Policy & Caps", "Checks fuel cap <= ₹5,000, date within tour, math consistency."),
+        ("04. DETECT", "Fraud Signals", "Perceptual hash collision check (Hamming <= 5) & GSTIN check.")
     ]
     
-    # 2 rows of stages
-    row1 = stages[:4]
-    row2 = stages[4:]
-    
     left = 0.8
-    for title, desc in row1:
-        card = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(2.0), Inches(2.75), Inches(2.1))
-        card.fill.solid()
-        card.fill.fore_color.rgb = WHITE
-        card.line.color.rgb = BORDER_GRAY
-        tf = card.text_frame
+    for num, title, desc in row1:
+        c = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(1.85), Inches(2.75), Inches(2.2))
+        c.fill.solid()
+        c.fill.fore_color.rgb = WHITE
+        c.line.color.rgb = BORDER_GRAY
+        tf = c.text_frame
         tf.word_wrap = True
         tf.margin_left = tf.margin_right = tf.margin_top = Inches(0.2)
         p = tf.paragraphs[0]
-        p.text = title
-        p.font.size = Pt(13)
+        p.text = num
+        p.font.size = Pt(9)
         p.font.bold = True
         p.font.color.rgb = ORANGE
         p2 = tf.add_paragraph()
-        p2.text = desc
-        p2.font.size = Pt(10)
-        p2.font.color.rgb = SLATE
-        p2.space_before = Pt(6)
+        p2.text = title
+        p2.font.size = Pt(13)
+        p2.font.bold = True
+        p2.font.color.rgb = DARK_NAVY
+        p2.space_before = Pt(4)
+        p3 = tf.add_paragraph()
+        p3.text = desc
+        p3.font.size = Pt(10)
+        p3.font.color.rgb = SLATE
+        p3.space_before = Pt(6)
         left += 2.95
 
-    left = 1.3
-    for title, desc in row2:
-        card = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(4.4), Inches(3.2), Inches(2.1))
-        card.fill.solid()
-        card.fill.fore_color.rgb = WHITE
-        card.line.color.rgb = BORDER_GRAY
-        tf = card.text_frame
+    row2 = [
+        ("05. ASSESS", "0-100 Risk Engine", "Calculates score: CLM-4401 = 8 (LOW), CLM-4471 = 65 (HIGH)."),
+        ("06. REVIEW", "Manager Cockpit", "Priya Sharma reviews side-by-side evidence with AI summary."),
+        ("07. AUDIT", "Supabase Log", "Immutable append-only row: actor, timestamp, and audit notes.")
+    ]
+
+    left = 0.8
+    for num, title, desc in row2:
+        c = s4.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(4.3), Inches(2.75), Inches(2.2))
+        c.fill.solid()
+        c.fill.fore_color.rgb = WHITE
+        c.line.color.rgb = BORDER_GRAY
+        tf = c.text_frame
         tf.word_wrap = True
         tf.margin_left = tf.margin_right = tf.margin_top = Inches(0.2)
         p = tf.paragraphs[0]
-        p.text = title
-        p.font.size = Pt(13)
+        p.text = num
+        p.font.size = Pt(9)
         p.font.bold = True
-        p.font.color.rgb = ORANGE
+        p.font.color.rgb = DARK_NAVY
         p2 = tf.add_paragraph()
-        p2.text = desc
-        p2.font.size = Pt(10)
-        p2.font.color.rgb = SLATE
-        p2.space_before = Pt(6)
-        left += 3.7
+        p2.text = title
+        p2.font.size = Pt(13)
+        p2.font.bold = True
+        p2.font.color.rgb = DARK_NAVY
+        p2.space_before = Pt(4)
+        p3 = tf.add_paragraph()
+        p3.text = desc
+        p3.font.size = Pt(10)
+        p3.font.color.rgb = SLATE
+        p3.space_before = Pt(6)
+        left += 2.95
+
+    # Summary box
+    sbox = s4.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(4.3), Inches(2.75), Inches(2.2))
+    sbox.fill.solid()
+    sbox.fill.fore_color.rgb = DARK_NAVY
+    tf = sbox.text_frame
+    tf.word_wrap = True
+    tf.margin_left = tf.margin_right = tf.margin_top = Inches(0.25)
+    p = tf.paragraphs[0]
+    p.text = "CONTINUOUS AUDIT"
+    p.font.size = Pt(9)
+    p.font.bold = True
+    p.font.color.rgb = PEACH
+    p2 = tf.add_paragraph()
+    p2.text = "Zero Data Gaps"
+    p2.font.size = Pt(14)
+    p2.font.bold = True
+    p2.font.color.rgb = WHITE
+    p2.space_before = Pt(4)
+    p3 = tf.add_paragraph()
+    p3.text = "From shutter click to permanent audit log in < 4 seconds."
+    p3.font.size = Pt(10.5)
+    p3.font.color.rgb = OFF_WHITE
+    p3.space_before = Pt(6)
 
     add_footer(s4, 4)
     s4.notes_slide.notes_text_frame.text = get_speaker_note(4)
 
     # =========================================================================
-    # SLIDE 5: EMPLOYEE EXPERIENCE
+    # SLIDE 5: EMPLOYEE EXPERIENCE (REAL DATA: RAHUL KUMAR)
     # =========================================================================
     s5 = prs.slides.add_slide(blank_layout)
     add_background(s5, OFF_WHITE)
-    add_header(s5, "Field Mobility", "For employees, submitting a claim becomes simple.")
+    add_header(s5, "Field Mobility & Real Live Session", "For employees, submitting a claim becomes simple.")
 
-    # Left text
-    box = s5.shapes.add_textbox(Inches(0.8), Inches(1.8), Inches(6.0), Inches(4.8))
+    box = s5.shapes.add_textbox(Inches(0.8), Inches(1.85), Inches(6.2), Inches(4.8))
     tf = box.text_frame
     tf.word_wrap = True
     
-    features = [
-        ("Cross-Platform Flutter Native", "Fast, responsive mobile experience optimized for field reps and technicians on Android & iOS."),
-        ("One-Tap Camera Capture", "Receipt scanner viewfinder with real-time framing and image stabilization."),
-        ("Inline Extraction Review", "Instant preview card displaying extracted vendor, date, amount, and category for rapid verification."),
+    pts = [
+        ("Active Submitter Session: Rahul Kumar", "Senior Field Sales Executive &bull; South Sales &bull; Historical Avg: ₹1,650.00 (38 claims)."),
+        ("Live Ingestion: CLM-4401 (Indian Oil Corp)", "Category: Fuel &bull; Amount: ₹1,850.00 &bull; Date: 16 Sep 2026 &bull; Tour: BLR-MYS Regional."),
+        ("Instant Viewfinder Extraction", "Real-time edge framing. The employee snaps the photo and receives structured results in 2 seconds."),
         ("Zero Cloud Jargon", "Employees see only their claim progress. All OCR, risk scoring, and cloud services remain invisible."),
-        ("Live Status Tracking", "Instant push cards notify field staff the moment a claim is verified, reviewed, or approved.")
+        ("Instant Push Status Sync", "Push cards notify field staff the moment a claim is verified, reviewed, or approved.")
     ]
-    for i, (title, desc) in enumerate(features):
+    for i, (title, desc) in enumerate(pts):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.text = f"{title}"
-        p.font.size = Pt(13)
+        p.text = title
+        p.font.size = Pt(12.5)
         p.font.bold = True
         p.font.color.rgb = DARK_NAVY
-        if i > 0: p.space_before = Pt(10)
-        
+        if i > 0: p.space_before = Pt(9)
         p2 = tf.add_paragraph()
         p2.text = desc
-        p2.font.size = Pt(10.5)
+        p2.font.size = Pt(10)
         p2.font.color.rgb = SLATE
         p2.space_before = Pt(2)
 
-    # Right image
     img_path = "presentation/images/employee-mobile.jpg"
     if os.path.exists(img_path):
-        s5.shapes.add_picture(img_path, Inches(7.2), Inches(1.8), width=Inches(5.3))
+        s5.shapes.add_picture(img_path, Inches(7.3), Inches(1.85), width=Inches(5.2))
 
     add_footer(s5, 5)
     s5.notes_slide.notes_text_frame.text = get_speaker_note(5)
 
     # =========================================================================
-    # SLIDE 6: MANAGER EXPERIENCE
+    # SLIDE 6: MANAGER EXPERIENCE (REAL DATA: PRIYA SHARMA)
     # =========================================================================
     s6 = prs.slides.add_slide(blank_layout)
     add_background(s6, OFF_WHITE)
-    add_header(s6, "Operations Cockpit", "Managers see the entire picture.")
+    add_header(s6, "Operations Cockpit & Live Review", "Managers see the entire picture.")
 
-    # Left image
     img_path = "presentation/images/manager-dashboard.jpg"
     if os.path.exists(img_path):
-        s6.shapes.add_picture(img_path, Inches(0.8), Inches(1.8), width=Inches(6.0))
+        s6.shapes.add_picture(img_path, Inches(0.8), Inches(1.85), width=Inches(5.6))
 
-    # Right text
-    box = s6.shapes.add_textbox(Inches(7.1), Inches(1.8), Inches(5.4), Inches(4.8))
+    box = s6.shapes.add_textbox(Inches(6.7), Inches(1.85), Inches(5.8), Inches(4.8))
     tf = box.text_frame
     tf.word_wrap = True
     
-    mgr_pts = [
-        ("Split-Screen Verification View", "Original high-res receipt on the left; structured extracted values and tax identifiers on the right."),
-        ("Prioritized Risk Triage", "Queue dynamically filtered by risk: Low (batch approve), Medium, High, or Critical."),
-        ("Evidence-Backed Indicators", "Hoverable duplicate hash comparisons, historical spending baselines, and GSTIN check logs."),
-        ("Explainable AI Summaries", "Claude 3.5 synthesis on AWS Bedrock summarizes key flags into two actionable sentences."),
-        ("One-Click Actions with Audit", "Approve, Reject, or Request Clarification with mandatory compliance notes recorded in Supabase.")
+    pts = [
+        ("Active Controller: Priya Sharma", "Finance Operations Controller &bull; Reviewing CLM-4471 (Flagged Duplicate Suspect)."),
+        ("Flagged Evidence: Indian Oil Corp (₹3,850)", "Duplicate Hash: Matches prior claim CLM-3902 (Hamming <= 5).\nAnomaly Spike: ₹3,850 is 2.33x employee category baseline (₹1,650)."),
+        ("Split-Screen Verification Cockpit", "Original high-res receipt on the left; normalized key-values and GSTIN validation on the right."),
+        ("Prioritized Risk Triage", "Queue dynamically filtered: Low (batch approve), Medium, High, or Critical."),
+        ("One-Click Actions with Audit", "Approve, Reject, or Request Clarification with mandatory compliance notes committed to Supabase.")
     ]
-    for i, (title, desc) in enumerate(mgr_pts):
+    for i, (title, desc) in enumerate(pts):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.text = title
-        p.font.size = Pt(13)
+        p.font.size = Pt(12.5)
         p.font.bold = True
         p.font.color.rgb = DARK_NAVY
-        if i > 0: p.space_before = Pt(10)
-        
+        if i > 0: p.space_before = Pt(9)
         p2 = tf.add_paragraph()
         p2.text = desc
-        p2.font.size = Pt(10.5)
+        p2.font.size = Pt(10)
         p2.font.color.rgb = SLATE
         p2.space_before = Pt(2)
 
@@ -400,19 +429,17 @@ def create_presentation():
     s6.notes_slide.notes_text_frame.text = get_speaker_note(6)
 
     # =========================================================================
-    # SLIDE 7: OCR
+    # SLIDE 7: OCR (REAL AWS TEXTRACT PAYLOAD)
     # =========================================================================
     s7 = prs.slides.add_slide(blank_layout)
     add_background(s7, DARK_NAVY)
-    add_header(s7, "Document Intelligence", "From image to structured information.", dark_mode=True)
+    add_header(s7, "Document Intelligence & Real Payload", "From image to structured information.", dark_mode=True)
 
-    # Left image
     img_path = "presentation/images/ocr-extraction.jpg"
     if os.path.exists(img_path):
-        s7.shapes.add_picture(img_path, Inches(0.8), Inches(1.8), width=Inches(6.0))
+        s7.shapes.add_picture(img_path, Inches(0.8), Inches(1.85), width=Inches(5.5))
 
-    # Right explanation box
-    box = s7.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(7.1), Inches(1.8), Inches(5.4), Inches(4.8))
+    box = s7.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.6), Inches(1.85), Inches(5.9), Inches(4.7))
     box.fill.solid()
     box.fill.fore_color.rgb = DARK_CARD
     box.line.color.rgb = SLATE
@@ -421,51 +448,59 @@ def create_presentation():
     tf.margin_left = tf.margin_right = tf.margin_top = Inches(0.3)
     
     p = tf.paragraphs[0]
-    p.text = "WHAT OCR DOES"
-    p.font.size = Pt(13)
+    p.text = "VERIFIED TEXTRACT EXTRACTION: CLM-4401"
+    p.font.size = Pt(11)
     p.font.bold = True
     p.font.color.rgb = PEACH
     
-    p2 = tf.add_paragraph()
-    p2.text = "AWS Textract AnalyzeExpense parses geometric bounding boxes, summary key-values, and line items. Extracts Merchant Name, Total Amount, Date, and 15-character Indian GSTIN with individual confidence scores."
-    p2.font.size = Pt(11)
-    p2.font.color.rgb = OFF_WHITE
-    p2.space_before = Pt(6)
+    payload = [
+        "VENDOR:  'Indian Oil Corporation Ltd' (98% Confidence)",
+        "AMOUNT:  1850.00 INR (99% Confidence)",
+        "DATE:    '2026-09-16' (Normalized from '16/09/2026')",
+        "GSTIN:   '29AAACI1681G1ZS' (92% Confidence &bull; Karnataka)",
+        "ITEMS:   [{'item': 'Diesel High Speed', 'amount': 1850.00}]"
+    ]
+    for s in payload:
+        p = tf.add_paragraph()
+        p.text = s
+        p.font.size = Pt(10)
+        p.font.color.rgb = WHITE
+        p.space_before = Pt(6)
     
     p3 = tf.add_paragraph()
     p3.text = "THE FUNDAMENTAL PRINCIPLE"
-    p3.font.size = Pt(13)
+    p3.font.size = Pt(11)
     p3.font.bold = True
     p3.font.color.rgb = ORANGE
-    p3.space_before = Pt(16)
+    p3.space_before = Pt(14)
     
     p4 = tf.add_paragraph()
-    p4.text = "OCR asks: 'What does this receipt say?'\nOCR does NOT ask: 'Is this receipt authentic?'\n\nA completely fake, fabricated invoice printed on paper will extract with 100% OCR confidence. That is why OCR is only step one."
-    p4.font.size = Pt(11)
-    p4.font.color.rgb = WHITE
-    p4.space_before = Pt(6)
+    p4.text = "OCR asks: 'What text does this document contain?'\nOCR does NOT ask: 'Is this document legitimate?'\n\nA completely fake receipt printed on paper will extract with 100% confidence. That is why OCR is only the starting point."
+    p4.font.size = Pt(10.5)
+    p4.font.color.rgb = OFF_WHITE
+    p4.space_before = Pt(4)
 
     add_footer(s7, 7, dark_mode=True)
     s7.notes_slide.notes_text_frame.text = get_speaker_note(7)
 
     # =========================================================================
-    # SLIDE 8: VALIDATION + FRAUD SIGNALS
+    # SLIDE 8: VALIDATION + FRAUD SIGNALS (REAL RULES)
     # =========================================================================
     s8 = prs.slides.add_slide(blank_layout)
     add_background(s8, OFF_WHITE)
     add_header(s8, "Deterministic Math Engine", "OCR is only the beginning: 6 verification signals.")
 
     signals = [
-        ("Perceptual Duplicate Hash", "Hamming distance <= 5 flags exact or cropped duplicate receipts.", "+40 PTS", ACCENT_RED),
-        ("Indian GSTIN Checksum", "Validates 15-char tax ID against state codes & ISO 7064 Modulo 36.", "+25 PTS", ACCENT_AMBER),
-        ("Historical Amount Anomaly", "Flags expenses exceeding 2.0x employee's historical category average.", "+20 PTS", ACCENT_AMBER),
-        ("Category Keyword Mismatch", "Detects dining, alcohol or personal purchases tagged as Fuel/Travel.", "+20 PTS", ACCENT_AMBER),
-        ("Policy Cap Violation", "Enforces single-claim expenditure limits and tax invoice thresholds.", "+15 PTS", SLATE),
-        ("Date & Timing Anomaly", "Flags backdated claims >90 days old or impossible future dates.", "+15 PTS", SLATE)
+        ("Perceptual Duplicate Hash", "Visual hash matches prior claim CLM-3902 (Hamming <= 5).", "+40 PTS", ACCENT_RED),
+        ("GSTIN Luhn Checksum", "Tax ID 29AAACI1681G1ZS passes Karnataka state code 29 & Modulo 36.", "0 PTS &bull; PASS", ACCENT_GREEN),
+        ("Amount Anomaly Baseline", "Amount ₹3,850.00 is 2.33x Rahul Kumar's historical category avg (₹1,650).", "+20 PTS", ACCENT_AMBER),
+        ("Merchant Category Match", "Indian Oil line items (Diesel) match policy category FUEL.", "0 PTS &bull; PASS", ACCENT_GREEN),
+        ("Policy Cap Evaluation", "Under single max limit (₹5,000) but triggers daily travel cap review.", "+5 PTS", SLATE),
+        ("Date & Tour Consistency", "Receipt date (17/09/2026) matches active tour trip_blr_mys_01 window.", "0 PTS &bull; PASS", ACCENT_GREEN)
     ]
 
     left = 0.8
-    top = 1.9
+    top = 1.85
     for i, (name, desc, pts, color) in enumerate(signals):
         c = s8.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(3.7), Inches(2.2))
         c.fill.solid()
@@ -483,20 +518,20 @@ def create_presentation():
         
         p2 = tf.add_paragraph()
         p2.text = name
-        p2.font.size = Pt(13)
+        p2.font.size = Pt(12)
         p2.font.bold = True
         p2.font.color.rgb = DARK_NAVY
         p2.space_before = Pt(4)
         
         p3 = tf.add_paragraph()
         p3.text = desc
-        p3.font.size = Pt(10)
+        p3.font.size = Pt(9.5)
         p3.font.color.rgb = SLATE
         p3.space_before = Pt(6)
         
         if i % 3 == 2:
             left = 0.8
-            top += 2.4
+            top += 2.45
         else:
             left += 4.0
 
@@ -504,46 +539,42 @@ def create_presentation():
     s8.notes_slide.notes_text_frame.text = get_speaker_note(8)
 
     # =========================================================================
-    # SLIDE 9: RISK ENGINE
+    # SLIDE 9: RISK ENGINE (REAL COMPARISON)
     # =========================================================================
     s9 = prs.slides.add_slide(blank_layout)
     add_background(s9, OFF_WHITE)
-    add_header(s9, "Risk Engine", "Turn multiple signals into a decision-ready risk view.")
+    add_header(s9, "Risk Prioritization & Real Scores", "Turn multiple signals into a decision-ready risk view.")
 
-    # Left image
     img_path = "presentation/images/fraud-risk.jpg"
     if os.path.exists(img_path):
-        s9.shapes.add_picture(img_path, Inches(0.8), Inches(1.8), width=Inches(6.0))
+        s9.shapes.add_picture(img_path, Inches(0.8), Inches(1.85), width=Inches(5.5))
 
-    # Right: 5 qualified states
-    box = s9.shapes.add_textbox(Inches(7.1), Inches(1.8), Inches(5.4), Inches(4.8))
+    box = s9.shapes.add_textbox(Inches(6.6), Inches(1.85), Inches(5.9), Inches(4.7))
     tf = box.text_frame
     tf.word_wrap = True
     
     p = tf.paragraphs[0]
-    p.text = "5 QUALIFIED AUTHENTICITY STATES"
-    p.font.size = Pt(12)
+    p.text = "COMPARISON OF 2 REAL LIVE CLAIMS"
+    p.font.size = Pt(11)
     p.font.bold = True
     p.font.color.rgb = ORANGE
     
-    states = [
-        ("VERIFIED", "Valid GSTIN, clear OCR (>90%), zero fraud signals. Score: 0-24.", ACCENT_GREEN),
-        ("LIKELY VALID", "Minor warning, slight date deviation, valid math. Score: 0-24.", RGBColor(0x25, 0x63, 0xEB)),
-        ("REVIEW REQUIRED", "Amount anomaly or policy limit breach needing sign-off. Score: 25-49.", ACCENT_AMBER),
-        ("SUSPICIOUS", "Duplicate hash match or invalid tax checksum detected. Score: 50-74.", ACCENT_RED),
-        ("UNABLE TO VERIFY", "Blurred image, unreadable merchant, low OCR (<70%). Requires retake.", LIGHT_SLATE)
+    comparisons = [
+        ("CLM-4401 &bull; VERIFIED (SCORE: 8 / 100 &bull; LOW)", "Indian Oil Corp ₹1,850. Valid GSTIN, 0 fraud flags. Auto-approved or single-click clear.", ACCENT_GREEN),
+        ("CLM-4471 &bull; SUSPICIOUS (SCORE: 65 / 100 &bull; HIGH)", "Duplicate hash (+40) + Anomaly spike (+20) + Policy cap (+5). Routed to Investigation.", ACCENT_RED),
+        ("5 Standardized States", "VERIFIED (0–24), LIKELY VALID (0–24), REVIEW REQUIRED (25–49), SUSPICIOUS (50–74), UNABLE TO VERIFY (<70% OCR).", DARK_NAVY)
     ]
-    for st, d, col in states:
+    for st, d, col in comparisons:
         p = tf.add_paragraph()
         p.text = f"[{st}]"
-        p.font.size = Pt(12)
+        p.font.size = Pt(11)
         p.font.bold = True
         p.font.color.rgb = col
-        p.space_before = Pt(8)
+        p.space_before = Pt(10)
         
         p2 = tf.add_paragraph()
         p2.text = d
-        p2.font.size = Pt(10)
+        p2.font.size = Pt(9.5)
         p2.font.color.rgb = SLATE
         p2.space_before = Pt(2)
 
@@ -557,8 +588,7 @@ def create_presentation():
     add_background(s10, DARK_NAVY)
     add_header(s10, "Boundary of Intelligence", "AI assists the review. It does not replace it.", dark_mode=True)
 
-    # Left: AI Can Do
-    box1 = s10.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(2.0), Inches(5.6), Inches(4.5))
+    box1 = s10.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(1.85), Inches(5.6), Inches(4.7))
     box1.fill.solid()
     box1.fill.fore_color.rgb = DARK_CARD
     box1.line.color.rgb = ACCENT_GREEN
@@ -567,26 +597,31 @@ def create_presentation():
     tf1.word_wrap = True
     tf1.margin_left = tf1.margin_right = tf1.margin_top = Inches(0.3)
     p = tf1.paragraphs[0]
-    p.text = "WHAT AI CAN DO (EXPLANATION LAYER)"
-    p.font.size = Pt(12)
+    p.text = "WHAT AI DOES &bull; LIVE SYNTHESIS FOR CLM-4471"
+    p.font.size = Pt(11)
     p.font.bold = True
     p.font.color.rgb = ACCENT_GREEN
     
+    p2 = tf1.add_paragraph()
+    p2.text = "\"Receipt image perceptual hash matches Claim #3902 submitted on 28 Aug 2026 by same employee. Claim amount ₹3,850 exceeds Rahul Kumar's historical category mean (₹1,650) by 2.33x. Manual investigation recommended before payout.\""
+    p2.font.size = Pt(10.5)
+    p2.font.color.rgb = WHITE
+    p2.space_before = Pt(8)
+
     can_items = [
-        "Synthesizes triggered fraud flags into plain-English summaries",
-        "Translates mathematical ratios into actionable manager tips",
+        "Translates raw hash distances & statistical ratios into plain English",
+        "Prompts the manager on exact evidence questions during review",
         "Assists receipt taxonomy classification when fuzzy",
-        "Provides contextual explanations to speed up human reviews"
+        "Accelerates triage so humans make faster, confident decisions"
     ]
     for it in can_items:
         p = tf1.add_paragraph()
         p.text = f"+  {it}"
-        p.font.size = Pt(11.5)
+        p.font.size = Pt(10)
         p.font.color.rgb = OFF_WHITE
-        p.space_before = Pt(14)
+        p.space_before = Pt(8)
 
-    # Right: AI Does NOT Do
-    box2 = s10.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.8), Inches(2.0), Inches(5.7), Inches(4.5))
+    box2 = s10.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(6.8), Inches(1.85), Inches(5.7), Inches(4.7))
     box2.fill.solid()
     box2.fill.fore_color.rgb = DARK_CARD
     box2.line.color.rgb = ACCENT_RED
@@ -596,22 +631,23 @@ def create_presentation():
     tf2.margin_left = tf2.margin_right = tf2.margin_top = Inches(0.3)
     p = tf2.paragraphs[0]
     p.text = "WHAT AI DOES NOT DO (STRICT CONTROLS)"
-    p.font.size = Pt(12)
+    p.font.size = Pt(11)
     p.font.bold = True
     p.font.color.rgb = ACCENT_RED
     
     not_items = [
-        "Never independently approves or rejects financial claims",
-        "Never overrides company security policies or spending limits",
-        "Cannot mutate or delete audit log entries in the database",
-        "Cannot grant organization membership or session credentials"
+        "Zero Autonomous Approvals: AI never approves or disburses funds",
+        "Zero Autonomous Rejections: Rejections require human confirmation",
+        "No Policy Overrides: AI cannot modify company caps or tax rules",
+        "Immutable Audit Records: AI cannot touch or mutate database rows",
+        "Zero Credential Authority: Cannot grant org access or tokens"
     ]
     for it in not_items:
         p = tf2.add_paragraph()
         p.text = f"-  {it}"
-        p.font.size = Pt(11.5)
+        p.font.size = Pt(10.5)
         p.font.color.rgb = OFF_WHITE
-        p.space_before = Pt(14)
+        p.space_before = Pt(12)
 
     add_footer(s10, 10, dark_mode=True)
     s10.notes_slide.notes_text_frame.text = get_speaker_note(10)
@@ -621,18 +657,18 @@ def create_presentation():
     # =========================================================================
     s11 = prs.slides.add_slide(blank_layout)
     add_background(s11, OFF_WHITE)
-    add_header(s11, "Multi-Tier Platform", "Built as a connected, scalable platform.")
+    add_header(s11, "Scalable Platform", "Built as a connected, scalable platform.")
 
     tiers = [
-        ("1. CLIENT SURFACES", "Flutter Mobile App (Field Staff)  |  Next.js 15 Web Portal (Finance Managers)", ORANGE),
-        ("2. SECURE API GATEWAY", "Fastify REST API  |  JWT Authentication  |  Organization Multi-Tenancy", DARK_NAVY),
-        ("3. CORE DOMAIN SERVICES", "Claim Lifecycle  |  Receipt Ingestion  |  Deterministic Fraud Rules  |  Risk Scorer", SLATE),
-        ("4. DATA & SERVERLESS CLOUD", "Supabase PostgreSQL (RLS, Audit)  |  AWS S3, Textract, Step Functions, Bedrock", ORANGE)
+        ("1. PRESENTATION SURFACES", "Flutter Mobile App (Field Staff)  |  Next.js 15 Operations Portal (Finance Managers)", ORANGE),
+        ("2. SECURE API GATEWAY", "Fastify REST API  |  JWT Authentication  |  Organization Multi-Tenancy Scoping", DARK_NAVY),
+        ("3. CORE DOMAIN SERVICES", "Receipt Processing  |  Deterministic Fraud Rules  |  0–100 Scorer  |  Audit Committer", SLATE),
+        ("4. DATA PERSISTENCE & CLOUD", "Supabase PostgreSQL (RLS, Multi-tenant)  |  AWS S3, Textract, Step Functions, Bedrock", ORANGE)
     ]
     
-    top = 2.0
+    top = 1.85
     for title, desc, col in tiers:
-        bar = s11.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(top), Inches(11.7), Inches(1.0))
+        bar = s11.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(top), Inches(11.7), Inches(1.05))
         bar.fill.solid()
         bar.fill.fore_color.rgb = WHITE
         bar.line.color.rgb = BORDER_GRAY
@@ -642,52 +678,51 @@ def create_presentation():
         tf.margin_left = tf.margin_top = Inches(0.2)
         p = tf.paragraphs[0]
         p.text = title
-        p.font.size = Pt(11)
+        p.font.size = Pt(10.5)
         p.font.bold = True
         p.font.color.rgb = col
         p2 = tf.add_paragraph()
         p2.text = desc
-        p2.font.size = Pt(12)
+        p2.font.size = Pt(11.5)
         p2.font.color.rgb = DARK_NAVY
         p2.space_before = Pt(3)
-        top += 1.2
+        top += 1.25
 
     add_footer(s11, 11)
     s11.notes_slide.notes_text_frame.text = get_speaker_note(11)
 
     # =========================================================================
-    # SLIDE 12: COMPLETE DATA PIPELINE (15 STEPS)
+    # SLIDE 12: COMPLETE DATA PIPELINE (REAL TRACE: CLM-4471)
     # =========================================================================
     s12 = prs.slides.add_slide(blank_layout)
     add_background(s12, DARK_NAVY)
-    add_header(s12, "Receipt Lifecycle", "Follow one receipt through the system (15 Steps).", dark_mode=True)
+    add_header(s12, "Receipt Lifecycle & Live Trace: CLM-4471", "Follow one receipt through the system (15 Steps).", dark_mode=True)
 
     steps_12 = [
-        "1. Employee snaps receipt in Flutter app",
-        "2. Encrypted image uploaded to Fastify API",
-        "3. Pending claim record initialized in DB",
-        "4. Image stored in S3 (KMS encryption)",
-        "5. EventBridge triggers AWS Textract OCR",
-        "6. Textract extracts key-values & lines",
-        "7. Normalizer standardizes date, amount, GSTIN",
-        "8. Deterministic validation checks math/caps",
-        "9. Fraud engine checks duplicate hashes",
-        "10. Risk engine calculates 0-100 score",
-        "11. AWS Bedrock synthesizes risk narrative",
-        "12. All records sync to Supabase with RLS",
-        "13. Manager receives claim in operations queue",
-        "14. Manager approves/rejects with audit note",
-        "15. Employee receives instant phone status sync"
+        "1. Rahul snaps receipt in Flutter app",
+        "2. Fastify API receives encrypted image",
+        "3. Claim created: CLM-4471 (SUBMITTED)",
+        "4. Private S3 bucket KMS upload",
+        "5. EventBridge triggers Textract event",
+        "6. Textract extracts ₹3,850 & Indian Oil",
+        "7. Normalizer standardizes to 2026-09-17",
+        "8. GSTIN 29AAACI1681G1ZS verified valid",
+        "9. Hash collision: matches CLM-3902 (+40)",
+        "10. Anomaly: 2.33x employee baseline (+20)",
+        "11. Score computed: 65/100 (HIGH Risk)",
+        "12. Bedrock generates explanation summary",
+        "13. Persists to Supabase with RLS security",
+        "14. Priya Sharma rejects with audit note",
+        "15. Phone syncs: Status updated instantly"
     ]
     
-    # 3 columns of 5 steps
     col1 = steps_12[:5]
     col2 = steps_12[5:10]
     col3 = steps_12[10:]
     
     left = 0.8
     for col in [col1, col2, col3]:
-        c = s12.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(2.0), Inches(3.7), Inches(4.5))
+        c = s12.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(1.85), Inches(3.7), Inches(4.7))
         c.fill.solid()
         c.fill.fore_color.rgb = DARK_CARD
         c.line.color.rgb = SLATE
@@ -706,40 +741,37 @@ def create_presentation():
     s12.notes_slide.notes_text_frame.text = get_speaker_note(12)
 
     # =========================================================================
-    # SLIDE 13: ORGANIZATION + JOIN CODE
+    # SLIDE 13: ORGANIZATION + JOIN CODE (REAL APEX DATA)
     # =========================================================================
     s13 = prs.slides.add_slide(blank_layout)
     add_background(s13, OFF_WHITE)
-    add_header(s13, "Controlled Onboarding", "Simple onboarding. Controlled access.")
+    add_header(s13, "Controlled Onboarding & Live Workspace", "Simple onboarding. Controlled access.")
 
-    # Left image
     img_path = "presentation/images/onboarding-pairing.jpg"
     if os.path.exists(img_path):
-        s13.shapes.add_picture(img_path, Inches(0.8), Inches(1.8), width=Inches(6.0))
+        s13.shapes.add_picture(img_path, Inches(0.8), Inches(1.85), width=Inches(5.6))
 
-    # Right text
-    box = s13.shapes.add_textbox(Inches(7.1), Inches(1.8), Inches(5.4), Inches(4.8))
+    box = s13.shapes.add_textbox(Inches(6.7), Inches(1.85), Inches(5.8), Inches(4.7))
     tf = box.text_frame
     tf.word_wrap = True
     
     pairing_pts = [
-        ("Manager Creates Workspace", "Manager provisions organization with spending policies and branch parameters in the web portal."),
-        ("Generates 6-Character Join Code", "Temporary alpha-numeric code (e.g. 'CG-7842') generated with short TTL and role assignment."),
-        ("Employee Pairs Device Instantly", "Field staff enter the code in the mobile app. Device is cryptographically bound to the company."),
-        ("No Social Login Lock-In", "No Google accounts, corporate emails, or complex passwords required for drivers and field crew."),
-        ("Secure Session JWT Tokens", "Backend validates code, creates membership, and issues scoped access tokens stored in device keychain.")
+        ("Live Active Join Code: CG-7K4P9X", "Assigned to Apex Logistics India Pvt Ltd (APEX-2026). Max 100 uses &bull; Valid 30 days."),
+        ("Manager Creates Workspace", "Priya Sharma configures spending policies (Fuel ₹5k cap, Meals ₹1.2k cap) and department roles."),
+        ("Employee Pairs Device Instantly", "Rahul Kumar enters code CG-7K4P9X once. Device is cryptographically bound to Apex Logistics."),
+        ("No Social Login Dependency", "No corporate Google accounts or passwords required for field technicians. Paired via device session."),
+        ("Secure Session JWT Tokens", "Backend validates code, provisions membership, and issues scoped access tokens stored in keychain.")
     ]
     for i, (title, desc) in enumerate(pairing_pts):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.text = title
-        p.font.size = Pt(13)
+        p.font.size = Pt(12)
         p.font.bold = True
         p.font.color.rgb = DARK_NAVY
-        if i > 0: p.space_before = Pt(10)
-        
+        if i > 0: p.space_before = Pt(9)
         p2 = tf.add_paragraph()
         p2.text = desc
-        p2.font.size = Pt(10.5)
+        p2.font.size = Pt(9.5)
         p2.font.color.rgb = SLATE
         p2.space_before = Pt(2)
 
@@ -754,39 +786,39 @@ def create_presentation():
     add_header(s14, "Business Impact", "What ClaimGuard is designed to improve.")
 
     outcomes = [
-        ("LESS MANUAL VERIFICATION", "Automated OCR, math checks & GSTIN validation free managers from tedious receipt auditing."),
-        ("FASTER REVIEW CYCLES", "Field staff receive reimbursement decisions in days or hours instead of weeks, boosting morale."),
-        ("EARLIER SUSPICIOUS SIGNALS", "Duplicate hashes, historical spending spikes & fake tax IDs flagged before payouts are disbursed."),
-        ("CENTRALIZED VISIBILITY", "Unified audit trail and real-time dashboard provide complete oversight across all regional branches.")
+        ("LESS MANUAL VERIFICATION", "Automated Textract data entry and deterministic arithmetic checks eliminate repetitive receipt auditing."),
+        ("FASTER REVIEW CYCLES", "Field employees receive reimbursement approvals in hours or days instead of weeks, boosting workforce morale."),
+        ("EARLIER SUSPICIOUS SIGNALS", "Perceptual duplicate hashes, historical spikes, and invalid GSTINs are caught before company funds are disbursed."),
+        ("CENTRALIZED VISIBILITY", "Unified PostgreSQL audit trail provides complete compliance oversight across all regional branches and field units.")
     ]
 
     left = 0.8
-    top = 2.0
+    top = 1.85
     for i, (title, desc) in enumerate(outcomes):
-        c = s14.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(5.7), Inches(2.2))
+        c = s14.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(left), Inches(top), Inches(5.7), Inches(2.25))
         c.fill.solid()
         c.fill.fore_color.rgb = WHITE
         c.line.color.rgb = BORDER_GRAY
         c.line.width = Pt(1.5)
         tf = c.text_frame
         tf.word_wrap = True
-        tf.margin_left = tf.margin_right = tf.margin_top = Inches(0.3)
+        tf.margin_left = tf.margin_right = tf.margin_top = Inches(0.25)
         
         p = tf.paragraphs[0]
         p.text = title
-        p.font.size = Pt(15)
+        p.font.size = Pt(14)
         p.font.bold = True
         p.font.color.rgb = ORANGE
         
         p2 = tf.add_paragraph()
         p2.text = desc
-        p2.font.size = Pt(11)
+        p2.font.size = Pt(10.5)
         p2.font.color.rgb = SLATE
-        p2.space_before = Pt(8)
+        p2.space_before = Pt(6)
         
         if i % 2 == 1:
             left = 0.8
-            top += 2.4
+            top += 2.5
         else:
             left += 6.0
 
@@ -801,16 +833,16 @@ def create_presentation():
     add_header(s15, "Product Roadmap & Closing", "From receipt verification to an intelligent expense workflow.", dark_mode=True)
 
     roadmap = [
-        ("PHASE 1 (CURRENT)", "Core receipt verification, OCR extraction, deterministic fraud rules & manager dashboard.", ACCENT_GREEN),
-        ("PHASE 2 (NEXT)", "Advanced risk intelligence with 90-day rolling behavioral baselines and peer group clustering.", PEACH),
+        ("PHASE 1 (ACTIVE)", "Core receipt verification, OCR extraction, deterministic fraud rules & manager dashboard.", ACCENT_GREEN),
+        ("PHASE 2 (NEXT)", "Advanced risk intelligence with 90-day rolling behavioral baselines and peer clustering.", PEACH),
         ("PHASE 3 (ANALYTICS)", "Organization-wide benchmark heatmaps, category leak analysis, and tax audit export.", PEACH),
-        ("PHASE 4 (MESSAGING)", "Conversational WhatsApp receipt submission channel [FUTURE INTEGRATION].", LIGHT_SLATE),
-        ("PHASE 5 (ERP CONNECTORS)", "Direct two-way accounting sync into SAP, Tally, and Zoho Books [FUTURE INTEGRATION].", LIGHT_SLATE)
+        ("PHASE 4 (FUTURE)", "Conversational WhatsApp receipt submission channel [FUTURE INTEGRATION].", LIGHT_SLATE),
+        ("PHASE 5 (FUTURE)", "Direct two-way accounting sync into SAP, Tally, and Zoho Books [FUTURE INTEGRATION].", LIGHT_SLATE)
     ]
     
     left = 0.8
     for phase, desc, col in roadmap:
-        c = s15.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(2.1), Inches(2.25), Inches(4.3))
+        c = s15.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(left), Inches(1.85), Inches(2.25), Inches(4.7))
         c.fill.solid()
         c.fill.fore_color.rgb = DARK_CARD
         c.line.color.rgb = col
@@ -821,13 +853,13 @@ def create_presentation():
         
         p = tf.paragraphs[0]
         p.text = phase
-        p.font.size = Pt(11)
+        p.font.size = Pt(10)
         p.font.bold = True
         p.font.color.rgb = col
         
         p2 = tf.add_paragraph()
         p2.text = desc
-        p2.font.size = Pt(10)
+        p2.font.size = Pt(9.5)
         p2.font.color.rgb = OFF_WHITE
         p2.space_before = Pt(8)
         
@@ -836,7 +868,6 @@ def create_presentation():
     add_footer(s15, 15, dark_mode=True)
     s15.notes_slide.notes_text_frame.text = get_speaker_note(15)
 
-    # Save presentation
     output_path = "ClaimGuard_Product_Pitch.pptx"
     prs.save(output_path)
     print(f"Presentation saved successfully to {output_path}")

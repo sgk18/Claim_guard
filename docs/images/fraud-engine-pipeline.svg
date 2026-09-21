@@ -1,0 +1,194 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="100%" height="100%">
+  <defs>
+    <linearGradient id="fraudBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16" />
+      <stop offset="50%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <pattern id="fraudGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#334155" stroke-width="0.5" stroke-opacity="0.25" />
+    </pattern>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F97316" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="560" fill="url(#fraudBg)" />
+  <rect width="1200" height="560" fill="url(#fraudGrid)" />
+
+  <!-- Title Header -->
+  <g transform="translate(50, 40)">
+    <text x="0" y="0" fill="#F8FAFC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="700">
+      Deterministic Fraud Detection &amp; Risk Scoring Engine
+    </text>
+    <text x="0" y="24" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13">
+      100% Mathematical auditability: Zero black-box hallucinations, deterministic rule weights, and qualified authenticity states
+    </text>
+  </g>
+
+  <!-- Stage 1: Ingestion & Feature Extraction (Left) -->
+  <g transform="translate(50, 95)">
+    <rect width="230" height="420" rx="8" fill="#131D31" stroke="#334155" stroke-width="1.2" />
+    <rect width="230" height="28" rx="8" fill="#1E293B" />
+    <rect width="230" height="6" y="22" fill="#1E293B" />
+    <text x="15" y="19" fill="#FDBA74" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">1. INPUT SIGNALS</text>
+
+    <!-- Items -->
+    <g transform="translate(15, 45)">
+      <rect width="200" height="46" rx="5" fill="#0F172A" stroke="#334155" />
+      <text x="12" y="20" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600">Raw Receipt Image</text>
+      <text x="12" y="36" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Pixel array &amp; perceptual hash</text>
+    </g>
+    <g transform="translate(15, 105)">
+      <rect width="200" height="46" rx="5" fill="#0F172A" stroke="#334155" />
+      <text x="12" y="20" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600">OCR Extraction Payload</text>
+      <text x="12" y="36" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Vendor, Total, Date, GSTIN</text>
+    </g>
+    <g transform="translate(15, 165)">
+      <rect width="200" height="46" rx="5" fill="#0F172A" stroke="#334155" />
+      <text x="12" y="20" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600">Employee Historical Mean</text>
+      <text x="12" y="36" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Category moving averages</text>
+    </g>
+    <g transform="translate(15, 225)">
+      <rect width="200" height="46" rx="5" fill="#0F172A" stroke="#334155" />
+      <text x="12" y="20" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600">Company Policy Rules</text>
+      <text x="12" y="36" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Daily caps, tax thresholds</text>
+    </g>
+    <g transform="translate(15, 285)">
+      <rect width="200" height="46" rx="5" fill="#0F172A" stroke="#334155" />
+      <text x="12" y="20" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="11.5" font-weight="600">Trip &amp; Itinerary Context</text>
+      <text x="12" y="36" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Approved dates &amp; route locations</text>
+    </g>
+    <g transform="translate(15, 345)">
+      <rect width="200" height="52" rx="5" fill="#14532D" stroke="#22C55E" stroke-width="0.8" />
+      <text x="12" y="20" fill="#86EFAC" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">Pre-Submission Check</text>
+      <text x="12" y="35" fill="#DCFCE7" font-family="-apple-system, sans-serif" font-size="9.5">Inline correction modal if OCR &lt; 70%</text>
+      <text x="12" y="47" fill="#86EFAC" font-family="-apple-system, sans-serif" font-size="9.5">Zero silent drop-offs</text>
+    </g>
+  </g>
+
+  <!-- Connectors to Stage 2 -->
+  <path d="M 280 305 L 325 305" fill="none" stroke="#F97316" stroke-width="2" marker-end="url(#arrowOrange)" />
+
+  <!-- Stage 2: Deterministic Rules Engine (Center) -->
+  <g transform="translate(330, 95)">
+    <rect width="460" height="420" rx="8" fill="#131D31" stroke="#F97316" stroke-width="1.2" />
+    <rect width="460" height="28" rx="8" fill="#1E293B" />
+    <rect width="460" height="6" y="22" fill="#1E293B" />
+    <text x="15" y="19" fill="#FDBA74" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">2. DETERMINISTIC SIGNAL STACK &amp; SCORING WEIGHTS</text>
+
+    <!-- Rule 1: Duplicate Receipt -->
+    <g transform="translate(15, 42)">
+      <rect width="430" height="48" rx="5" fill="#0F172A" stroke="#EF4444" stroke-width="1" />
+      <rect width="55" height="22" x="360" y="13" rx="4" fill="#7F1D1D" />
+      <text x="387" y="28" fill="#FCA5A5" font-family="-apple-system, sans-serif" font-size="11" font-weight="800" text-anchor="middle">+40 PTS</text>
+      <text x="15" y="22" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">DUPLICATE_RECEIPT</text>
+      <text x="15" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">64-bit dHash Hamming Distance ≤ 5 OR identical (Vendor + Amt + Date ≤ 60d)</text>
+    </g>
+
+    <!-- Rule 2: Invalid GSTIN -->
+    <g transform="translate(15, 98)">
+      <rect width="430" height="48" rx="5" fill="#0F172A" stroke="#F97316" stroke-width="1" />
+      <rect width="55" height="22" x="360" y="13" rx="4" fill="#7C2D12" />
+      <text x="387" y="28" fill="#FDBA74" font-family="-apple-system, sans-serif" font-size="11" font-weight="800" text-anchor="middle">+25 PTS</text>
+      <text x="15" y="22" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">INVALID_GSTIN</text>
+      <text x="15" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Luhn Modulo-36 check digit failure OR invalid state code (01–38)</text>
+    </g>
+
+    <!-- Rule 3: Amount Anomaly -->
+    <g transform="translate(15, 154)">
+      <rect width="430" height="48" rx="5" fill="#0F172A" stroke="#FBBF24" stroke-width="1" />
+      <rect width="55" height="22" x="360" y="13" rx="4" fill="#78350F" />
+      <text x="387" y="28" fill="#FDE68A" font-family="-apple-system, sans-serif" font-size="11" font-weight="800" text-anchor="middle">+20 PTS</text>
+      <text x="15" y="22" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">AMOUNT_ANOMALY</text>
+      <text x="15" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Claim amount &gt; 2.0x category moving average (min 3 prior claims)</text>
+    </g>
+
+    <!-- Rule 4: Category Mismatch -->
+    <g transform="translate(15, 210)">
+      <rect width="430" height="48" rx="5" fill="#0F172A" stroke="#FBBF24" stroke-width="1" />
+      <rect width="55" height="22" x="360" y="13" rx="4" fill="#78350F" />
+      <text x="387" y="28" fill="#FDE68A" font-family="-apple-system, sans-serif" font-size="11" font-weight="800" text-anchor="middle">+20 PTS</text>
+      <text x="15" y="22" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">CATEGORY_MISMATCH</text>
+      <text x="15" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Vendor semantic keywords contradict claimed category (e.g. Barbeque in Fuel)</text>
+    </g>
+
+    <!-- Rule 5: Policy Violation -->
+    <g transform="translate(15, 266)">
+      <rect width="430" height="48" rx="5" fill="#0F172A" stroke="#38BDF8" stroke-width="1" />
+      <rect width="55" height="22" x="360" y="13" rx="4" fill="#0C4A6E" />
+      <text x="387" y="28" fill="#BAE6FD" font-family="-apple-system, sans-serif" font-size="11" font-weight="800" text-anchor="middle">+15 PTS</text>
+      <text x="15" y="22" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">POLICY_VIOLATION</text>
+      <text x="15" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Exceeds policy threshold (e.g. &gt; ₹5,000) OR missing mandatory tax invoice</text>
+    </g>
+
+    <!-- Rule 6: Date Mismatch -->
+    <g transform="translate(15, 322)">
+      <rect width="430" height="48" rx="5" fill="#0F172A" stroke="#94A3B8" stroke-width="1" />
+      <rect width="55" height="22" x="360" y="13" rx="4" fill="#334155" />
+      <text x="387" y="28" fill="#E2E8F0" font-family="-apple-system, sans-serif" font-size="11" font-weight="800" text-anchor="middle">+10 PTS</text>
+      <text x="15" y="22" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">DATE_MISMATCH</text>
+      <text x="15" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Receipt date in future, &gt; 30 days old, or unapproved weekend expenditure</text>
+    </g>
+
+    <!-- Aggregator Bar -->
+    <g transform="translate(15, 378)">
+      <rect width="430" height="30" rx="4" fill="#1E293B" />
+      <text x="215" y="20" fill="#E2E8F0" font-family="monospace" font-size="11" font-weight="600" text-anchor="middle">
+        Score = min(100, max(0, sum(SignalImpact_i)))
+      </text>
+    </g>
+  </g>
+
+  <!-- Connectors to Stage 3 -->
+  <path d="M 790 305 L 835 305" fill="none" stroke="#F97316" stroke-width="2" marker-end="url(#arrowOrange)" />
+
+  <!-- Stage 3: Authenticity States (Right) -->
+  <g transform="translate(840, 95)">
+    <rect width="310" height="420" rx="8" fill="#131D31" stroke="#334155" stroke-width="1.2" />
+    <rect width="310" height="28" rx="8" fill="#1E293B" />
+    <rect width="310" height="6" y="22" fill="#1E293B" />
+    <text x="15" y="19" fill="#FDBA74" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">3. QUALIFIED AUTHENTICITY STATES</text>
+
+    <!-- State 1: VERIFIED -->
+    <g transform="translate(15, 42)">
+      <rect width="280" height="64" rx="5" fill="#0F172A" stroke="#22C55E" stroke-width="1.2" />
+      <text x="12" y="22" fill="#86EFAC" font-family="-apple-system, sans-serif" font-size="13" font-weight="800">VERIFIED (0 – 24)</text>
+      <text x="12" y="38" fill="#E2E8F0" font-family="-apple-system, sans-serif" font-size="10.5">Action: APPROVE_RECOMMENDED</text>
+      <text x="12" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="9.5">Routine clean fuel/meals, valid GSTIN, within avg.</text>
+    </g>
+
+    <!-- State 2: LIKELY_VALID -->
+    <g transform="translate(15, 114)">
+      <rect width="280" height="64" rx="5" fill="#0F172A" stroke="#38BDF8" stroke-width="1.2" />
+      <text x="12" y="22" fill="#7DD3FC" font-family="-apple-system, sans-serif" font-size="13" font-weight="800">LIKELY_VALID (25 – 49)</text>
+      <text x="12" y="38" fill="#E2E8F0" font-family="-apple-system, sans-serif" font-size="10.5">Action: MANUAL_REVIEW</text>
+      <text x="12" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="9.5">Minor warning (date discrepancy or non-standard vendor).</text>
+    </g>
+
+    <!-- State 3: REVIEW_REQUIRED -->
+    <g transform="translate(15, 186)">
+      <rect width="280" height="64" rx="5" fill="#0F172A" stroke="#F59E0B" stroke-width="1.2" />
+      <text x="12" y="22" fill="#FCD34D" font-family="-apple-system, sans-serif" font-size="13" font-weight="800">REVIEW_REQUIRED (50 – 74)</text>
+      <text x="12" y="38" fill="#E2E8F0" font-family="-apple-system, sans-serif" font-size="10.5">Action: INVESTIGATION_REQUIRED</text>
+      <text x="12" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="9.5">Significant amount anomaly, category or policy cap breach.</text>
+    </g>
+
+    <!-- State 4: SUSPICIOUS -->
+    <g transform="translate(15, 258)">
+      <rect width="280" height="64" rx="5" fill="#0F172A" stroke="#EF4444" stroke-width="1.2" />
+      <text x="12" y="22" fill="#FCA5A5" font-family="-apple-system, sans-serif" font-size="13" font-weight="800">SUSPICIOUS (75 – 100)</text>
+      <text x="12" y="38" fill="#E2E8F0" font-family="-apple-system, sans-serif" font-size="10.5">Action: REJECT_RECOMMENDED</text>
+      <text x="12" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="9.5">Perceptual duplicate match, forged GSTIN, or multi-flag.</text>
+    </g>
+
+    <!-- State 5: UNABLE_TO_VERIFY -->
+    <g transform="translate(15, 330)">
+      <rect width="280" height="64" rx="5" fill="#0F172A" stroke="#64748B" stroke-width="1.2" />
+      <text x="12" y="22" fill="#CBD5E1" font-family="-apple-system, sans-serif" font-size="13" font-weight="800">UNABLE_TO_VERIFY</text>
+      <text x="12" y="38" fill="#E2E8F0" font-family="-apple-system, sans-serif" font-size="10.5">Action: EMPLOYEE_RETRY</text>
+      <text x="12" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="9.5">Blurred thermal print, cut-off totals, illegible vendor.</text>
+    </g>
+  </g>
+</svg>

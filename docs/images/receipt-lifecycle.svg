@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="flowBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16" />
+      <stop offset="50%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <pattern id="flowGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#334155" stroke-width="0.5" stroke-opacity="0.25" />
+    </pattern>
+    <marker id="arrowRight" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F97316" />
+    </marker>
+  </defs>
+
+  <!-- Canvas -->
+  <rect width="1200" height="480" fill="url(#flowBg)" />
+  <rect width="1200" height="480" fill="url(#flowGrid)" />
+
+  <!-- Header -->
+  <g transform="translate(50, 35)">
+    <text x="0" y="0" fill="#F8FAFC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="700">
+      End-to-End Expense Lifecycle &amp; Verification Stream
+    </text>
+    <text x="0" y="24" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13">
+      From mobile capture to deterministic verification, multi-tenant persistence, human-in-the-loop decision, and immutable audit logs
+    </text>
+  </g>
+
+  <!-- 5 Sequential Lifecycle Phases -->
+  <!-- Phase 1: Capture -->
+  <g transform="translate(50, 90)">
+    <rect width="205" height="340" rx="8" fill="#131D31" stroke="#38BDF8" stroke-width="1.2" />
+    <rect width="205" height="30" rx="8" fill="#0C4A6E" />
+    <rect width="205" height="6" y="24" fill="#0C4A6E" />
+    <text x="12" y="20" fill="#BAE6FD" font-family="-apple-system, sans-serif" font-size="11" font-weight="800">STAGE 1: CAPTURE</text>
+
+    <g transform="translate(12, 45)">
+      <circle cx="12" cy="12" r="10" fill="#0284C7" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">1</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Mobile Capture</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Camera snapshot or drop</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Client magic byte check</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Client thumbnail gen</text>
+    </g>
+
+    <g transform="translate(12, 140)">
+      <circle cx="12" cy="12" r="10" fill="#0284C7" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">2</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Context Association</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Field agent identity</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Active trip / itinerary pairing</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Org tenant scope</text>
+    </g>
+
+    <g transform="translate(12, 235)">
+      <rect width="181" height="70" rx="6" fill="#0F172A" stroke="#334155" />
+      <text x="10" y="20" fill="#38BDF8" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">Zero-Install Web</text>
+      <text x="10" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Runs in mobile browser</text>
+      <text x="10" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Simulates WhatsApp flow</text>
+    </g>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 255 260 L 275 260" fill="none" stroke="#F97316" stroke-width="2" marker-end="url(#arrowRight)" />
+
+  <!-- Phase 2: Ingestion & OCR -->
+  <g transform="translate(280, 90)">
+    <rect width="205" height="340" rx="8" fill="#131D31" stroke="#F97316" stroke-width="1.2" />
+    <rect width="205" height="30" rx="8" fill="#7C2D12" />
+    <rect width="205" height="6" y="24" fill="#7C2D12" />
+    <text x="12" y="20" fill="#FDBA74" font-family="-apple-system, sans-serif" font-size="11" font-weight="800">STAGE 2: OCR &amp; PARSING</text>
+
+    <g transform="translate(12, 45)">
+      <circle cx="12" cy="12" r="10" fill="#EA580C" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">3</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Storage Ingestion</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Fastify multipart upload</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• AWS S3 KMS AES-256</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• 64-bit dHash computation</text>
+    </g>
+
+    <g transform="translate(12, 140)">
+      <circle cx="12" cy="12" r="10" fill="#EA580C" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">4</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Document OCR</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• AWS Textract Expense</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Claude 3.5 Sonnet Bedrock</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Field confidence scoring</text>
+    </g>
+
+    <g transform="translate(12, 235)">
+      <rect width="181" height="70" rx="6" fill="#14532D" stroke="#22C55E" stroke-width="0.8" />
+      <text x="10" y="20" fill="#86EFAC" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">Inline Correction</text>
+      <text x="10" y="38" fill="#DCFCE7" font-family="-apple-system, sans-serif" font-size="10">If confidence &lt; 70%:</text>
+      <text x="10" y="52" fill="#DCFCE7" font-family="-apple-system, sans-serif" font-size="10">Agent self-corrects live</text>
+    </g>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 485 260 L 505 260" fill="none" stroke="#F97316" stroke-width="2" marker-end="url(#arrowRight)" />
+
+  <!-- Phase 3: Fraud Engine -->
+  <g transform="translate(510, 90)">
+    <rect width="205" height="340" rx="8" fill="#131D31" stroke="#EF4444" stroke-width="1.2" />
+    <rect width="205" height="30" rx="8" fill="#7F1D1D" />
+    <rect width="205" height="6" y="24" fill="#7F1D1D" />
+    <text x="12" y="20" fill="#FCA5A5" font-family="-apple-system, sans-serif" font-size="11" font-weight="800">STAGE 3: FRAUD ENGINE</text>
+
+    <g transform="translate(12, 45)">
+      <circle cx="12" cy="12" r="10" fill="#DC2626" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">5</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Deterministic Checks</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• dHash Hamming check (≤5)</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• GSTIN Luhn Mod-36</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Moving avg anomaly (&gt;2x)</text>
+    </g>
+
+    <g transform="translate(12, 140)">
+      <circle cx="12" cy="12" r="10" fill="#DC2626" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">6</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Score Aggregation</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Clamped 0-100 score</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Signal items cataloged</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Authenticity state mapped</text>
+    </g>
+
+    <g transform="translate(12, 235)">
+      <rect width="181" height="70" rx="6" fill="#0F172A" stroke="#334155" />
+      <text x="10" y="20" fill="#EF4444" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">Audit Proof</text>
+      <text x="10" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Duplicate image match</text>
+      <text x="10" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">persisted with diff ref</text>
+    </g>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 715 260 L 735 260" fill="none" stroke="#F97316" stroke-width="2" marker-end="url(#arrowRight)" />
+
+  <!-- Phase 4: Manager Cockpit -->
+  <g transform="translate(740, 90)">
+    <rect width="205" height="340" rx="8" fill="#131D31" stroke="#34D399" stroke-width="1.2" />
+    <rect width="205" height="30" rx="8" fill="#064E3B" />
+    <rect width="205" height="6" y="24" fill="#064E3B" />
+    <text x="12" y="20" fill="#A7F3D0" font-family="-apple-system, sans-serif" font-size="11" font-weight="800">STAGE 4: MANAGER AUDIT</text>
+
+    <g transform="translate(12, 45)">
+      <circle cx="12" cy="12" r="10" fill="#059669" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">7</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Split-Screen Review</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• High-res pan &amp; zoom</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Duplicate comparator</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Raw OCR inspector toggle</text>
+    </g>
+
+    <g transform="translate(12, 140)">
+      <circle cx="12" cy="12" r="10" fill="#059669" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">8</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Human Determination</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• AI assists, human decides</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• One-click approval</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Mandatory rejection note</text>
+    </g>
+
+    <g transform="translate(12, 235)">
+      <rect width="181" height="70" rx="6" fill="#0F172A" stroke="#334155" />
+      <text x="10" y="20" fill="#34D399" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">ITC Recovery</text>
+      <text x="10" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">GST tax credit flagged</text>
+      <text x="10" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">for accounting sync</text>
+    </g>
+  </g>
+
+  <!-- Arrow 4 -> 5 -->
+  <path d="M 945 260 L 965 260" fill="none" stroke="#F97316" stroke-width="2" marker-end="url(#arrowRight)" />
+
+  <!-- Phase 5: Ledger & Settlement -->
+  <g transform="translate(970, 90)">
+    <rect width="180" height="340" rx="8" fill="#131D31" stroke="#A855F7" stroke-width="1.2" />
+    <rect width="180" height="30" rx="8" fill="#581C87" />
+    <rect width="180" height="6" y="24" fill="#581C87" />
+    <text x="12" y="20" fill="#E9D5FF" font-family="-apple-system, sans-serif" font-size="11" font-weight="800">STAGE 5: LEDGER</text>
+
+    <g transform="translate(12, 45)">
+      <circle cx="12" cy="12" r="10" fill="#9333EA" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">9</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Audit Ledger</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Immutable record</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Actor ID &amp; timestamps</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Supabase RLS sealed</text>
+    </g>
+
+    <g transform="translate(12, 140)">
+      <circle cx="12" cy="12" r="10" fill="#9333EA" />
+      <text x="12" y="16" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">10</text>
+      <text x="30" y="16" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Reconciliation</text>
+      <text x="0" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Field agent notified</text>
+      <text x="0" y="54" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• ERP export payload</text>
+      <text x="0" y="70" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10.5">• Zero-leakage close</text>
+    </g>
+
+    <g transform="translate(12, 235)">
+      <rect width="156" height="70" rx="6" fill="#0F172A" stroke="#334155" />
+      <text x="10" y="20" fill="#C084FC" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">Audit Ready</text>
+      <text x="10" y="38" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">GST audit defensible</text>
+      <text x="10" y="52" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="10">Complete paper trail</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="100%" height="100%">
+  <defs>
+    <linearGradient id="erdBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16" />
+      <stop offset="50%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <pattern id="erdGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#334155" stroke-width="0.5" stroke-opacity="0.25" />
+    </pattern>
+    <marker id="erdArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1200" height="620" fill="url(#erdBg)" />
+  <rect width="1200" height="620" fill="url(#erdGrid)" />
+
+  <!-- Diagram Header -->
+  <g transform="translate(50, 35)">
+    <text x="0" y="0" fill="#F8FAFC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="700">
+      PostgreSQL Relational Schema &amp; Row-Level Security Architecture
+    </text>
+    <text x="0" y="24" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13">
+      11 normalized tables, foreign key constraints, tenant isolation, and immutable audit ledger in Supabase
+    </text>
+  </g>
+
+  <!-- ROW 1 (Top Level Entities) -->
+  <!-- Table: companies -->
+  <g transform="translate(50, 80)">
+    <rect width="210" height="135" rx="6" fill="#131D31" stroke="#38BDF8" stroke-width="1.2" />
+    <rect width="210" height="26" rx="6" fill="#0C4A6E" />
+    <rect width="210" height="5" y="21" fill="#0C4A6E" />
+    <text x="12" y="18" fill="#BAE6FD" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">companies</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#94A3B8" font-family="monospace" font-size="10.5">    name (TEXT)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    join_code (VARCHAR 6)</text>
+    <text x="12" y="100" fill="#94A3B8" font-family="monospace" font-size="10.5">    gstin (VARCHAR 15)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    created_at (TIMESTAMPTZ)</text>
+  </g>
+
+  <!-- Table: employees -->
+  <g transform="translate(340, 80)">
+    <rect width="230" height="155" rx="6" fill="#131D31" stroke="#38BDF8" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="#0C4A6E" />
+    <rect width="230" height="5" y="21" fill="#0C4A6E" />
+    <text x="12" y="18" fill="#BAE6FD" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">employees</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#38BDF8" font-family="monospace" font-size="10.5">FK  company_id (UUID)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    name (TEXT)</text>
+    <text x="12" y="100" fill="#94A3B8" font-family="monospace" font-size="10.5">    phone (VARCHAR 15)</text>
+    <text x="12" y="118" fill="#FDBA74" font-family="monospace" font-size="10.5">    historical_claim_avg</text>
+    <text x="12" y="136" fill="#FDBA74" font-family="monospace" font-size="10.5">    historical_claim_cnt</text>
+  </g>
+
+  <!-- Table: policies -->
+  <g transform="translate(650, 80)">
+    <rect width="220" height="135" rx="6" fill="#131D31" stroke="#38BDF8" stroke-width="1.2" />
+    <rect width="220" height="26" rx="6" fill="#0C4A6E" />
+    <rect width="220" height="5" y="21" fill="#0C4A6E" />
+    <text x="12" y="18" fill="#BAE6FD" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">policies</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#38BDF8" font-family="monospace" font-size="10.5">FK  company_id (UUID)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    category (TEXT)</text>
+    <text x="12" y="100" fill="#94A3B8" font-family="monospace" font-size="10.5">    max_amount (NUMERIC)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    gstin_mandatory (BOOL)</text>
+  </g>
+
+  <!-- Table: trips -->
+  <g transform="translate(940, 80)">
+    <rect width="210" height="135" rx="6" fill="#131D31" stroke="#38BDF8" stroke-width="1.2" />
+    <rect width="210" height="26" rx="6" fill="#0C4A6E" />
+    <rect width="210" height="5" y="21" fill="#0C4A6E" />
+    <text x="12" y="18" fill="#BAE6FD" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">trips</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#38BDF8" font-family="monospace" font-size="10.5">FK  employee_id (UUID)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    title (TEXT)</text>
+    <text x="12" y="100" fill="#94A3B8" font-family="monospace" font-size="10.5">    start_date (DATE)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    status (TEXT)</text>
+  </g>
+
+  <!-- Connectors from Companies to Employees & Policies -->
+  <path d="M 260 145 L 340 145" fill="none" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#erdArrow)" />
+  <path d="M 570 145 L 650 145" fill="none" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#erdArrow)" />
+  <path d="M 570 115 L 940 115" fill="none" stroke="#38BDF8" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#erdArrow)" />
+
+  <!-- ROW 2: Core Claims & Receipts -->
+  <!-- Table: claims -->
+  <g transform="translate(340, 275)">
+    <rect width="240" height="175" rx="6" fill="#131D31" stroke="#F97316" stroke-width="1.5" />
+    <rect width="240" height="26" rx="6" fill="#7C2D12" />
+    <rect width="240" height="5" y="21" fill="#7C2D12" />
+    <text x="12" y="18" fill="#FDBA74" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">claims (Core Transaction)</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#38BDF8" font-family="monospace" font-size="10.5">FK  employee_id (UUID)</text>
+    <text x="12" y="82" fill="#38BDF8" font-family="monospace" font-size="10.5">FK  company_id (UUID)</text>
+    <text x="12" y="100" fill="#38BDF8" font-family="monospace" font-size="10.5">FK  trip_id (UUID null)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    amount (NUMERIC)</text>
+    <text x="12" y="136" fill="#94A3B8" font-family="monospace" font-size="10.5">    category (TEXT)</text>
+    <text x="12" y="154" fill="#22C55E" font-family="monospace" font-size="10.5">    status (PENDING/APPR/REJ)</text>
+  </g>
+
+  <!-- Table: receipts -->
+  <g transform="translate(50, 275)">
+    <rect width="220" height="155" rx="6" fill="#131D31" stroke="#F97316" stroke-width="1.2" />
+    <rect width="220" height="26" rx="6" fill="#7C2D12" />
+    <rect width="220" height="5" y="21" fill="#7C2D12" />
+    <text x="12" y="18" fill="#FDBA74" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">receipts</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#F97316" font-family="monospace" font-size="10.5">FK  claim_id (UUID)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    s3_key (TEXT)</text>
+    <text x="12" y="100" fill="#EF4444" font-family="monospace" font-size="10.5">    image_hash (64b dHash)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    mime_type (VARCHAR)</text>
+    <text x="12" y="136" fill="#94A3B8" font-family="monospace" font-size="10.5">    file_size_bytes (INT)</text>
+  </g>
+
+  <!-- Table: ocr_extractions -->
+  <g transform="translate(50, 465)">
+    <rect width="220" height="135" rx="6" fill="#131D31" stroke="#334155" stroke-width="1.2" />
+    <rect width="220" height="26" rx="6" fill="#1E293B" />
+    <rect width="220" height="5" y="21" fill="#1E293B" />
+    <text x="12" y="18" fill="#E2E8F0" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">ocr_extractions</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#F97316" font-family="monospace" font-size="10.5">FK  receipt_id (UUID)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    raw_text (TEXT)</text>
+    <text x="12" y="100" fill="#94A3B8" font-family="monospace" font-size="10.5">    confidence (NUMERIC)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    parsed_fields (JSONB)</text>
+  </g>
+
+  <!-- Table: risk_assessments -->
+  <g transform="translate(650, 275)">
+    <rect width="230" height="155" rx="6" fill="#131D31" stroke="#EF4444" stroke-width="1.5" />
+    <rect width="230" height="26" rx="6" fill="#7F1D1D" />
+    <rect width="230" height="5" y="21" fill="#7F1D1D" />
+    <text x="12" y="18" fill="#FCA5A5" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">risk_assessments</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#F97316" font-family="monospace" font-size="10.5">FK  claim_id (UUID)</text>
+    <text x="12" y="82" fill="#EF4444" font-family="monospace" font-size="10.5">    score (0-100 INT)</text>
+    <text x="12" y="100" fill="#EF4444" font-family="monospace" font-size="10.5">    tier (LOW/MED/HIGH/CRIT)</text>
+    <text x="12" y="118" fill="#22C55E" font-family="monospace" font-size="10.5">    state (VERIFIED/etc)</text>
+    <text x="12" y="136" fill="#94A3B8" font-family="monospace" font-size="10.5">    narrative (TEXT)</text>
+  </g>
+
+  <!-- Table: audit_logs -->
+  <g transform="translate(940, 275)">
+    <rect width="210" height="155" rx="6" fill="#131D31" stroke="#A855F7" stroke-width="1.2" />
+    <rect width="210" height="26" rx="6" fill="#581C87" />
+    <rect width="210" height="5" y="21" fill="#581C87" />
+    <text x="12" y="18" fill="#E9D5FF" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">audit_logs (Immutable)</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#F97316" font-family="monospace" font-size="10.5">FK  claim_id (UUID)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    actor_id (UUID)</text>
+    <text x="12" y="100" fill="#94A3B8" font-family="monospace" font-size="10.5">    action (VARCHAR)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    notes (TEXT)</text>
+    <text x="12" y="136" fill="#94A3B8" font-family="monospace" font-size="10.5">    timestamp (TIMESTAMPTZ)</text>
+  </g>
+
+  <!-- ROW 3 -->
+  <!-- Table: risk_signals -->
+  <g transform="translate(650, 465)">
+    <rect width="230" height="135" rx="6" fill="#131D31" stroke="#EF4444" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="#7F1D1D" />
+    <rect width="230" height="5" y="21" fill="#7F1D1D" />
+    <text x="12" y="18" fill="#FCA5A5" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">risk_signals</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#EF4444" font-family="monospace" font-size="10.5">FK  risk_assessment_id</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    signal_code (VARCHAR)</text>
+    <text x="12" y="100" fill="#EF4444" font-family="monospace" font-size="10.5">    score_impact (+10 to +40)</text>
+    <text x="12" y="118" fill="#94A3B8" font-family="monospace" font-size="10.5">    details (JSONB)</text>
+  </g>
+
+  <!-- Table: gstin_verifications -->
+  <g transform="translate(940, 465)">
+    <rect width="210" height="135" rx="6" fill="#131D31" stroke="#34D399" stroke-width="1.2" />
+    <rect width="210" height="26" rx="6" fill="#064E3B" />
+    <rect width="210" height="5" y="21" fill="#064E3B" />
+    <text x="12" y="18" fill="#A7F3D0" font-family="-apple-system, sans-serif" font-size="11" font-weight="700">gstin_verifications</text>
+    
+    <text x="12" y="46" fill="#F8FAFC" font-family="monospace" font-size="10.5">PK  id (UUID)</text>
+    <text x="12" y="64" fill="#34D399" font-family="monospace" font-size="10.5">    gstin (VARCHAR 15)</text>
+    <text x="12" y="82" fill="#94A3B8" font-family="monospace" font-size="10.5">    state_code (01-38)</text>
+    <text x="12" y="100" fill="#22C55E" font-family="monospace" font-size="10.5">    luhn_valid (BOOL)</text>
+    <text x="12" y="118" fill="#34D399" font-family="monospace" font-size="10.5">    itc_eligible (BOOL)</text>
+  </g>
+
+  <!-- Arrows between Claims and child tables -->
+  <path d="M 450 235 L 450 275" fill="none" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#erdArrow)" />
+  <path d="M 340 350 L 270 350" fill="none" stroke="#F97316" stroke-width="1.5" marker-end="url(#erdArrow)" />
+  <path d="M 160 430 L 160 465" fill="none" stroke="#F97316" stroke-width="1.5" marker-end="url(#erdArrow)" />
+  <path d="M 580 350 L 650 350" fill="none" stroke="#EF4444" stroke-width="1.5" marker-end="url(#erdArrow)" />
+  <path d="M 760 430 L 760 465" fill="none" stroke="#EF4444" stroke-width="1.5" marker-end="url(#erdArrow)" />
+  <path d="M 580 380 L 940 380" fill="none" stroke="#A855F7" stroke-width="1.5" marker-end="url(#erdArrow)" />
+</svg>

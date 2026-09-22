@@ -71,4 +71,12 @@ test('Presentation Package Integrity Tests', async (t) => {
     const stat = fs.statSync('ClaimGuard_Product_Pitch.pptx');
     assert.ok(stat.size > 1000000, `PPTX file size is too small: ${stat.size} bytes`);
   });
+
+  await t.test('Presentation script.js supports standard Spacebar navigation', () => {
+    const script = fs.readFileSync('presentation/script.js', 'utf8');
+    assert.ok(
+      script.includes("e.code === 'Space'") && script.includes("e.key === ' '"),
+      'script.js must handle standard Space key (e.code === "Space" and e.key === " ")'
+    );
+  });
 });

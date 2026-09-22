@@ -168,9 +168,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Handle Spacebar navigation (e.key is " " or "Spacebar"; e.code is "Space")
+    if (e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Space') {
+      e.preventDefault();
+      if (e.shiftKey) {
+        prevSlide();
+      } else {
+        nextSlide();
+      }
+      return;
+    }
+
     switch (e.key) {
       case 'ArrowRight':
-      case 'Space':
       case 'PageDown':
         e.preventDefault();
         nextSlide();
